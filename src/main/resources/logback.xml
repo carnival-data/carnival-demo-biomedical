@@ -1,0 +1,22 @@
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- with no appender-ref, log statements will flow to the root logger. the
+         level set here will be respected.  so, if the level here is trace, but
+         the root logger level is info, a trace message will still flow to the
+         root logger appender. -->
+    <logger name="example.carnival.micronaut" level="TRACE"/>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+    
+</configuration>

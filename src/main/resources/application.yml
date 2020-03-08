@@ -1,0 +1,6 @@
+micronaut:
+  application:
+    name: carnival-micronaut
+some:
+  test:
+    property: yay
