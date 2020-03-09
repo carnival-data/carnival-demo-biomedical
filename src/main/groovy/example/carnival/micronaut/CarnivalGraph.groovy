@@ -50,4 +50,10 @@ class CarnivalTinkerGraph implements CarnivalGraph {
     Graph getGremlinGraph() {
     	coreGraph.graph
     }
+
+    /** */
+    void resetCoreGraph() {
+        coreGraph.close()
+        this.coreGraph = CoreGraphTinker.create()
+    }
 }

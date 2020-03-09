@@ -31,6 +31,10 @@ import carnival.core.graph.Core
 class PersonControllerSpec extends Specification {
 
 
+    ///////////////////////////////////////////////////////////////////////////
+    // APPLICATION COMPONENTS
+    ///////////////////////////////////////////////////////////////////////////
+
     @Inject
     ApplicationContext ctx
 
@@ -48,6 +52,20 @@ class PersonControllerSpec extends Specification {
     String someTestProperty
 
 
+    ///////////////////////////////////////////////////////////////////////////
+    // TEST LIFE CYCLE
+    ///////////////////////////////////////////////////////////////////////////
+
+    def setup() {
+        carnivalGraph.resetCoreGraph()
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // TESTS
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
     void "test external property"() {
         expect:
         ctx.environment.getProperty("external.test.property", String).get() == 'super'
@@ -58,6 +76,7 @@ class PersonControllerSpec extends Specification {
         expect:
         someTestProperty == 'yay'
     }
+    **/
 
 
     void "test person get by name"() {
