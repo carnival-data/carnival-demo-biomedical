@@ -94,6 +94,7 @@ class PersonController {
         def jso = personVs.collect { Person.create((Vertex)it) }
         println "jso:${jso}"
 
+        //HttpResponse.ok().header('Access-Control-Allow-Origin', '*').body(jso)
         HttpResponse.ok().body(jso)
     }
 
