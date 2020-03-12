@@ -1,6 +1,9 @@
 micronaut:
   application:
     name: carnival-micronaut
+  server:
+      cors:
+          enabled: true
 some:
   test:
     property: yay
