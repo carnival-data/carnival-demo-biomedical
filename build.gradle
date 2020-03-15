@@ -57,3 +57,17 @@ shadowJar {
 
 run.classpath += configurations.developmentOnly
 run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+
+
+//
+// JIB
+//
+
+/** CHANGE THIS TO THE IMAGE YOU WANT TO PUSH TO */
+// jib.to.image = 'gcr.io/PROJECT_ID/micronaut-jib'
+
+/** THIS DOES NOT WORK.
+THOUGHT IT WOULD PER: https://github.com/GoogleContainerTools/jib/issues/413
+BUT, IT DOES NOT */
+// jib.container.useCurrentTimestamp = 'true'
+
