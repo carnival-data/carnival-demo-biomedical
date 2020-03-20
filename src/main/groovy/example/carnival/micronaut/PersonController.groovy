@@ -32,23 +32,6 @@ import carnival.core.graph.Core
 
 
 
-/** A POJO representing a Person */
-@ToString(includeNames=true)
-class Person {
-    static Person create(Vertex v) {
-        Person p = new Person()
-        p.id = v.id()
-        p.label = v.label()
-        p.name = Core.PX.NAME.valueOf(v)
-        p
-    }
-    String label = GraphModel.VX.PERSON.label
-    int id
-    String name
-}
-
-
-
 /** Controller for Person object */
 @CompileStatic
 @Controller("/person") 
@@ -122,12 +105,19 @@ class PersonController {
     @Consumes(MediaType.APPLICATION_JSON)
     HttpResponse<Person> putPerson(@Body Person person) {
         log.trace "putPerson json:$person"
+
+        assert person != null
+        assert person.id != null
+        assert person.name != null
         
         Vertex personV
 
         carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
             personV = GraphModel.VX.PERSON.instance()
-                .withProperty(Core.PX.NAME, person.name)
+                .withProperties(
+                    GraphModel.PX.ID, person.id,
+                    Core.PX.NAME, person.name
+                )
             .vertex(graph, g)
         }
 
@@ -141,5 +131,30 @@ class PersonController {
         HttpResponse.ok(p)
 
     }
+
+
+    @Post("/")
+    @Produces(MediaType.TEXT_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    HttpResponse<Person> postPerson(@Body Person person) {
+        log.trace "postPerson json:$person"
+        assert person.name != null
+        assert person.id != null
+        
+        Vertex personV
+
+        carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
+            personV = GraphModel.VX.PERSON.instance()
+                .withProperties(
+                    GraphModel.PX.ID, person.id,
+                    Core.PX.NAME, person.name
+                )
+            .vertex(graph, g)
+        }
+
+        Person p = Person.create(personV)
+        HttpResponse.ok(p)
+    }
+
 
 }

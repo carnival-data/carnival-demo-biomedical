@@ -15,7 +15,7 @@
          root logger appender. -->
     <logger name="example.carnival.micronaut" level="TRACE"/>
 
-    <root level="info">
+    <root level="trace">
         <appender-ref ref="STDOUT" />
     </root>
     

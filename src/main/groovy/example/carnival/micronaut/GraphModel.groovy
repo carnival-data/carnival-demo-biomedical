@@ -22,7 +22,8 @@ class GraphModel {
     static enum VX implements VertexDefTrait {
         PERSON (
             vertexProperties:[
-                Core.PX.NAME.withConstraints(unique:true)
+                PX.ID.withConstraints(unique:true),
+                Core.PX.NAME
             ]
         ), 
         HAIR (vertexProperties:[PX.COLOR]), 
@@ -34,7 +35,8 @@ class GraphModel {
 
 
     static enum PX implements PropertyDefTrait {
-        COLOR
+        COLOR,
+        ID
     }
 
 

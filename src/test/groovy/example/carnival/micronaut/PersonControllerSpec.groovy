@@ -96,7 +96,7 @@ class PersonControllerSpec extends Specification {
         when:
         request = HttpRequest.PUT(
             '/person'
-            , jsonSlurper.parseText('{"name":"alex"}')
+            , jsonSlurper.parseText('{"id":"58", "name":"alex"}')
         )
         String rsp = client.toBlocking().retrieve(request)
 
@@ -164,7 +164,7 @@ class PersonControllerSpec extends Specification {
         when:
         request = HttpRequest.PUT(
             '/person'
-            , jsonSlurper.parseText('{"name":"alex"}')
+            , jsonSlurper.parseText('{"id":"58", "name":"alex"}')
         )
         String rsp = client.toBlocking().retrieve(request)
 
@@ -217,7 +217,7 @@ class PersonControllerSpec extends Specification {
         when:
         HttpRequest request = HttpRequest.PUT(
             '/person'
-            , jsonSlurper.parseText('{"name":"alex"}')
+            , jsonSlurper.parseText('{"id":"58", "name":"alex"}')
         )
             //.contentType(MediaType.APPLICATION_JSON)
             //.accept(MediaType.TEXT_JSON) 
