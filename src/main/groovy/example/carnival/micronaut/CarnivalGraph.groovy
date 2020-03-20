@@ -7,7 +7,9 @@ import carnival.core.graph.CoreGraph
 
 
 /**
- * Define an interface that Micronaut can use to create a bean, which by
+ * The CarnivalGraph interface wraps a CoreGraph object.
+ *
+ * Defines an interface that Micronaut can use to create a bean, which by
  * default will be a singleton.
  *
  */

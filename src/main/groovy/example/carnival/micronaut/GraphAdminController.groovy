@@ -25,6 +25,11 @@ import carnival.core.graph.Core
 
 
 
+/**
+ * GraphAdminController provides administrative functionality over the graph
+ * as a whole.
+ *
+ */
 @CompileStatic
 @Controller("/graphadmin") 
 class GraphAdminController {

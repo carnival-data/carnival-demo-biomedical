@@ -17,6 +17,10 @@ import carnival.core.graph.Core
 
 
 
+/**
+ * The locallyu defined graph model.
+ *
+ */
 class GraphModel {
 
     static enum VX implements VertexDefTrait {

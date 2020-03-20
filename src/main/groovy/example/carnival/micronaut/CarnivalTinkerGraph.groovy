@@ -18,6 +18,7 @@ import carnival.core.graph.CoreGraphTinker
 /**
  * Define a class of objects, CarnivalTinkerGraph, that implement CarnivalGraph.
  * Micronaut will automatically create a singleton object of this class.
+ * The annotation @Singleton is used, but is also the default.
  *
  */
 @Singleton
@@ -38,7 +39,10 @@ class CarnivalTinkerGraph implements CarnivalGraph {
     	coreGraph.graph
     }
 
-    /** */
+    /**
+     * Method to reset the core graph, meant to be used only by tests.
+     *
+     */
     void resetCoreGraph() {
         coreGraph.close()
         this.coreGraph = CoreGraphTinker.create()
