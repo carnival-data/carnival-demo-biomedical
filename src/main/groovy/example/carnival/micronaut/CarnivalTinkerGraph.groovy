@@ -3,6 +3,7 @@ package example.carnival.micronaut
 
 
 import javax.inject.Singleton
+import javax.annotation.PostConstruct
 
 import groovy.transform.CompileStatic
 
@@ -12,6 +13,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 
 import carnival.core.graph.CoreGraph
 import carnival.core.graph.CoreGraphTinker
+import carnival.core.graph.VertexLabelDefinition
 
 
 
@@ -30,8 +32,18 @@ class CarnivalTinkerGraph implements CarnivalGraph {
 
     /** no argument constructor that opens an in-memory core graph */
     CarnivalTinkerGraph() {
-    	this.coreGraph = CoreGraphTinker.create()
+    	coreGraph = CoreGraphTinker.create()
     }
+
+
+    @PostConstruct 
+    void initialize() {
+        coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
+            String packageName = this.getClass().getPackage().getName()
+            coreGraph.initializeGremlinGraph(graph, g, packageName)
+        }
+    }
+    
 
 
     /** convenience getter for the underlying gremlin graph */
@@ -46,5 +58,6 @@ class CarnivalTinkerGraph implements CarnivalGraph {
     void resetCoreGraph() {
         coreGraph.close()
         this.coreGraph = CoreGraphTinker.create()
+        initialize()
     }
 }

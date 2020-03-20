@@ -14,8 +14,9 @@
          the root logger level is info, a trace message will still flow to the
          root logger appender. -->
     <logger name="example.carnival.micronaut" level="TRACE"/>
+    <logger name="carnival" level="TRACE"/>
 
-    <root level="trace">
+    <root level="info">
         <appender-ref ref="STDOUT" />
     </root>
     

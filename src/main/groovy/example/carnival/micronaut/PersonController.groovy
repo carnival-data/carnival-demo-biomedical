@@ -85,10 +85,10 @@ class PersonController {
                 .hasLabel(GraphModel.VX.PERSON.label)
             .fill(personVs)
         }
-        println "personVs: ${personVs}"
+        log.trace "personVs: ${personVs}"
 
         def jso = personVs.collect { Person.create((Vertex)it) }
-        println "jso:${jso}"
+        log.trace "jso:${jso}"
 
         //HttpResponse.ok().header('Access-Control-Allow-Origin', '*').body(jso)
         HttpResponse.ok().body(jso)
@@ -106,7 +106,7 @@ class PersonController {
                 .has(Core.PX.NAME.label, name)
             .next()
         }
-        println "personV: ${personV}"
+        log.trace "personV: ${personV}"
 
         HttpResponse.ok().body(Person.create(personV))
     }

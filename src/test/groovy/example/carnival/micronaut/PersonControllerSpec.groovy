@@ -36,9 +36,6 @@ class PersonControllerSpec extends Specification {
     ///////////////////////////////////////////////////////////////////////////
 
     @Inject
-    ApplicationContext ctx
-
-    @Inject
     EmbeddedServer embeddedServer
 
     @Inject
@@ -47,9 +44,6 @@ class PersonControllerSpec extends Specification {
 
     @Inject
     CarnivalGraph carnivalGraph
-
-    @Property(name = "some.test.property")
-    String someTestProperty
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -65,20 +59,6 @@ class PersonControllerSpec extends Specification {
     // TESTS
     ///////////////////////////////////////////////////////////////////////////
 
-    /**
-    void "test external property"() {
-        expect:
-        ctx.environment.getProperty("external.test.property", String).get() == 'super'
-    }
-
-
-    void "test property config annotation"() {
-        expect:
-        someTestProperty == 'yay'
-    }
-    **/
-
-
     void "test person get by name"() {
         given:
         JsonSlurper jsonSlurper = new JsonSlurper()
@@ -89,9 +69,6 @@ class PersonControllerSpec extends Specification {
         with(embeddedServer) {
             println "host:${host} port:${port} scheme:${scheme} URI:${getURI()} URL:${getURL()}"
         }
-
-        expect:
-        ctx != null
 
         when:
         request = HttpRequest.PUT(
