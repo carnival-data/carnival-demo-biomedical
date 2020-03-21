@@ -69,13 +69,13 @@ class PersonController {
 
     @Get("/description") 
     @Produces(MediaType.TEXT_PLAIN) 
-    String index() {
+    Single<String> index() {
         def numPeople
         carnivalGraph.coreGraph.withTraversal { GraphTraversalSource g ->
             numPeople = g.V().hasLabel(GraphModel.VX.PERSON.label).count().next()
         }
 
-        "There are $numPeople people in the graph." 
+        Single.just("There are $numPeople people in the graph.".toString())
     }
 
 
