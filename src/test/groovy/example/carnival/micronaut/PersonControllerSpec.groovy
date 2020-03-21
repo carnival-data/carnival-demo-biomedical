@@ -4,6 +4,8 @@ package example.carnival.micronaut
 
 import java.util.function.BiConsumer
 
+import io.reactivex.Flowable
+
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
@@ -15,6 +17,8 @@ import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.http.MediaType
+
+import com.fasterxml.jackson.databind.ObjectMapper
 
 import spock.lang.Specification
 
@@ -139,38 +143,24 @@ class PersonControllerSpec extends Specification {
         np == 0
 
         when:
-        request = HttpRequest.PUT(
-            '/person'
-            , jsonSlurper.parseText('{"id":"58", "name":"alex"}')
-        )
-        String rsp = client.toBlocking().retrieve(request)
+        ['alex', 'bob'].eachWithIndex { name, nameIdx ->
+            client.toBlocking().retrieve(
+                HttpRequest.PUT(
+                    '/person'
+                    , new Person(id:nameIdx, name:name)
+                )
+            )
+        }
+
+        List<Person> pps = new ArrayList<Person>()
+        Flowable<Person> personStream = client.jsonStream(HttpRequest.GET('/person/list'), Person.class)
+        personStream.blockingForEach { Person p -> pps.add(p) }
+        println "pps: $pps"
 
         then:
-        rsp != null
-
-        when:
-        def rspo = jsonSlurper.parseText(rsp)
-
-        then:
-        rspo != null
-        rspo instanceof Map
-        rspo.label == GraphModel.VX.PERSON.label
-        rspo.name == 'alex'
-
-        when:
-        request = HttpRequest.GET('/person/list')
-        response = client.toBlocking().retrieve(request)
-        println "response: $response"
-
-        responseJsonObject = jsonSlurper.parseText(response)
-        println "responseJsonObject: ${responseJsonObject.class} ${responseJsonObject}"
-
-        then:
-        responseJsonObject != null
-        responseJsonObject instanceof List
-        responseJsonObject.size() == 1
-        responseJsonObject[0].label == GraphModel.VX.PERSON.label
-        responseJsonObject[0].name == 'alex'
+        pps.size() == 2
+        pps.find { it.name == 'alex' }
+        pps.find { it.name == 'bob' }
     }
 
 

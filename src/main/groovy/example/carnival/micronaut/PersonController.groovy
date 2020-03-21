@@ -4,6 +4,9 @@ package example.carnival.micronaut
 
 import javax.inject.Inject
 
+import io.reactivex.Single
+import io.reactivex.Observable
+
 import groovy.transform.CompileStatic
 import groovy.json.JsonOutput
 import groovy.transform.ToString
@@ -78,8 +81,8 @@ class PersonController {
 
     @Get("/list") 
     @Produces(MediaType.TEXT_JSON)
-    HttpResponse list() {
-        def personVs = []
+    Observable<Person> list() {
+        List<Vertex> personVs = new ArrayList<Vertex>()
         carnivalGraph.coreGraph.withTraversal { GraphTraversalSource g ->
             g.V()
                 .hasLabel(GraphModel.VX.PERSON.label)
@@ -87,18 +90,21 @@ class PersonController {
         }
         log.trace "personVs: ${personVs}"
 
-        def jso = personVs.collect { Person.create((Vertex)it) }
-        log.trace "jso:${jso}"
+        List<Person> pps = personVs.collect({ Person.create((Vertex)it) })
+        log.trace "pps: $pps"
 
-        //HttpResponse.ok().header('Access-Control-Allow-Origin', '*').body(jso)
-        HttpResponse.ok().body(jso)
+        Person[] ppsa = (Person[])pps.toArray()
+        log.trace "ppsa:${ppsa}"  
+
+        Observable.fromArray(ppsa)// as Observable<Person>
     }
+
 
 
     
     @Get("/") 
     @Produces(MediaType.TEXT_JSON)
-    HttpResponse<Person> getPersonByName(@QueryValue('name') String name) {
+    Single<Person> getPersonByName(@QueryValue('name') String name) {
         Vertex personV
         carnivalGraph.coreGraph.withTraversal { GraphTraversalSource g ->
             personV = g.V()
@@ -108,7 +114,7 @@ class PersonController {
         }
         log.trace "personV: ${personV}"
 
-        HttpResponse.ok().body(Person.create(personV))
+        Single.just(Person.create(personV))
     }
 
 
@@ -116,7 +122,7 @@ class PersonController {
     @Put("/")
     @Produces(MediaType.TEXT_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    HttpResponse<Person> putPerson(@Body Person person) {
+    Single<Person> putPerson(@Body Person person) {
         log.trace "putPerson json:$person"
 
         assert person != null
@@ -134,22 +140,14 @@ class PersonController {
             .vertex(graph, g)
         }
 
-        /*
-        HttpResponse.ok().body(JsonOutput.toJson(
-            [label: personV.label(), name: Core.PX.NAME.valueOf(personV)]
-        ))
-        */
-
-        Person p = Person.create(personV)
-        HttpResponse.ok(p)
-
+        Single.just(Person.create(personV))
     }
 
 
     @Post("/")
     @Produces(MediaType.TEXT_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    HttpResponse<Person> postPerson(@Body Person person) {
+    Single<Person> postPerson(@Body Person person) {
         log.trace "postPerson json:$person"
         assert person.name != null
         assert person.id != null
@@ -165,8 +163,7 @@ class PersonController {
             .vertex(graph, g)
         }
 
-        Person p = Person.create(personV)
-        HttpResponse.ok(p)
+        Single.just(Person.create(personV))
     }
 
 
