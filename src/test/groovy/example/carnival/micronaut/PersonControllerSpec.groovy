@@ -13,6 +13,8 @@ import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Property
 import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.annotation.MicronautTest
@@ -63,7 +65,37 @@ class PersonControllerSpec extends Specification {
     // TESTS
     ///////////////////////////////////////////////////////////////////////////
 
-    void "test person get by name"() {
+    void "get by id"() {
+        given:
+        JsonSlurper jsonSlurper = new JsonSlurper()
+        HttpRequest request
+        String response
+        def responseJsonObject
+
+        when:
+        Person p1 = client.retrieve(
+            HttpRequest.PUT(
+                '/person'
+                , new Person(id:'58', name:'alex')
+            ),
+            Person.class
+        ).blockingFirst()
+        println "p1: $p1"
+        
+        Person p2 = client.retrieve(
+            HttpRequest.GET('/person/58'),
+            Person.class
+        ).blockingFirst()
+        println "p2: $p2"
+
+        then:
+        p2 != null
+        p2.id == '58'
+        p2.name == 'alex'
+    }
+
+
+    void "get by name"() {
         given:
         JsonSlurper jsonSlurper = new JsonSlurper()
         HttpRequest request
@@ -123,49 +155,7 @@ class PersonControllerSpec extends Specification {
     }
 
 
-
-    void "test person list"() {
-        given:
-        JsonSlurper jsonSlurper = new JsonSlurper()
-        HttpRequest request
-        String response
-        def responseJsonObject
-
-        when:
-        def np
-        carnivalGraph.coreGraph.withTraversal { GraphTraversalSource g ->
-            np = g.V()
-                .hasLabel(GraphModel.VX.PERSON.label)
-            .count().next()
-        }
-
-        then:
-        np == 0
-
-        when:
-        ['alex', 'bob'].eachWithIndex { name, nameIdx ->
-            client.toBlocking().retrieve(
-                HttpRequest.PUT(
-                    '/person'
-                    , new Person(id:nameIdx, name:name)
-                )
-            )
-        }
-
-        List<Person> pps = new ArrayList<Person>()
-        Flowable<Person> personStream = client.jsonStream(HttpRequest.GET('/person/list'), Person.class)
-        personStream.blockingForEach { Person p -> pps.add(p) }
-        println "pps: $pps"
-
-        then:
-        pps.size() == 2
-        pps.find { it.name == 'alex' }
-        pps.find { it.name == 'bob' }
-    }
-
-
-
-    void "test person put"() {
+    void "update"() {
         given:
         JsonSlurper jsonSlurper = new JsonSlurper()
 
@@ -214,5 +204,27 @@ class PersonControllerSpec extends Specification {
         then:
         np2 == np1 + 1
     }
+
+
+    void "cannot create same object twice"() {
+        given:
+        Exception e
+        Person p = new Person(id:58, name:'alex')
+        HttpRequest req =  HttpRequest.POST( '/person', p)    
+
+        when:
+        Person p1 = client.retrieve(req, Person.class).blockingFirst()
+
+        then:
+        p1 != null
+
+        when:
+        HttpResponse res = client.exchange(req).blockingFirst()
+
+        then:
+        e = thrown()
+        e.status == HttpStatus.CONFLICT
+    }
+
 
 }

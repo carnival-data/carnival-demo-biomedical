@@ -18,24 +18,29 @@ import carnival.core.graph.VertexLabelDefinition
 
 
 /**
- * Define a class of objects, CarnivalTinkerGraph, that implement CarnivalGraph.
+ * Define a class of objects, CarnivalGraphTinker, that implement CarnivalGraph.
  * Micronaut will automatically create a singleton object of this class.
  * The annotation @Singleton is used, but is also the default.
  *
  */
 @Singleton
-class CarnivalTinkerGraph implements CarnivalGraph {
+class CarnivalGraphTinker implements CarnivalGraph {
 
 	/** a Carnival core graph */
     CoreGraph coreGraph
 
 
     /** no argument constructor that opens an in-memory core graph */
-    CarnivalTinkerGraph() {
+    CarnivalGraphTinker() {
     	coreGraph = CoreGraphTinker.create()
     }
 
 
+    /**
+     * Life-cycle hook to initialize the core graph with the models defined in
+     * this project.
+     *
+     */
     @PostConstruct 
     void initialize() {
         coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
