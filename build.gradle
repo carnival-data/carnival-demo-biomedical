@@ -42,7 +42,7 @@ dependencies {
     testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.5.0"
 
     // Carnival dependencies
-    implementation group:'edu.upenn.pmbb', name:'carnival-clinical', version:'0.2.7'
+    implementation group:'edu.upenn.pmbb', name:'carnival-clinical', version:'0.2.7-david'
 }
 
 test.classpath += configurations.developmentOnly
