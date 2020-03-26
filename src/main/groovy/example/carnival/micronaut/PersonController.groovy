@@ -11,13 +11,10 @@ import io.reactivex.ObservableSource
 import io.reactivex.disposables.Disposable
 
 import groovy.transform.CompileStatic
-import groovy.json.JsonOutput
 import groovy.transform.ToString
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
-import com.fasterxml.jackson.annotation.JsonIgnore
 
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -77,7 +74,7 @@ class PersonController {
 
 
     @Get("/{personId}") 
-    @Produces(MediaType.TEXT_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     Single<Person> getPerson(Long personId) {
         log.trace "getPerson personId:$personId"
 
@@ -95,7 +92,7 @@ class PersonController {
 
 
     @Get("/") 
-    @Produces(MediaType.TEXT_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     Single<Person> getPersonByName(@QueryValue('name') String name) {
         Vertex personV
         carnivalGraph.coreGraph.withTraversal { GraphTraversalSource g ->
@@ -112,7 +109,7 @@ class PersonController {
 
 
     @Put("/")
-    @Produces(MediaType.TEXT_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     Single<Person> putPerson(@Body Person person) {
         log.trace "putPerson json:$person"
@@ -137,7 +134,7 @@ class PersonController {
 
 
     @Post("/")
-    @Produces(MediaType.TEXT_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     Single<Person> postPerson(@Body Person person) {
         log.trace "postPerson json:$person"
@@ -183,6 +180,8 @@ class PersonController {
 // PLAYGROUND
 ///////////////////////////////////////////////////////////////////////////////
 /*
+//import com.fasterxml.jackson.annotation.JsonIgnore
+
 
 //ObservableSource
 //subscribe(Observer<? super T> observer)

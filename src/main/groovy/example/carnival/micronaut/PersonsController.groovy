@@ -11,13 +11,10 @@ import io.reactivex.ObservableSource
 import io.reactivex.disposables.Disposable
 
 import groovy.transform.CompileStatic
-import groovy.json.JsonOutput
 import groovy.transform.ToString
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
-import com.fasterxml.jackson.annotation.JsonIgnore
 
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -91,7 +88,7 @@ class PersonsController {
         Person[] ppsa = (Person[])pps.toArray()
         log.trace "ppsa:${ppsa}"  
 
-        Observable.fromArray(ppsa)// as Observable<Person>
+        Observable.fromArray(ppsa)
     }
 
     
