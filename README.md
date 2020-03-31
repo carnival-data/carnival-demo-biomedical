@@ -2,6 +2,20 @@
 
 Example [Micronaut](https://micronaut.io) application that uses [Carnival](https://github.com/pmbb-ibi/carnival).
 
+## Quick Start
+
+From the commmand line:
+
+```
+git clone https://github.com/augustearth/carnival-micronaut.git
+cd carnival-micronaut
+./gradlew compileGroovy
+./gradlew run --console=plain
+```
+
+Go to `http://localhost:7000/` in a web browser.  You should see a blank web page with only the text `carnival-micronaut`.
+
+
 ## Build
 carnival-micronaut is built using Gradle.  There is a Gradle wrapper provided.
 
@@ -15,8 +29,8 @@ carnival-micronaut is testing using the Gradle testing mechanisms.
 
 ```
 ./gradlew test
-./gradlew test --tests="example.carnival.micronaut.PersonControllerSpec"
-./gradlew test --tests="example.carnival.micronaut.PersonControllerSpec.test person get by name"
+./gradlew test --tests="example.carnival.micronaut.GraphControllerSpec"
+./gradlew test --tests="example.carnival.micronaut.GraphControllerSpec.create vertex"
 ```
 
 ## Run

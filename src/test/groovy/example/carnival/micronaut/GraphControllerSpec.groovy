@@ -41,7 +41,7 @@ class GraphControllerSpec extends Specification {
 
     void "create vertex"() {
         given:
-        String json = JsonOutput.toJson([label:'Person', properties:[id:'58', name:'alex']])
+        String json = JsonOutput.toJson([vertexLabel:'Person', properties:[id:'58', name:'alex']])
         HttpRequest req =  HttpRequest.POST( '/graph/vertex', json)
 
         when:
