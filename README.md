@@ -36,7 +36,7 @@ carnival-micronaut is testing using the Gradle testing mechanisms.
 ## Run
 carnival-micronaut can be run via Gradle.
 
-To run on the default port of `8080`:
+To run on the default port of `7000`:
 
 ```
 ./gradlew run --console=plain
@@ -53,8 +53,14 @@ To build the Docker image:
 
 ```
 
+To run the Docker container on default port `7000` on the host machine:
+
+```
+docker run -it -p 7000:7000 carnival-micronaut:0.1
+```
+
 To run the Docker container on port `3000` on the host machine:
 
 ```
-docker run -it -p 3000:8080 carnival-micronaut:0.1
+docker run -it -p 3000:7000 carnival-micronaut:0.1
 ```
