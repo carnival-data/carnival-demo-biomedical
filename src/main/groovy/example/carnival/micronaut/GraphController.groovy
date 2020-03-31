@@ -62,6 +62,26 @@ class GraphController {
     }
 
 
+    /** */
+    static Map toMap(Vertex vert) {
+        Map m = [
+            vertexId:vert.id(),
+            vertexLabel:vert.label()
+        ]
+
+        if (vert.keys()) {
+            m.put('propertyKeys', vert.keys())
+
+            m.put('properties', new HashMap())
+            vert.keys().each { String k ->
+                m.properties.put(k, vert.value(k))
+            }
+        }
+
+        return m
+    }
+
+
     ///////////////////////////////////////////////////////////////////////////
     // FIELDS
     ///////////////////////////////////////////////////////////////////////////
@@ -105,16 +125,35 @@ class GraphController {
     }
 
 
-
     @Get("/") 
     @Produces(MediaType.TEXT_PLAIN) 
-    String index() {
+    HttpResponse<String> index() {
         def numVertices
         carnivalGraph.coreGraph.withTraversal { GraphTraversalSource g ->
             numVertices = g.V().count().next()
         }
         
-        "There are $numVertices vertices in the graph." 
+        HttpResponse.ok("There are $numVertices vertices in the graph.".toString())  
+    }
+
+
+    @Get("/vertices") 
+    @Produces(MediaType.APPLICATION_JSON)
+    HttpResponse<Observable<Map>> getAllVertices() {
+        List<Vertex> verts = new ArrayList<Vertex>()
+        carnivalGraph.coreGraph.withTraversal { GraphTraversalSource g ->
+            g.V().fill(verts)
+        }
+        log.trace "verts: ${verts}"
+
+        List<Map> vertsData = verts.collect({ toMap((Vertex)it) })
+        log.trace "vertsData: $vertsData"
+
+        Map[] vertsDataArray = (Map[])vertsData.toArray()
+        log.trace "vertsDataArray:${vertsDataArray}"  
+
+        Observable data = Observable.fromArray(vertsDataArray)
+        HttpResponse.ok(data).header("x-total-count", String.valueOf(vertsData.size()))
     }
 
 
@@ -134,12 +173,12 @@ class GraphController {
         def jsonSlurper = new JsonSlurper()
         Map params = (Map)jsonSlurper.parseText(text)
         log.trace "params:$params"
-        assert params.label != null
+        assert params.vertexLabel != null
         
         // create the vertex
         Vertex vert
         carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
-            vert = graph.addVertex(T.label, params.get('label'))
+            vert = graph.addVertex(T.label, params.get('vertexLabel'))
         }
         assert vert != null
 
@@ -149,11 +188,7 @@ class GraphController {
         }
 
         // return a map
-        Map m = [
-            vertexId:vert.id(),
-            vertexLabel:vert.label(),
-            propertyKeys:vert.keys()
-        ]
+        Map m = toMap(vert)
         Single.just((Map)m)
     }
 

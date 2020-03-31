@@ -2,8 +2,9 @@ micronaut:
   application:
     name: carnival-micronaut
   server:
-      cors:
-          enabled: true
+    port: 7000
+    cors:
+      enabled: true
 some:
   test:
     property: yay

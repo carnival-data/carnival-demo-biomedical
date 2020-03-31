@@ -15,6 +15,8 @@ import io.reactivex.Flowable
 import org.apache.tinkerpop.gremlin.structure.T
 import org.apache.tinkerpop.gremlin.structure.Graph
 import org.apache.tinkerpop.gremlin.structure.Vertex
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
+import org.apache.tinkerpop.gremlin.structure.Graph
 
 import spock.lang.Specification
 
@@ -94,6 +96,27 @@ class GraphControllerSpec extends Specification {
         then:
         errors.size == 1
         errors[0].find { it.message.contains('SomeUnmodelledThing') }
+    }
+
+
+    void "all vertices"() {
+        given:
+        def numVertices
+        carnivalGraph.coreGraph.withTraversal { GraphTraversalSource g ->
+            numVertices = g.V().count().next()
+        }
+
+        when:
+        HttpRequest request = HttpRequest.GET('/graph/vertices') 
+
+        List<Map> vdata = client.jsonStream(
+            request, 
+            Map.class
+        ).blockingIterable().toList()
+        println "vdata: $vdata"
+
+        then:
+        vdata.size == numVertices
     }
 
 

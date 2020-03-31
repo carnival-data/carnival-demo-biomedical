@@ -25,6 +25,7 @@ class GraphModel {
 
     static enum VX implements VertexDefTrait {
         PERSON (
+            global:true,
             vertexProperties:[
                 PX.ID.withConstraints(unique:true, index:true),
                 Core.PX.NAME.withConstraints(required:true)

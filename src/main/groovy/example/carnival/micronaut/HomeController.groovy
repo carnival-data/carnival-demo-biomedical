@@ -25,6 +25,7 @@ import io.micronaut.http.annotation.Consumes
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.MediaType
 import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 import io.micronaut.http.annotation.RequestAttribute
 import io.micronaut.http.annotation.QueryValue
 
@@ -38,17 +39,17 @@ import carnival.core.graph.Core
 
 
 
-/** Controller for Person object */
+/** Home (root) controller */
 @CompileStatic
-@Controller("/persons") 
-class PersonsController {
+@Controller("/") 
+class HomeController {
 
     ///////////////////////////////////////////////////////////////////////////
     // STATIC
     ///////////////////////////////////////////////////////////////////////////
 
     /** */
-    static Logger log = LoggerFactory.getLogger(PersonController.class)
+    static Logger log = LoggerFactory.getLogger(HomeController.class)
 
 
 
@@ -60,51 +61,17 @@ class PersonsController {
     @Inject
     CarnivalGraph carnivalGraph
     
-    // this is an alternative to the @Inject mechanism
-    //protected final CarnivalGraph carnivalGraph
-    //PersonController(CarnivalGraph carnivalGraph) {
-    //    this.carnivalGraph = carnivalGraph
-    //}
-
 
     ///////////////////////////////////////////////////////////////////////////
     // METHODS
     ///////////////////////////////////////////////////////////////////////////
 
+
     @Get("/") 
     @Produces(MediaType.APPLICATION_JSON)
-    Observable<Person> getAllPersons() {
-        List<Vertex> personVs = new ArrayList<Vertex>()
-        carnivalGraph.coreGraph.withTraversal { GraphTraversalSource g ->
-            g.V()
-                .hasLabel(GraphModel.VX.PERSON.label)
-            .fill(personVs)
-        }
-        log.trace "personVs: ${personVs}"
-
-        List<Person> pps = personVs.collect({ Person.create((Vertex)it) })
-        log.trace "pps: $pps"
-
-        Person[] ppsa = (Person[])pps.toArray()
-        log.trace "ppsa:${ppsa}"  
-
-        Observable.fromArray(ppsa)
+    HttpResponse<String> getHome() {
+        HttpResponse.ok('carnival-micronaut')
     }
-
     
-    @Get("/overview") 
-    @Produces(MediaType.TEXT_PLAIN) 
-    Single<String> index() {
-        def numPeople
-        carnivalGraph.coreGraph.withTraversal { GraphTraversalSource g ->
-            numPeople = g.V().hasLabel(GraphModel.VX.PERSON.label).count().next()
-        }
-
-        Single.just("There are $numPeople people in the graph.".toString())
-    }
-
-
-
-
 
 }
