@@ -10,9 +10,9 @@ import org.apache.tinkerpop.gremlin.structure.Graph
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
 
-import carnival.graph.VertexDefTrait
-import carnival.graph.PropertyDefTrait
-import carnival.graph.EdgeDefTrait
+import carnival.graph.VertexDefinition
+import carnival.graph.PropertyDefinition
+import carnival.graph.EdgeDefinition
 import carnival.core.graph.Core
 
 
@@ -23,7 +23,8 @@ import carnival.core.graph.Core
  */
 class GraphModel {
 
-    static enum VX implements VertexDefTrait {
+    @VertexDefinition
+    static enum VX {
         PERSON (
             global:true,
             vertexProperties:[
@@ -33,19 +34,16 @@ class GraphModel {
         ), 
         HAIR (vertexProperties:[PX.COLOR]), 
         EYE (vertexProperties:[PX.COLOR])
-
-        private VX() {}
-        private VX(Map m) {m.each { k,v -> this."$k" = v }}
     }
 
-
-    static enum PX implements PropertyDefTrait {
+    @PropertyDefinition
+    static enum PX {
         COLOR,
         ID
     }
 
-
-    static enum EX implements EdgeDefTrait {
+    @EdgeDefinition
+    static enum EX {
         IS_FRIENDS_WITH (
             domain:[VX.PERSON],
             range:[VX.PERSON]
@@ -53,7 +51,7 @@ class GraphModel {
         CONSIDERS_A_FRIEND (
             domain:[VX.PERSON],
             range:[VX.PERSON]
-        ),
+        )
     }
 
 }

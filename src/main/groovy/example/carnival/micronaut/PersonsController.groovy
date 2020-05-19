@@ -103,8 +103,4 @@ class PersonsController {
         Single.just("There are $numPeople people in the graph.".toString())
     }
 
-
-
-
-
 }

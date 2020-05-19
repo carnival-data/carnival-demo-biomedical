@@ -68,9 +68,26 @@ class HomeController {
 
 
     @Get("/") 
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
     HttpResponse<String> getHome() {
-        HttpResponse.ok('carnival-micronaut')
+        String html = """
+<!DOCTYPE html>
+<html>
+<head>
+<title>Carnival Micronaut</title>
+</head>
+<body>
+
+<h1>carnival-micronaut</h1>
+<p>
+    carnival-micronaut is a demonstration project of a micronaut server with an in memory 
+    Carnival graph.  It is the back-end service for carnival-vue.
+</p>
+
+</body>
+</html>        
+"""        
+        HttpResponse.ok(html)
     }
     
 
