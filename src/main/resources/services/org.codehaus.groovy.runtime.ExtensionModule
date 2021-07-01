@@ -1,0 +1,4 @@
+moduleName=Carnival Micronaut Extension Module
+moduleVersion=1.0-test
+extensionClasses=carnival.util.FieldNameExtensions,carnival.graph.TinkerpopExtensions
+staticExtensionClasses=
