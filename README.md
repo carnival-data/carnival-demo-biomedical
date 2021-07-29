@@ -1,3 +1,9 @@
+# Carnival Micronaut
+
+Demonstration Micronaut server with a Carnival graph resource.
+
+---
+
 # Set up instructions
 
 Prerequisite: JDK 11
