@@ -46,12 +46,13 @@ import org.apache.tinkerpop.gremlin.structure.T
 import carnival.core.graph.Core
 import example.carnival.micronaut.config.AppConfig
 import example.carnival.micronaut.graph.CarnivalGraph
+import example.carnival.micronaut.GraphModel
 
 
 
 @Controller("/")
 @Slf4j 
-class StaticWs {
+class AppWs {
 
     ///////////////////////////////////////////////////////////////////////////
     // FIELDS
@@ -92,5 +93,90 @@ numVertices: ${numVertices}
 numEdges: ${numEdges}
 """
     }
+
+
+
+    @ToString(includeNames=true)
+    static class CreateDoggieBody {
+        Boolean isAdorable = true
+        String name
+    }
+
+    @ToString(includeNames=true)
+    static class CreateDoggieResponse {
+        String message = ""
+    }
+
+    @Post(value = "/doggie/create", consumes = MediaType.APPLICATION_JSON)
+    CreateDoggieResponse createDoggie(@Size(max = 1024) @Body CreateDoggieBody args) {
+        log.trace "createDoggie args:$args"
+
+        assert args.name
+        
+        def resp = new CreateDoggieResponse()
+        
+        carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
+
+            def dV = GraphModel.VX.DOGGIE.instance()
+                .withProperty(GraphModel.PX.IS_ADORABLE, args.isAdorable)
+            .create(graph)
+
+            def nV = GraphModel.VX.NAME.instance()
+                .withProperty(GraphModel.PX.TEXT, args.name)
+            .ensure(graph, g)
+
+            def dnE = GraphModel.EX.HAS_BEEN_CALLED.instance()
+                .from(dV)
+                .to(nV)
+            .create()
+
+            resp.message = "created doggie ${dV}, name ${nV}, and name relationship ${dnE}"
+        }
+
+        resp
+    }
+
+
+
+    @Get("/doggies")
+    @Produces(MediaType.TEXT_PLAIN)
+    String doggies(
+        @Nullable @QueryValue Boolean isAdorable,
+        @Nullable @QueryValue String name
+    ) {
+
+        log.trace "doggies isAdorable:${isAdorable} name:${name}"
+
+        String response = ""
+
+        carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
+            Integer numDoggies = g.V()
+                .isa(GraphModel.VX.DOGGIE)
+            .count().next()
+            response += "There are ${numDoggies} total doggies."
+
+            g.V()
+                .isa(GraphModel.VX.DOGGIE).as('d')
+                .out(GraphModel.EX.HAS_BEEN_CALLED)
+                .isa(GraphModel.VX.NAME).as('n')
+                .select('d', 'n')
+            .each { m ->
+                response += "\n${m.d} ${GraphModel.PX.TEXT.valueOf(m.n)}"
+            }
+
+            if (isAdorable != null) {
+                Integer numAdorableDoggies = g.V()
+                    .isa(GraphModel.VX.DOGGIE)
+                    .has(GraphModel.PX.IS_ADORABLE, isAdorable)
+                .count().next()
+                response += "\nThere are ${numAdorableDoggies} doggies that are"
+                if (!isAdorable) response += " not"
+                response += " adorable."      
+            }
+        }
+        
+        response
+    }
+
 
 }
