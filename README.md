@@ -64,3 +64,9 @@ cd carnival-micronaut
 
 Hopefully you now have a server running at http://localhost:5858
 
+
+## 6. Create and run Docker container
+```
+./docker-build.zsh
+docker run --publish 5858:5858 carnival-micronaut:0.1
+```
