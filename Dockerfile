@@ -33,6 +33,9 @@ COPY micronaut-cli.yml ${CARNIVAL_MICRONAUT}/.
 
 COPY ./src ${CARNIVAL_MICRONAUT}/src
 
+# TODO? Bring if host's environment variables if
+#       GITHUB_USER and GITHUB_TOKEN are set.
+
 ARG GITHUB_USER
 ARG GITHUB_TOKEN
 
