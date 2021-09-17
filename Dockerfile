@@ -33,9 +33,6 @@ COPY micronaut-cli.yml ${CARNIVAL_MICRONAUT}/.
 
 COPY ./src ${CARNIVAL_MICRONAUT}/src
 
-# TODO? Bring if host's environment variables if
-#       GITHUB_USER and GITHUB_TOKEN are set.
-
 ARG GITHUB_USER
 ARG GITHUB_TOKEN
 
@@ -45,27 +42,18 @@ WORKDIR ${CARNIVAL_MICRONAUT}
 
 RUN gradle shadowJar
 
-#CMD java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} \
-#-Dcarnival.home=${CARNIVAL_MICRONAUT_HOME} \
-#-Dlogback.configurationFile=${CARNIVAL_MICRONAUT_HOME}/config/logback.xml \
-#-Dmicronaut.config.files=${CARNIVAL_MICRONAUT_HOME}/config/application.yml \
-#-jar ${CARNIVAL_MICRONAUT}/build/libs/carnival-micronaut-0.1-all.jar
-
 FROM adoptopenjdk/openjdk11-openj9:jdk-11.0.1.13-alpine-slim AS app
 
 ENV CARNIVAL_MICRONAUT      /opt/carnival-micronaut
 ENV CARNIVAL_MICRONAUT_HOME /opt/carnival-micronaut-home
 
-COPY --from=builder ${CARNIVAL_MICRONAUT}/build/libs/carnival-micronaut-0.1-all.jar ${CARNIVAL_MICRONAUT}/build/libs/carnival-micronaut.jar
+ARG JAVA_OPTS
 
-COPY ./carnival-micronaut-home ${CARNIVAL_MICRONAUT_HOME}/.
+COPY --from=builder ${CARNIVAL_MICRONAUT_HOME} ${CARNIVAL_MICRONAUT_HOME}/.
 
-COPY gradle.properties ${CARNIVAL_MICRONAUT}/.
-COPY build.gradle      ${CARNIVAL_MICRONAUT}/.
-COPY settings.gradle   ${CARNIVAL_MICRONAUT}/.
-COPY micronaut-cli.yml ${CARNIVAL_MICRONAUT}/.
+COPY --from=builder ${CARNIVAL_MICRONAUT}/build/libs/carnival-micronaut-0.1-all.jar \
+                    ${CARNIVAL_MICRONAUT}/build/libs/carnival-micronaut.jar
 
-COPY ./src ${CARNIVAL_MICRONAUT}/src
 
 CMD java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} \
       -Dcarnival.home=${CARNIVAL_MICRONAUT_HOME} \
