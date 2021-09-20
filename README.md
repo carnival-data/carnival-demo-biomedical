@@ -13,10 +13,9 @@ Create GitHub Personal Access Token with read:packages rights
 git clone https://github.com/pmbb-ibi/carnival-micronaut.git
 cd carnival-micronaut
 edit .env-template, save as .env
-git clone https://github.com/pmbb-ibi/carnival-micronaut-home.git
 sudo docker-compose build
 sudo docker-compose up
-Open a browser to localhost:5858
+Open a browser to http://localhost:5858
 ```
 
 Prerequisites: Docker and git
@@ -51,15 +50,6 @@ edit .env-template, save as .env
 
 Edit .env-template, inserting your GitHub username and access token. Save as .env
 
-## 4. Create Home Directory
-
-The Carnival Micronaut Home directory will us the working directory for Carnival Micronaut.  It will include all configuration and data.
-
-From within the carnival-micronaut directory, clone the default home directory:
-
-```
-git clone https://github.com/pmbb-ibi/carnival-micronaut-home.git
-```
 
 ## 4. Build and run the Hello World app
 
@@ -78,30 +68,25 @@ Prerequisite: JDK 11
 
 Set up your GitHub environment to work with [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry).
 
-
-## 2. Create Home Directory
-
-The Carnival Micronaut Home directory will us the working directory for Carnival Micronaut.  It will include all configuration and data.
-
-Clone the default home directory:
-
-```
-git clone https://github.com/pmbb-ibi/carnival-micronaut-home.git
-```
-
-Set an environment variable to point to the directory:
-
-```
-export CARNIVAL_MICRONAUT_HOME=/full/path/to/carnival-micronaut-home
-```
-
-## 3. Clone Carnival Micronaut
+## 2. Clone Carnival Micronaut
 
 ```
 git clone https://github.com/pmbb-ibi/carnival-micronaut.git
 ```
 
-## 4. Build and run the Hello World app
+<!--
+## 3. Create Home Directory
+
+The Carnival Micronaut Home directory will us the working directory for Carnival Micronaut.  It will include all configuration and data.
+
+Set an environment variable to point to the home directory:
+
+```
+export CARNIVAL_MICRONAUT_HOME=/full/path/to/carnival-micronaut/carnival-micronaut-home
+```
+-->
+
+## 3. Build and run the Hello World app
 
 ```
 cd carnival-micronaut
@@ -111,7 +96,7 @@ cd carnival-micronaut
 There shoule now be a server running at http://localhost:5858.
 
 
-## 5. Create and run Docker container
+## 4. Create and run Docker container
 
 ```
 ./docker-build.zsh
