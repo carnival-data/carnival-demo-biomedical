@@ -1,28 +1,62 @@
-FROM adoptopenjdk/openjdk11-openj9:jdk-11.0.1.13-alpine-slim
+ARG  GRADLE_VERSION=jdk11
+FROM gradle:${GRADLE_VERSION} AS builder
 
-WORKDIR carnival-micronaut
-COPY build/libs/carnival-micronaut-*-all.jar carnival-micronaut.jar
+# Install linux utils
+RUN apt-get update && \
+#    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+      dos2unix \
+      rename   \
+      sed      \
+      git      \
+      &&       \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# set up home/data dir
-WORKDIR home/config
-COPY build/home/config/* .
+### Development Image
 
-WORKDIR ../data/source
-COPY build/home/data/source/* .
+ENV CARNIVAL_MICRONAUT      /opt/carnival-micronaut
+ENV CARNIVAL_MICRONAUT_HOME /opt/carnival-micronaut-home
+ENV APOC_HOME               /opt/neo4j/plugins
+ENV APOC_VERSION            3.4.0.7
+ENV CARNIVAL_LIB_SRC        /opt/carnival
+ENV GRADLE_HOME             /opt/gradle
 
-WORKDIR ../graph
-#COPY build/home/data/graph/* .
+RUN mkdir ${CARNIVAL_MICRONAUT}
 
-WORKDIR ../cache
-#COPY build/home/data/cache/* .
+COPY ./carnival-micronaut-home ${CARNIVAL_MICRONAUT_HOME}/.
 
-WORKDIR ../../log
-WORKDIR ../../
+COPY gradle.properties ${CARNIVAL_MICRONAUT}/.
+COPY build.gradle      ${CARNIVAL_MICRONAUT}/.
+COPY settings.gradle   ${CARNIVAL_MICRONAUT}/.
+COPY micronaut-cli.yml ${CARNIVAL_MICRONAUT}/.
 
-ENV NCCC_BIOBANK_SERVER_HOME ./home
-ENV JAVA_OPTS '-Xms1G -Xmx2G -Dfile.encoding=UTF-8'
+COPY ./src ${CARNIVAL_MICRONAUT}/src
 
-#CMD ["/bin/ls", "-R"]
-#CMD java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} -jar carnival-micronaut.jar
-EXPOSE 5858
-CMD java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} -Dcarnival.home=home -Dlogback.configurationFile=home/config/logback.xml -Dmicronaut.config.files=home/config/application.yml  -jar carnival-micronaut.jar
+ARG GITHUB_USER
+ARG GITHUB_TOKEN
+
+ARG JAVA_OPTS
+
+WORKDIR ${CARNIVAL_MICRONAUT}
+
+RUN gradle shadowJar
+
+FROM adoptopenjdk/openjdk11-openj9:jdk-11.0.1.13-alpine-slim AS app
+
+ENV CARNIVAL_MICRONAUT      /opt/carnival-micronaut
+ENV CARNIVAL_MICRONAUT_HOME /opt/carnival-micronaut-home
+
+ARG JAVA_OPTS
+
+COPY --from=builder ${CARNIVAL_MICRONAUT_HOME} ${CARNIVAL_MICRONAUT_HOME}/.
+
+COPY --from=builder ${CARNIVAL_MICRONAUT}/build/libs/carnival-micronaut-0.1-all.jar \
+                    ${CARNIVAL_MICRONAUT}/build/libs/carnival-micronaut.jar
+
+
+CMD java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} \
+      -Dcarnival.home=${CARNIVAL_MICRONAUT_HOME} \
+      -Dlogback.configurationFile=${CARNIVAL_MICRONAUT_HOME}/config/logback.xml \
+      -Dmicronaut.config.files=${CARNIVAL_MICRONAUT_HOME}/config/application.yml \
+      -jar ${CARNIVAL_MICRONAUT}/build/libs/carnival-micronaut.jar

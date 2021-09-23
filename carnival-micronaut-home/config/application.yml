@@ -1,0 +1,30 @@
+carnival-micronaut:
+  name: CarnivalMicronaut
+  sub-config:
+    someNumber: 58
+    someString: "Hello"
+    sub-sub-config:
+      another-string: "Yall"
+  graph:
+    runtime: "neo4j"
+    test: "tinker"
+carnival:
+  cache-mode: OPTIONAL
+  directories:
+    data:
+    # root: /Users/yourname/dev/carnival.data
+    # graph: /Users/yourname/dev/carnival.data.graph
+    # cache: /Users/yourname/dev/carnival.data.cache
+    execution:
+      # target: /Users/yourname/dev/target
+  gremlin:
+    neo4j:
+      conf:
+        dbms:
+          directories:
+            plugins: /path/to/your/neo4j/plugin/dir
+          security:
+            auth_enabled: "false"
+            procedures:
+              unrestricted: apoc.*
+              whitelist: apoc.*

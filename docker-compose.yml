@@ -1,0 +1,25 @@
+version: "3.7"
+services:
+  web:
+    build:
+      context: .
+      args:
+        GITHUB_USER: ${GITHUB_USER}
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+        JAVA_OPTS: ${JAVA_OPTS}
+      target: app
+    ports:
+      - "5858:5858"
+
+    tty: true
+    stdin_open: true
+
+#    command: "env"
+#    command: java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} -Dcarnival.home=/opt/carnival-micronaut-home -Dlogback.configurationFile=/opt/carnival-micronaut-home/config/logback.xml -Dmicronaut.config.files=/opt/carnival-micronaut-home/config/application.yml -jar /opt/carnival-micronaut/build/libs/carnival-micronaut-0.1-all.jar
+#    command: 
+#java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} 
+#-Dcarnival.home=/opt/carnival-micronaut-home 
+#-Dlogback.configurationFile=/opt/carnival-micronaut-home/config/logback.xml 
+#-Dmicronaut.config.files=/opt/carnival-micronaut-home/config/application.yml 
+#-jar /opt/carnival-micronaut/build/libs/carnival-micronaut-0.1-all.jar
+
