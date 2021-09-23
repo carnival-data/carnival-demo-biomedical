@@ -58,7 +58,7 @@ sudo docker-compose build
 sudo docker-compose up
 ```
 
-There shoule now be a server running at http://localhost:5858.
+There should now be a server running at http://localhost:5858.
 
 # Set up instructions without Docker
 
@@ -93,7 +93,7 @@ cd carnival-micronaut
 ./gradlew run
 ```
 
-There shoule now be a server running at http://localhost:5858.
+There should now be a server running at http://localhost:5858.
 
 
 ## 4. Create and run Docker container
