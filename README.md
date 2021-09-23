@@ -29,7 +29,7 @@ Note that as non-profit institutions, we can use the free "Personal" license.
 
 *No. You and your assistants may use Docker Desktop for free with a Docker Personal subscription.*
 
-## 1. Set up GitHub.
+## 1. Set up GitHub
 
 Set up your GitHub environment to work with [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry).
 
