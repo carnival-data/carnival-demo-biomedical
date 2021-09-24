@@ -10,16 +10,21 @@ services:
       target: app
     ports:
       - "5858:5858"
-
     tty: true
     stdin_open: true
+    depends_on: 
+      - db
+  db:
+    image: "postgres" 
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=EHR
+    ports:
+      - "5432:5432"
+    volumes:
+        - ./db:/docker-entrypoint-initdb.d
+#       - pg_data:/var/lib/postgresql/data/
 
-#    command: "env"
-#    command: java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} -Dcarnival.home=/opt/carnival-micronaut-home -Dlogback.configurationFile=/opt/carnival-micronaut-home/config/logback.xml -Dmicronaut.config.files=/opt/carnival-micronaut-home/config/application.yml -jar /opt/carnival-micronaut/build/libs/carnival-micronaut-0.1-all.jar
-#    command: 
-#java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} 
-#-Dcarnival.home=/opt/carnival-micronaut-home 
-#-Dlogback.configurationFile=/opt/carnival-micronaut-home/config/logback.xml 
-#-Dmicronaut.config.files=/opt/carnival-micronaut-home/config/application.yml 
-#-jar /opt/carnival-micronaut/build/libs/carnival-micronaut-0.1-all.jar
-
+# volumes:
+#   pg_data:
