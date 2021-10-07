@@ -8,6 +8,15 @@ carnival-micronaut:
   graph:
     runtime: "neo4j"
     test: "tinker"
+  database:
+    server: database-server-name
+    port: database-port-as-integer
+    user: database-auth-username
+    password: database-auth-password
+  graphql-service:
+    api:    
+      token: an-api-token
+
 carnival:
   cache-mode: OPTIONAL
   directories:

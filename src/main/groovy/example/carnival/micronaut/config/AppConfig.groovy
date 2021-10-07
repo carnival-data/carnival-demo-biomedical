@@ -31,4 +31,27 @@ class AppConfig {
     }
     SubConfig subConfig = new SubConfig()
 
+
+    @ConfigurationProperties("example-database")
+    static class ExampleDatabase {
+        String server
+        Integer port
+        String user
+        String password
+    }
+    ExampleDatabase exampleDatabase = new ExampleDatabase()
+
+
+    @ConfigurationProperties("graphql-service")
+    static class GraphqlService {
+
+        @ConfigurationProperties("api")
+        static class Api {
+            String token
+        }
+        Api api = new Api()
+
+    }
+    GraphqlService graphqlService = new GraphqlService()
+
 }
