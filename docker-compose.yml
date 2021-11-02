@@ -1,4 +1,5 @@
 version: "3.7"
+
 services:
   web:
     build:
@@ -14,6 +15,7 @@ services:
     stdin_open: true
     depends_on: 
       - db
+      
   db:
     #image: "postgres" 
     build:
