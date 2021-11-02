@@ -1,0 +1,22 @@
+version: "3.7"
+
+
+# mounted volume is used so that when code changes, 
+# tests can be rerun without needing to rebuild
+
+services:
+  tester:
+    build:
+      context: .
+      target: base
+      args:
+        GITHUB_USER: ${GITHUB_USER}
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+        JAVA_OPTS: ${JAVA_OPTS}
+    command: "gradle test --no-daemon"
+    tty: true
+    stdin_open: true
+
+    volumes:
+      - "./src:/opt/carnival-micronaut/src:ro"
+

@@ -1,101 +1,81 @@
 # The Dockerfile is broken into three steps.
 
-# 1. Download the dependencies, including Carnival
+# 1. Download the dependencies including Carnival, and prepares build environment
 # - Full build environment
-# - Uses: GitHub credentials, project config files
+# - Uses: GitHub credentials, project config files. Does not contain source code.
+# - Note: This is the image used for running tests
 
-# 2. Build the app
-# - Full build environment
-# - Uses: Cached dependencies from (1), app source and config
+# 2. Build the Jar
+# - Continues from image (1)
+# - Uses: Cached dependencies from (1), copies in app source
 
 # 3. Run the app
 # - Stripped down environment with a JVM
 # - Uses: JAR from (2)
 
-ARG GRADLE_VERSION=jdk11
 
-# Stage 1: Downloads and caches dependencies, including Carnival
-FROM gradle:${GRADLE_VERSION} as cache
+ARG GRADLE_VERSION=jdk11
+ARG JAVA_OPTS
+
+#####
+# Stage 1: Downloads and caches dependencies including Carnival, and prepares build environment
+#####
+FROM gradle:${GRADLE_VERSION} as base
 
 ARG GITHUB_USER
 ARG GITHUB_TOKEN
 
-ARG JAVA_OPTS
-
 ENV GRADLE_OPTS ${JAVA_OPTS}
-
 ENV GRADLE_USER_HOME /home/gradle
 
-COPY build.gradle      ${GRADLE_USER_HOME}
-COPY gradle.properties ${GRADLE_USER_HOME}
-COPY settings.gradle   ${GRADLE_USER_HOME}
 
-WORKDIR ${GRADLE_USER_HOME}
+ENV APP_SRC /opt/carnival-micronaut
+RUN mkdir ${APP_SRC}
 
-RUN echo && \
-    echo Proceding to Download Dependencies && \
-    # Will show downloads occurring
-    # gradle dependencies -i --stacktrace
-    gradle dependencies 
+COPY build.gradle      ${APP_SRC}
+COPY gradle.properties ${APP_SRC}
+COPY settings.gradle   ${APP_SRC}
 
-# Message when downloading dependencies. Fix?
-# Cache entries evicted. In-memory cache of /home/gradle/.gradle/checksums/sha1-checksums.bin: Size{400} MaxSize{400}, CacheStats{hitCount=241, missCount=561, loadSuccessCount=561, loadExceptionCount=0, totalLoadTime=78824764, evictionCount=161} 
-# Performance may suffer from in-memory cache misses. Increase max heap size of Gradle build process to reduce cache misses.
+WORKDIR ${APP_SRC}
 
-# Stage 2: Builds The Application
-FROM gradle:${GRADLE_VERSION} AS builder
+# Only download dependencies
+# Eat the expected build failure since no source code has been copied yet
+RUN gradle clean buildDependents --no-daemon --console=plain || true
 
-ARG GITHUB_USER
-ARG GITHUB_TOKEN
 
-ARG JAVA_OPTS
-
-ENV GRADLE_OPTS ${JAVA_OPTS}
-
+# prepare source build environment
 ENV CARNIVAL_MICRONAUT      /opt/carnival-micronaut
 ENV CARNIVAL_MICRONAUT_HOME /opt/carnival-micronaut-home
 ENV APOC_HOME               /opt/neo4j/plugins
 ENV APOC_VERSION            3.4.0.7
-#ENV CARNIVAL_LIB_SRC        /opt/carnival
-ENV GRADLE_USER_HOME        /home/gradle
 
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends \
-      dos2unix \
-      git      \
-      rename   \
-      sed      \
-      &&       \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Bring in cached dependencies
-COPY --from=cache ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/caches
-
-RUN mkdir ${CARNIVAL_MICRONAUT}
-
+RUN mkdir ${CARNIVAL_MICRONAUT_HOME}
 COPY ./carnival-micronaut-home ${CARNIVAL_MICRONAUT_HOME}/.
 
-COPY gradle.properties ${CARNIVAL_MICRONAUT}/.
-COPY build.gradle      ${CARNIVAL_MICRONAUT}/.
-COPY settings.gradle   ${CARNIVAL_MICRONAUT}/.
 COPY micronaut-cli.yml ${CARNIVAL_MICRONAUT}/.
-
-COPY ./src ${CARNIVAL_MICRONAUT}/src
 
 WORKDIR ${CARNIVAL_MICRONAUT}
 
-#RUN gradle shadowJar -i --stacktrace
-RUN gradle shadowJar
 
+#####
+# Stage 2: Builds The application as a Jar
+#####
+FROM base AS builder
+
+ENV GRADLE_OPTS ${JAVA_OPTS}
+
+COPY ./src ${CARNIVAL_MICRONAUT}/src
+
+#RUN gradle shadowJar -i --stacktrace
+RUN gradle shadowJar --no-daemon
+
+#####
 # Stage 3: Runs The App
+#####
 FROM adoptopenjdk/openjdk11-openj9:jdk-11.0.1.13-alpine-slim AS app
 
 ENV CARNIVAL_MICRONAUT      /opt/carnival-micronaut
 ENV CARNIVAL_MICRONAUT_HOME /opt/carnival-micronaut-home
-
-ARG JAVA_OPTS
 
 COPY --from=builder ${CARNIVAL_MICRONAUT_HOME} ${CARNIVAL_MICRONAUT_HOME}/.
 
