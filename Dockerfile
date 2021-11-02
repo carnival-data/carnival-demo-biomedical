@@ -1,53 +1,81 @@
-ARG  GRADLE_VERSION=jdk11
-FROM gradle:${GRADLE_VERSION} AS builder
+# The Dockerfile is broken into three steps.
 
-# Install linux utils
-RUN apt-get update && \
-#    apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends \
-      dos2unix \
-      rename   \
-      sed      \
-      git      \
-      &&       \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# 1. Download the dependencies including Carnival, and prepares build environment
+# - Full build environment
+# - Uses: GitHub credentials, project config files. Does not contain source code.
+# - Note: This is the image used for running tests
 
-### Development Image
+# 2. Build the Jar
+# - Continues from image (1)
+# - Uses: Cached dependencies from (1), copies in app source
 
-ENV CARNIVAL_MICRONAUT      /opt/carnival-micronaut
-ENV CARNIVAL_MICRONAUT_HOME /opt/carnival-micronaut-home
-ENV APOC_HOME               /opt/neo4j/plugins
-ENV APOC_VERSION            3.4.0.7
-ENV CARNIVAL_LIB_SRC        /opt/carnival
-ENV GRADLE_HOME             /opt/gradle
+# 3. Run the app
+# - Stripped down environment with a JVM
+# - Uses: JAR from (2)
 
-RUN mkdir ${CARNIVAL_MICRONAUT}
 
-COPY ./carnival-micronaut-home ${CARNIVAL_MICRONAUT_HOME}/.
+ARG GRADLE_VERSION=jdk11
+ARG JAVA_OPTS
 
-COPY gradle.properties ${CARNIVAL_MICRONAUT}/.
-COPY build.gradle      ${CARNIVAL_MICRONAUT}/.
-COPY settings.gradle   ${CARNIVAL_MICRONAUT}/.
-COPY micronaut-cli.yml ${CARNIVAL_MICRONAUT}/.
-
-COPY ./src ${CARNIVAL_MICRONAUT}/src
+#####
+# Stage 1: Downloads and caches dependencies including Carnival, and prepares build environment
+#####
+FROM gradle:${GRADLE_VERSION} as base
 
 ARG GITHUB_USER
 ARG GITHUB_TOKEN
 
-ARG JAVA_OPTS
+ENV GRADLE_OPTS ${JAVA_OPTS}
+ENV GRADLE_USER_HOME /home/gradle
+
+
+ENV APP_SRC /opt/carnival-micronaut
+RUN mkdir ${APP_SRC}
+
+COPY build.gradle      ${APP_SRC}
+COPY gradle.properties ${APP_SRC}
+COPY settings.gradle   ${APP_SRC}
+
+WORKDIR ${APP_SRC}
+
+# Only download dependencies
+# Eat the expected build failure since no source code has been copied yet
+RUN gradle clean buildDependents --no-daemon --console=plain || true
+
+
+# prepare source build environment
+ENV CARNIVAL_MICRONAUT      /opt/carnival-micronaut
+ENV CARNIVAL_MICRONAUT_HOME /opt/carnival-micronaut-home
+ENV APOC_HOME               /opt/neo4j/plugins
+ENV APOC_VERSION            3.4.0.7
+
+RUN mkdir ${CARNIVAL_MICRONAUT_HOME}
+COPY ./carnival-micronaut-home ${CARNIVAL_MICRONAUT_HOME}/.
+
+COPY micronaut-cli.yml ${CARNIVAL_MICRONAUT}/.
 
 WORKDIR ${CARNIVAL_MICRONAUT}
 
-RUN gradle shadowJar
 
+#####
+# Stage 2: Builds The application as a Jar
+#####
+FROM base AS builder
+
+ENV GRADLE_OPTS ${JAVA_OPTS}
+
+COPY ./src ${CARNIVAL_MICRONAUT}/src
+
+#RUN gradle shadowJar -i --stacktrace
+RUN gradle shadowJar --no-daemon
+
+#####
+# Stage 3: Runs The App
+#####
 FROM adoptopenjdk/openjdk11-openj9:jdk-11.0.1.13-alpine-slim AS app
 
 ENV CARNIVAL_MICRONAUT      /opt/carnival-micronaut
 ENV CARNIVAL_MICRONAUT_HOME /opt/carnival-micronaut-home
-
-ARG JAVA_OPTS
 
 COPY --from=builder ${CARNIVAL_MICRONAUT_HOME} ${CARNIVAL_MICRONAUT_HOME}/.
 

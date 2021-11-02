@@ -1,0 +1,20 @@
+# Only the .dockerignore file at the root directory of the build context is used
+
+.git
+.gitignore
+**/Dockerfile
+
+# Build and Run Artifacts
+**/.gradle
+**/bin
+**/build
+**/log
+
+# Documentation
+**/*.raml
+**/*.md
+
+# Gradle Wrapper
+**/gradle
+**/gradlew
+**/gradlew.bat
