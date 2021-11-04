@@ -9,7 +9,7 @@ tl;dr
 ```
 Install git
 Install Docker Desktop
-Create GitHub Personal Access Token with read:packages rights
+Create GitHub Personal Access Token with read:packages rights, https://github.com/settings/tokens
 git clone https://github.com/carnival-data/carnival-micronaut.git
 cd carnival-micronaut
 edit .env-template, save as .env
