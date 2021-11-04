@@ -2,7 +2,7 @@ carnival-micronaut:
 
   name: CarnivalMicronaut
 
-  nccc-core-db:
+  example-db:
     server: db
     port: 5432
     user: postgres

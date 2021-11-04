@@ -18,14 +18,14 @@ class AppConfig {
     
     String name
 
-    @ConfigurationProperties("nccc-core-db")
-    static class NcccCoreDb {
+    @ConfigurationProperties("example-db")
+    static class ExampleDb {
         String server
         Integer port
         String user
         String password
     }
-    NcccCoreDb ncccCoreDb = new NcccCoreDb()
+    ExampleDb exampleDb = new ExampleDb()
 
     @ConfigurationProperties("sub-config")
     static class SubConfig {

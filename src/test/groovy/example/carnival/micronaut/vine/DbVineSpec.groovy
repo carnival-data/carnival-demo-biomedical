@@ -17,7 +17,7 @@ import io.micronaut.test.annotation.MicronautTest
 class DbVineSpec extends Specification {
 
     
-    @Shared @Inject NcccDbVine ncccDbVine
+    @Shared @Inject ExampleDbVine exampleDbVine
 
 
     def setupSpec() {}
@@ -32,7 +32,7 @@ class DbVineSpec extends Specification {
 
     void "test query"() {
         when:
-        def res = ncccDbVine.method('MyMappedMethod').call().result
+        def res = exampleDbVine.method('MyMappedMethod').call().result
         println "res: ${res}"
 
         then:

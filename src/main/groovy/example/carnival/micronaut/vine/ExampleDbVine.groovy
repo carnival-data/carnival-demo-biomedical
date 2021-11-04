@@ -23,7 +23,7 @@ import example.carnival.micronaut.config.AppConfig
 @ToString(includeNames=true)
 @Slf4j 
 @Singleton
-class NcccDbVine implements Vine { 
+class ExampleDbVine implements Vine { 
 
     ///////////////////////////////////////////////////////////////////////////
     // FIELDS
@@ -40,9 +40,9 @@ class NcccDbVine implements Vine {
     Sql connect() {
         Sql.newInstance(
             driver: 'org.postgresql.Driver',
-            url: "jdbc:postgresql://${config.ncccCoreDb.server}:${config.ncccCoreDb.port}/EHR;",
-            user: config.ncccCoreDb.user,
-            password: config.ncccCoreDb.password
+            url: "jdbc:postgresql://${config.exampleDb.server}:${config.exampleDb.port}/EHR;",
+            user: config.exampleDb.user,
+            password: config.exampleDb.password
         )
     }
 
