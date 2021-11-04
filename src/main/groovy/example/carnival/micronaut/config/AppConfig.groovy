@@ -18,6 +18,15 @@ class AppConfig {
     
     String name
 
+    @ConfigurationProperties("nccc-core-db")
+    static class NcccCoreDb {
+        String server
+        Integer port
+        String user
+        String password
+    }
+    NcccCoreDb ncccCoreDb = new NcccCoreDb()
+
     @ConfigurationProperties("sub-config")
     static class SubConfig {
         int someNumber
