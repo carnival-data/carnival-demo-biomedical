@@ -39,8 +39,9 @@ class ExampleDbVine implements Vine {
 
     Sql connect() {
         Sql.newInstance(
-            driver: 'org.postgresql.Driver',
-            url: "jdbc:postgresql://${config.exampleDb.server}:${config.exampleDb.port}/EHR;",
+            driver: "org.postgresql.Driver",
+            // jdbc:postgresql://db:5432/EHR
+            url: "jdbc:postgresql://${config.exampleDb.server}:${config.exampleDb.port}/${config.exampleDb.databaseName}",
             user: config.exampleDb.user,
             password: config.exampleDb.password
         )
@@ -57,7 +58,7 @@ class ExampleDbVine implements Vine {
 
             String query = """\
   SELECT *
-  FROM [EHR].[encounters]
+  FROM encounters
   """
 
             log.debug "query: ${query}"

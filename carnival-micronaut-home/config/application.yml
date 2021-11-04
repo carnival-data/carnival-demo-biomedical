@@ -6,7 +6,8 @@ carnival-micronaut:
     server: db
     port: 5432
     user: postgres
-    password: postgres  
+    password: postgres
+    databaseName: EHR
 
   sub-config:
     someNumber: 58

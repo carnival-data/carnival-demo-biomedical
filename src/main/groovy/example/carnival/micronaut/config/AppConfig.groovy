@@ -24,6 +24,7 @@ class AppConfig {
         Integer port
         String user
         String password
+        String databaseName
     }
     ExampleDb exampleDb = new ExampleDb()
 
