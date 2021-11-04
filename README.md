@@ -10,12 +10,17 @@ tl;dr
 Install git
 Install Docker Desktop
 Create GitHub Personal Access Token with read:packages rights
-git clone https://github.com/pmbb-ibi/carnival-micronaut.git
+git clone https://github.com/carnival-data/carnival-micronaut.git
 cd carnival-micronaut
 edit .env-template, save as .env
 sudo docker-compose build
 sudo docker-compose up
 Open a browser to http://localhost:5858
+
+To run the database test
+docker-compose -f docker-compose-test.yml up
+
+ctrl+c to stop
 ```
 
 Prerequisites: Docker and git
