@@ -1,6 +1,9 @@
 # Carnival Micronaut
 
-Demonstration Micronaut server with a Carnival graph resource.
+This is a demonstration project that provides an example of using [Carnival](https://github.com/carnival-data/carnival) and [Micronaut](https://micronaut.io/) to create an application that aggregates relational clinical data from several sources into a Neo4J graph database, and then presents a restful API to access and manipulate that data.
+
+This demonstration been set up as a Docker multi-container project, with a container that holds the Carnival/Micronaut server and other containers that have databases with test data.
+
 
 ## Set up instructions with Docker
 
