@@ -1,6 +1,9 @@
 # Carnival Micronaut
 
-Demonstration Micronaut server with a Carnival graph resource.
+This is a demonstration project that provides an example of using the [Carnival](https://github.com/carnival-data/carnival) and [Micronaut](https://micronaut.io/) frameworks to create a JVM application that aggregates relational clinical data from several sources into a Neo4J graph database, and then presents a restful API to access and manipulate that data.
+
+This demonstration been set up as a Docker multi-container project, with a container that holds the Carnival/Micronaut server and other containers that have databases with test data.
+
 
 ## Set up instructions with Docker
 
@@ -9,13 +12,18 @@ tl;dr
 ```
 Install git
 Install Docker Desktop
-Create GitHub Personal Access Token with read:packages rights
-git clone https://github.com/pmbb-ibi/carnival-micronaut.git
+Create GitHub Personal Access Token with read:packages rights, https://github.com/settings/tokens
+git clone https://github.com/carnival-data/carnival-micronaut.git
 cd carnival-micronaut
 edit .env-template, save as .env
 sudo docker-compose build
 sudo docker-compose up
 Open a browser to http://localhost:5858
+
+To run the database test
+docker-compose -f docker-compose-test.yml up
+
+ctrl+c to stop
 ```
 
 Prerequisites: Docker and git

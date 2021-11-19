@@ -18,6 +18,16 @@ class AppConfig {
     
     String name
 
+    @ConfigurationProperties("example-db")
+    static class ExampleDb {
+        String server
+        Integer port
+        String user
+        String password
+        String databaseName
+    }
+    ExampleDb exampleDb = new ExampleDb()
+
     @ConfigurationProperties("sub-config")
     static class SubConfig {
         int someNumber

@@ -1,15 +1,28 @@
 carnival-micronaut:
+
   name: CarnivalMicronaut
+
+  example-db:
+    server: db
+    port: 5432
+    user: postgres
+    password: postgres
+    databaseName: EHR
+
   sub-config:
     someNumber: 58
     someString: "Hello"
     sub-sub-config:
       another-string: "Yall"
+
   graph:
     runtime: "neo4j"
     test: "tinker"
+
 carnival:
+
   cache-mode: OPTIONAL
+
   directories:
     data:
     # root: /Users/yourname/dev/carnival.data
@@ -17,6 +30,7 @@ carnival:
     # cache: /Users/yourname/dev/carnival.data.cache
     execution:
       # target: /Users/yourname/dev/target
+
   gremlin:
     neo4j:
       conf:

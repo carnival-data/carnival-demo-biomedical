@@ -16,7 +16,20 @@ services:
     command: "gradle test --no-daemon"
     tty: true
     stdin_open: true
-
+    
     volumes:
       - "./src:/opt/carnival-micronaut/src:ro"
 
+    depends_on:
+      - db
+
+  db:
+    build:
+      context: .
+      dockerfile: postgres.Dockerfile
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=EHR
+    ports:
+      - "5432:5432"
