@@ -14,7 +14,7 @@
 # - Uses: JAR from (2)
 
 
-ARG GRADLE_VERSION=jdk11
+ARG GRADLE_VERSION=7.2.0-jdk11
 ARG JAVA_OPTS
 
 #####
