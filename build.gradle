@@ -1,18 +1,22 @@
 buildscript {
     repositories {
-        mavenCentral()
         maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/carnival-data/carnival")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-            }
+            name = "MavenCentralSnapshots"
+            url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
         }
+        mavenCentral()
+        // maven {
+        //     name = "GitHubPackages"
+        //     url = uri("https://maven.pkg.github.com/carnival-data/carnival")
+        //     credentials {
+        //         username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
+        //         password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        //     }
+        // }
         mavenLocal()
     }
     dependencies {
-        classpath group:'org.carnival', name:'carnival-gradle', version:'2.1.0'
+        classpath group:'io.github.carnival-data', name:'carnival-gradle', version:'2.1.4-SNAPSHOT'
     }    
 }
 
@@ -28,15 +32,19 @@ version "0.1"
 group "org.carnival"
 
 repositories {
-    mavenCentral()
     maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/carnival-data/carnival")
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
-            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-        }
+        name = "MavenCentralSnapshots"
+        url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
     }
+    mavenCentral()
+    // maven {
+    //     name = "GitHubPackages"
+    //     url = uri("https://maven.pkg.github.com/carnival-data/carnival")
+    //     credentials {
+    //         username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
+    //         password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+    //     }
+    // }
 }
 
 micronaut {
