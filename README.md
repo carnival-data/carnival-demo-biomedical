@@ -1,12 +1,11 @@
 # Carnival-Micronaut
 
-[Carnival](https://github.com/carnival-data/carnival) is a graph framework that allows for a large variety of ETL and analysis tasks related to relational data and property graphs. This demonstration project that provides an example of using the Carnival and [Micronaut](https://micronaut.io/) frameworks to create a JVM application that aggregates relational clinical data from several sources into a Neo4J graph database, and then presents a restful API to access and manipulate that data.
+[Carnival](https://github.com/carnival-data/carnival) is a graph framework that allows for a large variety of ETL and analysis tasks related to relational data and property graphs. For this demonstration project, we will show how to use Carnival to harmonize relational data from various sources into a Carnival property graph, and present some of the ways the Carnival graph can be manipulated and analyzed. We use the the Carnival and [Micronaut](https://micronaut.io/) frameworks to create a JVM application that harmonizes relational clinical data from several sources into a Neo4J graph database, and presents a restful API to access and manipulate the data.
 
-This demonstration been set up as a Docker multi-container project, with a container that holds the Carnival/Micronaut server and other containers that have databases with test data.
+This demonstration been set up as a Docker multi-container project, with a container that holds the Carnival/Micronaut server applications and other containers that have databases with test data.
 
-Instructions on running the entire project are found below.
-
-A developer walkthrough of Carnival application can be found here: [Developer Walkthrough](docs/walkthrough.md)
+* Instructions on running the entire project are found below.
+* A developer walkthrough of Carnival application can be found here: [Developer Walkthrough](docs/walkthrough.md)
 
 ## Running the Project
 ## Set up instructions with Docker
