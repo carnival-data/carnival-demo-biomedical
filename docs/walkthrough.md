@@ -1,11 +1,11 @@
-# Walkthrough
+# Carnival Developer Walkthrough
 
 Carnival is a graph framework that allows for a large variety of ETL and analysis tasks related to relational data and property graphs. For this demonstration project, we will show how to use Carnival to harmonize relational data from various sources into a Carnival property graph, and present some of the ways the Carnival graph can be manipulated and analyzed.
 
 To motivate this, we will be acting in the role of a biomedical researcher who has a research question and data about patients, healthcare encounters and related information (lab tests, medications, health survey answers, etc.) collected in databases and spreadsheets. We want use Carnival to harmonize the data, determine if there are any patient populations that meet the criteria to be included in the research project, and then do some graph analysis on the data and produce some reports.
 
 This example will cover:
-* How to set up a new Carnival project
+* How to set up a new Carnival application
 * Defining a Carnival graph model
 * Combining data from different sources in a Carnival property graph
 * Executing graph operations to draw conclusions about the data
@@ -13,10 +13,10 @@ This example will cover:
 * Presenting an API that allows users to do some basic graph exploration and analysis
 * Examining the property graph directly
 
+> *Note: This demonstration is set up as Docker multi-container project, with one container holds the Carnival application and other containers that contain example databases. This walkthrough focuses excusively on the Carnival application. See [Running the Project](https://github.com/carnival-data/carnival-micronaut/blob/master/README.md#running-the-project) for instrucitons on running the entire project.*
 
-## Setup
-### Docker
-### Micronaut app (gradle setup etc)
+
+## Creating a new Carnival project
 
 ## Defining the graph model
 
