@@ -4,9 +4,11 @@
 
 This demonstration been set up as a Docker multi-container project, with a container that holds the Carnival/Micronaut server and other containers that have databases with test data.
 
-Detailed walkthrough of this project can be found here: [Walkthrough](docs/walkthrough.md)
+Instructions on running the entire project are found below.
 
-## Quick Start
+A developer walkthrough of Carnival application can be found here: [Developer Walkthrough](docs/walkthrough.md)
+
+## Running the Project
 ## Set up instructions with Docker
 
 tl;dr
