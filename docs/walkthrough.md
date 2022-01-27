@@ -51,6 +51,7 @@ For this example, we set up a Postgres database in a docker container using the 
 
 Once docker has been started using `docker-compose up`, the database can be browsed using database GUI tool like DBeaver with the credentials:
 * Host: localhost
+* Port: 5433 (not the standard port!)
 * Database: EHR
 * Username: postgres
 * Password: postgres

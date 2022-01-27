@@ -26,6 +26,4 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=EHR
     ports:
-      - "5432:5432"
-#    volumes:
-#       - db_data:/var/lib/postgresql/data/
+      - "5433:5432"
