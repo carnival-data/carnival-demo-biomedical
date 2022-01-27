@@ -1,4 +1,4 @@
 FROM postgres
 
-COPY db/setup.sql 	/docker-entrypoint-initdb.d/setup.sql
-COPY db/*.csv		/db/
+COPY data/db/setup.sql 	/docker-entrypoint-initdb.d/setup.sql
+COPY data/db/*.csv		/db/

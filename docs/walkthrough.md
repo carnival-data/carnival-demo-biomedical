@@ -16,13 +16,58 @@ This example will cover:
 > *Note: This demonstration is set up as Docker multi-container project, with one container holds the Carnival application and other containers that contain example databases. This walkthrough focuses excusively on the Carnival application. See [Running the Project](https://github.com/carnival-data/carnival-micronaut/blob/master/README.md#running-the-project) for instrucitons on running the entire project.*
 
 
-## Creating a new Carnival project
+# Research Problem
+For this example the researcher is looking for a case and control cohort of patients that meet certian criteria:
+
+*IN PROGRESS, pending info on EHR data*
+
+>Cases
+>* Age - between 18 and 55
+>* At least two healthcare encounters with indications of *DISEASE* via *CRITERIA*
+>* Has been perscribed medication *XXX*
+>* Self-reported social history of drinking or smoking
+>
+>Controls
+>* Age - between 18 and 55
+>* No indications of *DISEASE* via *CRITERIA*
+>* Has not been perscribes medication *XXX*
+>* Self-reported social history of drinking or smoking
+
+
+## Examining the Source Data
+There are two synthetic relational datasources:
+
+* **Electronic Heath Records(EHR) data** is stored in a Postgres database. The data is in **XXX** format.
+* **Self-reported patient survey data** is stored in csv spreadsheets
+
+
+### EHR Data in Postgres
+
+The EHR data is represented by synthetically-generated **XXX** formated dataset that contains information about patients and heathcare encounters. This data was generated using **XXX** (synthea?)
+
+
+For this example, we set up a Postgres database in a docker container using the default [Postgres docker image](https://hub.docker.com/_/postgres/). The raw data is located in `data/db`, and the image has been configured to automatically load the data when docker is started.
+
+
+Once docker has been started using `docker-compose up`, the database can be browsed using database GUI tool like DBeaver with the credentials:
+* Host: localhost
+* Database: EHR
+* Username: postgres
+* Password: postgres
+
+
+### Self-reported survey data in CSV file data
+
+CSV files that contain the results of self-reported surveys are located in `data/survey`.
+
+# Carnival
+This demonstration been set up as a Docker multi-container project, with a container that holds the Carnival/Micronaut server applications and other containers that have databases with test data. The source data for the carnival server is located in `/src`
+
+
+## Creating a new Carnival Project
 
 ## Defining the graph model
-
-## Connecting the data
-### EHR Data in Postgres
-### CSV file data
+Now that we have examined the data and created an initial carnival project, we want to create a data model that harmonizes patient and encounter data and the survey data.
 
 ## Doing graph operations
 ### Drawing conclusions

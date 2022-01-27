@@ -120,3 +120,11 @@ Run tests with the following:
 docker-compose -f docker-compose-test.yml up
 ```
 This will run the unit tests. The test results will be printed in the docker log. An exit code of 0 will be returned if the tests pass, otherwise a non-zero code will be returned.
+
+## Viewing source data in Postgres
+
+Once docker has been started using `docker-compose up`, the database can be browsed using database GUI tool like DBeaver with the credentials:
+* Host: localhost
+* Database: EHR
+* Username: postgres
+* Password: postgres
