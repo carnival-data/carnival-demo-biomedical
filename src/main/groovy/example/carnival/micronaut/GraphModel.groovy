@@ -15,6 +15,35 @@ class GraphModel {
 
     @VertexDefinition
     static enum VX {
+        // CAREPLAN(
+        //     propertyDefs:[
+        //         PX.ID.withConstraints(index:true, required:true),
+        //         PX.START.withConstraints(required:true),
+        //         PX.STOP.withConstraints(required:true),
+        //         PX.PATIENT.withConstraints(required:true),
+        //         PX.ENCOUNTER.withConstraints(required:true),
+        //         PX.CODE,
+        //         PX.DESCRIPTION,
+        //         PX.REASON_CODE,
+        //         PX.REASON_DESCRIPTION
+        //     ]
+        // ),
+
+        // CONDITION(
+        //     propertyDefs:[
+        //         PX.ID.withConstraints(index:true, required:true),
+        //         PX.START.withConstraints(required:true),
+        //         PX.STOP.withConstraints(required:true),
+        //         PX.PATIENT.withConstraints(required:true),
+        //         PX.ENCOUNTER.withConstraints(required:true),
+        //         PX.CODE,
+        //         PX.DESCRIPTION
+        //     ]
+        // ),
+
+        // ENCOUNTER(PXEncounter),
+
+        // MEDICATION(PXMedication),
         ENCOUNTER(
             propertyDefs:[
                 PX.ID.withConstraints(index:true, required:true),
@@ -46,6 +75,7 @@ class GraphModel {
 
     @EdgeDefinition
     static enum EX {
+        // HAS,
         PATIENT_HAS_ENCOUNTER(
             domain:[VX.PATIENT],
             range:[VX.ENCOUNTER]
@@ -63,9 +93,50 @@ class GraphModel {
         ID,
         START,
         END,
+        STOP,
+        PATIENT,
+        ENCOUNTER,
+        CODE,
+        DESCRIPTION,
+        REASON_CODE,
+        REASON_DESCRIPTION,
+
+        // doggie properties
         IS_ADORABLE,
         TEXT
     }
+/*
+    @PropertyDefinition
+    static enum PXEncounter {
+        ID,
+        START,
+        STOP,
+        PATIENT,
+        PROVIDER,
+        ENCOUNTER_CLASS,
+        CODE,
+        DESCRIPTION,
+        COST,
+        REASON_CODE,
+        REASON_DESCRIPTION
+    }
+
+    @PropertyDefinition
+    static enum PXMedication {
+        START,
+        STOP,
+        PATIENT,
+        ENCOUNTER,
+        CODE,
+        DESCRIPTION,
+        COST,
+        DISPENSES,
+        TOTAL_COST,
+        REASON_CODE,
+        REASON_DESCRIPTION
+    }
+    */
+    
 
     
 }

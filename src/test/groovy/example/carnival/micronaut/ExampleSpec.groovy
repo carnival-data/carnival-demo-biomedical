@@ -89,5 +89,40 @@ class ExampleSpec extends Specification {
             .has(GraphModel.PX.TEXT, 'Dottie')
         .tryNext().isPresent()
     }
+    void "test create and link patient vertices"() {
+        when:
+        def numVertices1 = g.V().count().next()
+        def p1V = GraphModel.VX.PATIENT.instance().withProperties(
+                GraphModel.PX.ID, "123"
+        ).create(graph)
+        def numVertices2 = g.V().count().next()
+
+        then:
+        p1V != null
+        // p1v == null
+        numVertices2 == numVertices1 + 1
+
+        when:
+        def e1V = GraphModel.VX.ENCOUNTER.instance().withProperty(
+                GraphModel.PX.ID, "abc").withProperty(
+                GraphModel.PX.START, "2021").withProperty(
+                GraphModel.PX.END, "2022"
+        ).ensure(graph, g)
+
+        then:
+        e1V != null
+
+        when:
+        def edge1E = GraphModel.EX.PATIENT_HAS_ENCOUNTER.instance().from(p1V).to(e1V).create()
+
+        then:
+        g.V(p1V)
+            .out(GraphModel.EX.PATIENT_HAS_ENCOUNTER)
+            .isa(GraphModel.VX.ENCOUNTER)
+            .has(GraphModel.PX.END, '2022')
+        .tryNext().isPresent()
+        // edge1E == null
+    }
+
 
 }
