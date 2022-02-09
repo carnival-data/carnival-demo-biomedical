@@ -178,5 +178,75 @@ numEdges: ${numEdges}
         response
     }
 
+//    @Get(value = "/patient/create")
+//    CreateDoggieResponse createPatient() {
+    @Post(value = "/patient/create", consumes = MediaType.APPLICATION_JSON)
+    CreateDoggieResponse createPatient(@Size(max = 1024) @Body CreateDoggieBody args) {
+//        log.trace "createDoggie args:$args"
+
+//        assert args.name
+
+        def resp = new CreateDoggieResponse()
+
+        carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
+
+            def dV = GraphModel.VX.PATIENT.instance()
+                .withProperty(GraphModel.PX.ID, "123")
+                .create(graph)
+
+//            def nV = GraphModel.VX.NAME.instance()
+//                    .withProperty(GraphModel.PX.TEXT, args.name)
+//                    .ensure(graph, g)
+//
+//            def dnE = GraphModel.EX.HAS_BEEN_CALLED.instance()
+//                    .from(dV)
+//                    .to(nV)
+//                    .create()
+
+            resp.message = "created patient ${dV}"
+        }
+
+        resp
+    }
+
+    @Get("/patients")
+    @Produces(MediaType.TEXT_PLAIN)
+    String patients(
+//            @Nullable @QueryValue Boolean isAdorable,
+//            @Nullable @QueryValue String name
+    ) {
+
+//        log.trace "doggies isAdorable:${isAdorable} name:${name}"
+
+        String response = ""
+
+        carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
+            Integer numPatients = g.V()
+                .isa(GraphModel.VX.PATIENT)
+                .count().next()
+            response += "There are ${numPatients} total patients."
+
+//            g.V()
+//                    .isa(GraphModel.VX.DOGGIE).as('d')
+//                    .out(GraphModel.EX.HAS_BEEN_CALLED)
+//                    .isa(GraphModel.VX.NAME).as('n')
+//                    .select('d', 'n')
+//                    .each { m ->
+//                        response += "\n${m.d} ${GraphModel.PX.TEXT.valueOf(m.n)}"
+//                    }
+//
+//            if (isAdorable != null) {
+//                Integer numAdorableDoggies = g.V()
+//                        .isa(GraphModel.VX.DOGGIE)
+//                        .has(GraphModel.PX.IS_ADORABLE, isAdorable)
+//                        .count().next()
+//                response += "\nThere are ${numAdorableDoggies} doggies that are"
+//                if (!isAdorable) response += " not"
+//                response += " adorable."
+//            }
+        }
+
+        response
+    }
 
 }
