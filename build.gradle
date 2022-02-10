@@ -1,22 +1,25 @@
 buildscript {
     repositories {
+        // We may have to manually comment out earlier repos to pull from later ones (disable maven to use github)
         maven {
             name = "MavenCentralSnapshots"
-            url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            url = carnivalVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
         mavenCentral()
-        // maven {
-        //     name = "GitHubPackages"
-        //     url = uri("https://maven.pkg.github.com/carnival-data/carnival")
-        //     credentials {
-        //         username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
-        //         password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-        //     }
-        // }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/carnival-data/carnival")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
         mavenLocal()
     }
     dependencies {
-        classpath group:'io.github.carnival-data', name:'carnival-gradle', version:'2.1.4-SNAPSHOT'
+        classpath group:'io.github.carnival-data', name:'carnival-gradle', version:project.findProperty("carnivalVersion")
     }    
 }
 
@@ -29,22 +32,25 @@ plugins {
 apply plugin: 'carnival.application'
 
 version "0.1"
-group "org.carnival"
+group "io.github.carnival-data"
 
 repositories {
+    // We may have to manually comment out earlier repos to pull from later ones (disable maven to use github)
     maven {
         name = "MavenCentralSnapshots"
-        url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+        def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+        def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+        url = carnivalVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
     }
     mavenCentral()
-    // maven {
-    //     name = "GitHubPackages"
-    //     url = uri("https://maven.pkg.github.com/carnival-data/carnival")
-    //     credentials {
-    //         username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
-    //         password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-    //     }
-    // }
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/carnival-data/carnival")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
+            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
 }
 
 micronaut {
