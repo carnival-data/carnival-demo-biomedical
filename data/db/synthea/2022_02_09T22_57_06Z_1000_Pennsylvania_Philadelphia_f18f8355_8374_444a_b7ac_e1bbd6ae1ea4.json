@@ -1,0 +1,20 @@
+{
+  "runID": "f18f8355-8374-444a-b7ac-e1bbd6ae1ea4",
+  "seed": 1644447426122,
+  "clinicianSeed": 1644447426122,
+  "referenceTime": "20220209",
+  "version": "30ba8cb\n",
+  "patientCount": 1000,
+  "providerCount": 18097,
+  "payerCount": 9,
+  "javaVersion": "1.8.0_301",
+  "generate.thread_pool_size": -1,
+  "generatorThreads": 16,
+  "runStartTime": "2022-02-09T22:57:06Z",
+  "runTimeInSeconds": 92,
+  "exporter.years_of_history": "10",
+  "age": "18-85",
+  "city": "Philadelphia",
+  "state": "Pennsylvania",
+  "modules": "*"
+}
