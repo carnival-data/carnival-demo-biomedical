@@ -22,8 +22,8 @@ CREATE TABLE patients (
     zip                 INTEGER,
     lat                 DECIMAL,   -- 39.98525733
     lon                 DECIMAL,   -- -75.04579348
-    healthcare_expenses MONEY,
-    healthcare_coverage MONEY
+    healthcare_expenses DECIMAL,
+    healthcare_coverage DECIMAL
 );
 
 CREATE TABLE procedures (
@@ -33,7 +33,7 @@ CREATE TABLE procedures (
     encounter           VARCHAR(36), -- 1d794fe4-389d-4be7-ac05-9b80e5dd3fd9
     code                TEXT,        -- 428191000124101
     description         TEXT,        -- Documentation of current medications
-    base_cost           MONEY,       -- 586.51
+    base_cost           DECIMAL,       -- 586.51
     reason_code         TEXT,        -- 10509002, may be null
     reason_description  TEXT         -- Acute bronchitis (disorder), may be null
 );
@@ -68,9 +68,9 @@ CREATE TABLE encounters (
     encounter_class    TEXT,        -- wellness
     code               TEXT,        -- 185349003
     description        TEXT,        -- Encounter for check up (procedure)
-    base_encounter_cost MONEY,       -- 105.37
-    total_claim_cost   MONEY,       -- 105.37
-    payer_coverage     MONEY,       -- 105.37
+    base_encounter_cost DECIMAL,       -- 105.37
+    total_claim_cost   DECIMAL,       -- 105.37
+    payer_coverage     DECIMAL,       -- 105.37
     reason_code        TEXT,        -- 444814009, may be null
     reason_description TEXT         -- Viral sinusitis (disorder), may be null
 );
@@ -83,10 +83,10 @@ CREATE TABLE medications (
     encounter          VARCHAR(36), -- bf2fd769-8e00-47b6-89eb-88354c0bb4f4
     code               TEXT,        -- 562251
     description        TEXT,        -- Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet
-    base_cost          MONEY,       -- 23.93
-    payer_coverage     MONEY,
+    base_cost          DECIMAL,       -- 23.93
+    payer_coverage     DECIMAL,
     dispenses          SMALLINT,    -- 12
-    total_cost         MONEY,       -- 23.93
+    total_cost         DECIMAL,       -- 23.93
     reason_code        TEXT,        -- 444814009, may be null
     reason_description TEXT         -- Viral sinusitis (disorder), may be null    
 );
