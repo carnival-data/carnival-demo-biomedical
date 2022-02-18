@@ -15,33 +15,33 @@ class GraphModel {
 
     @VertexDefinition
     static enum VX {
-        // CAREPLAN(
-        //     propertyDefs:[
-        //         PX.ID.withConstraints(index:true, required:true),
-        //         PX.START.withConstraints(required:true),
-        //         PX.STOP.withConstraints(required:true),
-        //         PX.PATIENT.withConstraints(required:true),
-        //         PX.ENCOUNTER.withConstraints(required:true),
-        //         PX.CODE,
-        //         PX.DESCRIPTION,
-        //         PX.REASON_CODE,
-        //         PX.REASON_DESCRIPTION
-        //     ]
-        // ),
+        CAREPLAN(
+            propertyDefs:[
+                PX.ID.withConstraints(index:true, required:true),
+                PX.START.withConstraints(required:true),
+                PX.STOP.withConstraints(required:true),
+                PX.PATIENT.withConstraints(required:true),
+                PX.ENCOUNTER.withConstraints(required:true),
+                PX.CODE,
+                PX.DESCRIPTION,
+                PX.REASON_CODE,
+                PX.REASON_DESCRIPTION
+            ]
+        ),
 
-        // CONDITION(
-        //     propertyDefs:[
-        //         PX.ID.withConstraints(index:true, required:true),
-        //         PX.START.withConstraints(required:true),
-        //         PX.STOP.withConstraints(required:true),
-        //         PX.PATIENT.withConstraints(required:true),
-        //         PX.ENCOUNTER.withConstraints(required:true),
-        //         PX.CODE,
-        //         PX.DESCRIPTION
-        //     ]
-        // ),
+        CONDITION(
+            propertyDefs:[
+                PX.ID.withConstraints(index:true, required:true),
+                PX.START.withConstraints(required:true),
+                PX.STOP.withConstraints(required:true),
+                PX.PATIENT.withConstraints(required:true),
+                PX.ENCOUNTER.withConstraints(required:true),
+                PX.CODE,
+                PX.DESCRIPTION
+            ]
+        ),
 
-        // ENCOUNTER(PXEncounter),
+        ENCOUNTER(PXEncounter),
 
         // MEDICATION(PXMedication),
         ENCOUNTER(
@@ -80,6 +80,7 @@ class GraphModel {
             domain:[VX.PATIENT],
             range:[VX.ENCOUNTER]
         ),
+        HAS,
         HAS_BEEN_CALLED(
             domain:[VX.DOGGIE],
             range:[VX.NAME]
@@ -105,7 +106,7 @@ class GraphModel {
         IS_ADORABLE,
         TEXT
     }
-/*
+
     @PropertyDefinition
     static enum PXEncounter {
         ID,
@@ -120,7 +121,7 @@ class GraphModel {
         REASON_CODE,
         REASON_DESCRIPTION
     }
-
+/*
     @PropertyDefinition
     static enum PXMedication {
         START,

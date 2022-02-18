@@ -91,9 +91,9 @@ class ExampleSpec extends Specification {
     }
     void "test create and link patient vertices"() {
         when:
-        def numVertices1 = g.V().count().next()
+        def numVertices1   = g.V().count().next()
         def p1V = GraphModel.VX.PATIENT.instance().withProperties(
-                GraphModel.PX.ID, "123"
+                GraphModel.PX.ID, "P123"
         ).create(graph)
         def numVertices2 = g.V().count().next()
 
@@ -103,9 +103,9 @@ class ExampleSpec extends Specification {
         numVertices2 == numVertices1 + 1
 
         when:
-        def e1V = GraphModel.VX.ENCOUNTER.instance().withProperty(
-                GraphModel.PX.ID, "abc").withProperty(
-                GraphModel.PX.START, "2021").withProperty(
+        def e1V = GraphModel.VX.ENCOUNTER.instance().withProperties(
+                GraphModel.PX.ID, "E500-4205",
+                GraphModel.PX.START, "2021",
                 GraphModel.PX.END, "2022"
         ).ensure(graph, g)
 
@@ -122,6 +122,34 @@ class ExampleSpec extends Specification {
             .has(GraphModel.PX.END, '2022')
         .tryNext().isPresent()
         // edge1E == null
+        
+        when:
+        def numVertices3   = g.V().count().next()
+        def c1V = GraphModel.VX.CAREPLAN.instance().withProperties(
+                GraphModel.PX.ID, "C415",
+                GraphModel.PX.START, "2021",
+                GraphModel.PX.STOP, "2022",
+                GraphModel.PX.PATIENT, "P123",
+                GraphModel.PX.ENCOUNTER, "E500-4205"
+        ).create(graph)
+        def numVertices4 = g.V().count().next()
+
+        then:
+        c1V != null
+        // p1v == null
+        numVertices4 == numVertices3 + 1
+        
+        when:
+        def edge2E = GraphModel.EX.HAS.instance().from(p1V).to(c1V).create()
+
+        then:
+        g.V(p1V)
+            .out(GraphModel.EX.HAS)
+            .isa(GraphModel.VX.CAREPLAN)
+            .has(GraphModel.PX.ID, 'C415')
+        .tryNext().isPresent()
+        //edge2E == null
+
     }
 
 
