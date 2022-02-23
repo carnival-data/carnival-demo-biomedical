@@ -41,20 +41,47 @@ class GraphModel {
             ]
         ),
 
-        ENCOUNTER(PXEncounter),
+        // ENCOUNTER(PXEncounter),
 
         // MEDICATION(PXMedication),
         ENCOUNTER(
             propertyDefs:[
                 PX.ID.withConstraints(index:true, required:true),
                 PX.START.withConstraints(required:true),
-                PX.END.withConstraints(required:true)
+                PX.END.withConstraints(required:true),
+
+                PX_ENCOUNTER.CLASS,
+                PX_ENCOUNTER.CODE,
+                PX_ENCOUNTER.DESCRIPTION,
+
+                PX_ENCOUNTER.REASON_CODE,
+                PX_ENCOUNTER.REASON_DESCRIPTION
             ]
         ),
 
         PATIENT(
             propertyDefs:[
-                PX.ID.withConstraints(index:true, required:true)
+                PX.ID.withConstraints(index:true, required:true),
+
+                PX_PATIENT.BIRTH_DATE,
+                PX_PATIENT.DEATH_DATE,
+                PX_PATIENT.FIRST_NAME,
+                PX_PATIENT.LAST_NAME,
+                PX_PATIENT.LATITUDE,
+                PX_PATIENT.LONGITUDE
+            ]
+        ),
+
+        SURVEY(
+            propertyDefs: [
+                PX_SURVEY.DATE,             // 2012-05-04T15:30:18Z
+//              PX_SURVEY.ID.withConstraints(index: true, required: true), // Generate unique id?
+                PX_SURVEY.CODE,             // 72166-2
+                PX_SURVEY.DESCRIPTION,      // Tobacco smoking status NHIS
+
+                // Idea: use type to make one of two optional fields
+                PX_SURVEY.RESPONSE_NUMERIC, // 9.3
+                PX_SURVEY.RESPONSE_TEXT     // Never smoker
             ]
         ),
 
@@ -71,16 +98,24 @@ class GraphModel {
         )
     }
 
-
+    /*
+    patient has encounters
+    encounter has surveys
+    encounter has procedures
+    encounter has conditions
+    encounter has medications
+     */
 
     @EdgeDefinition
     static enum EX {
-        // HAS,
+        HAS,
+
+        // remove (need to convert any tests?)
         PATIENT_HAS_ENCOUNTER(
             domain:[VX.PATIENT],
             range:[VX.ENCOUNTER]
         ),
-        HAS,
+
         HAS_BEEN_CALLED(
             domain:[VX.DOGGIE],
             range:[VX.NAME]
@@ -92,15 +127,17 @@ class GraphModel {
     @PropertyDefinition
     static enum PX {
         ID,
-        START,
-        END,
-        STOP,
-        PATIENT,
-        ENCOUNTER,
-        CODE,
-        DESCRIPTION,
-        REASON_CODE,
-        REASON_DESCRIPTION,
+
+        // // remove (need to convert any tests?)
+        // START,
+        // END,
+        // STOP,
+        // PATIENT,
+        // ENCOUNTER,
+        // CODE,
+        // DESCRIPTION,
+        // REASON_CODE,
+        // REASON_DESCRIPTION,
 
         // doggie properties
         IS_ADORABLE,
@@ -108,19 +145,38 @@ class GraphModel {
     }
 
     @PropertyDefinition
-    static enum PXEncounter {
+    static enum PX_PATIENT {
         ID,
+        BIRTH_DATE,
+        DEATH_DATE,
+        FIRST_NAME,
+        LAST_NAME,
+        LATITUDE,
+        LONGITUDE
+    }
+
+    @PropertyDefinition
+    static enum PX_ENCOUNTER {
         START,
         STOP,
-        PATIENT,
-        PROVIDER,
-        ENCOUNTER_CLASS,
+
+        CLASS,
         CODE,
         DESCRIPTION,
-        COST,
+
         REASON_CODE,
         REASON_DESCRIPTION
     }
+
+    @PropertyDefinition
+    static enum PX_SURVEY {
+        DATE,
+        CODE,
+        DESCRIPTION,
+        RESPONSE_NUMERIC,
+        RESPONSE_TEXT
+    }
+
 /*
     @PropertyDefinition
     static enum PXMedication {
