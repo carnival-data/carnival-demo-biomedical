@@ -59,6 +59,7 @@ class ExampleDbVine implements Vine {
             String query = """\
   SELECT *
   FROM encounters
+  LIMIT 10
   """
 
             log.debug "query: ${query}"
