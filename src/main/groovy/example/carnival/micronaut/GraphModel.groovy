@@ -15,68 +15,45 @@ class GraphModel {
 
     @VertexDefinition
     static enum VX {
-        // CAREPLAN(
-        //     propertyDefs:[
-        //         PX.ID.withConstraints(index:true, required:true),
-        //         PX.START.withConstraints(required:true),
-        //         PX.STOP.withConstraints(required:true),
-        //         PX.PATIENT.withConstraints(required:true),
-        //         PX.ENCOUNTER.withConstraints(required:true),
-        //         PX.CODE,
-        //         PX.DESCRIPTION,
-        //         PX.REASON_CODE,
-        //         PX.REASON_DESCRIPTION
-        //     ]
-        // ),
 
         // CONDITION(
         //     propertyDefs:[
         //         PX.ID.withConstraints(index:true, required:true),
         //         PX.START.withConstraints(required:true),
         //         PX.STOP.withConstraints(required:true),
-        //         PX.PATIENT.withConstraints(required:true),
-        //         PX.ENCOUNTER.withConstraints(required:true),
-        //         PX.CODE,
-        //         PX.DESCRIPTION
+        //         // PX.PATIENT.withConstraints(required:true),
+        //         // PX.ENCOUNTER.withConstraints(required:true),
+        //         // PX.CODE,
+        //         // PX.DESCRIPTION
         //     ]
         // ),
 
         // ENCOUNTER(PXEncounter),
 
         // MEDICATION(PXMedication),
-
         
         ENCOUNTER(
             propertyDefs:[
-                PX.ID.withConstraints(index:true, required:true)
-                // ,
+                PX.ID.withConstraints(index:true, required:true),
 
-                // PX.START.withConstraints(required:true)
-                // // PX.END.withConstraints(required:true),
+                // PX_ENCOUNTER.START.withConstraints(required:true),
+                // PX_ENCOUNTER.END.withConstraints(required:true),
 
-                // PX_ENCOUNTER.START
-                //,
-                // PX_ENCOUNTER.END
+                PX.START.withConstraints(required:true),
+                PX.END.withConstraints(required:true),                
 
-                // PX_ENCOUNTER.STARTS,
-                // PX_ENCOUNTER.ENDS
+                PX_ENCOUNTER.CLASS,
+                PX_ENCOUNTER.CODE,
+                PX_ENCOUNTER.DESCRIPTION,
 
-                // PX_ENCOUNTER.STARTS.withConstraints(required:true),
-                // PX_ENCOUNTER.ENDS.withConstraints(required:true)
-
-                // PX_ENCOUNTER.CLASS,
-                // PX_ENCOUNTER.CODE,
-                // PX_ENCOUNTER.DESCRIPTION,
-
-                // PX_ENCOUNTER.REASON_CODE,
-                // PX_ENCOUNTER.REASON_DESCRIPTION
+                PX_ENCOUNTER.REASON_CODE,
+                PX_ENCOUNTER.REASON_DESCRIPTION
             ]
         ),
 
         PATIENT(
             propertyDefs:[
-                PX.ID.withConstraints(index:true, required:true)
-                ,
+                PX.ID.withConstraints(index:true, required:true),
 
                 PX_PATIENT.BIRTH_DATE,
                 PX_PATIENT.DEATH_DATE,
@@ -87,18 +64,20 @@ class GraphModel {
             ]
         ),
 
-//         SURVEY(
-//             propertyDefs: [
-//                 PX_SURVEY.DATE,             // 2012-05-04T15:30:18Z
-// //              PX_SURVEY.ID.withConstraints(index: true, required: true), // Generate unique id?
-//                 PX_SURVEY.CODE,             // 72166-2
-//                 PX_SURVEY.DESCRIPTION,      // Tobacco smoking status NHIS
+        SURVEY(
+            propertyDefs: [
+//              PX.ID.withConstraints(index: true, required: true), // Generate unique id?
 
-//                 // Idea: use type to make one of two optional fields
-//                 PX_SURVEY.RESPONSE_NUMERIC, // 9.3
-//                 PX_SURVEY.RESPONSE_TEXT     // Never smoker
-//             ]
-//         ),
+                PX_SURVEY.DATE,             // 2012-05-04T15:30:18Z
+
+                PX_SURVEY.CODE,             // 72166-2
+                PX_SURVEY.DESCRIPTION,      // Tobacco smoking status NHIS
+
+                // Idea: use type to make one of two optional fields
+                PX_SURVEY.RESPONSE_NUMERIC, // 9.3
+                PX_SURVEY.RESPONSE_TEXT     // Never smoker
+            ]
+        ),
 
         DOGGIE(
             propertyDefs:[
@@ -143,9 +122,9 @@ class GraphModel {
     static enum PX {
         ID,
 
-        // // remove (need to convert any tests?)
-        // START,
-        // END,
+
+        START,
+        END,
         // STOP,
         // PATIENT,
         // ENCOUNTER,
@@ -173,10 +152,7 @@ class GraphModel {
     @PropertyDefinition
     static enum PX_ENCOUNTER {
         // START,
-        // STOP,
-
-        STARTS,
-        STOPS,
+        // END,
 
         CLASS,
         CODE,
@@ -186,14 +162,14 @@ class GraphModel {
         REASON_DESCRIPTION
     }
 
-    // @PropertyDefinition
-    // static enum PX_SURVEY {
-    //     DATE,
-    //     CODE,
-    //     DESCRIPTION,
-    //     RESPONSE_NUMERIC,
-    //     RESPONSE_TEXT
-    // }
+    @PropertyDefinition
+    static enum PX_SURVEY {
+        DATE,
+        CODE,
+        DESCRIPTION,
+        RESPONSE_NUMERIC,
+        RESPONSE_TEXT
+    }
 
 /*
     @PropertyDefinition
