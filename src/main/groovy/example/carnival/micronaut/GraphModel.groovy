@@ -48,20 +48,28 @@ class GraphModel {
         
         ENCOUNTER(
             propertyDefs:[
-                PX.ID.withConstraints(index:true, required:true),
-                
-                // PX.START.withConstraints(required:true),
-                // PX.END.withConstraints(required:true),
+                PX.ID.withConstraints(index:true, required:true)
+                // ,
 
-                // PX_ENCOUNTER.START.withConstraints(required:true),
-                // PX_ENCOUNTER.END.withConstraints(required:true),
+                // PX.START.withConstraints(required:true)
+                // // PX.END.withConstraints(required:true),
 
-                PX_ENCOUNTER.CLASS,
-                PX_ENCOUNTER.CODE,
-                PX_ENCOUNTER.DESCRIPTION,
+                // PX_ENCOUNTER.START
+                //,
+                // PX_ENCOUNTER.END
 
-                PX_ENCOUNTER.REASON_CODE,
-                PX_ENCOUNTER.REASON_DESCRIPTION
+                // PX_ENCOUNTER.STARTS,
+                // PX_ENCOUNTER.ENDS
+
+                // PX_ENCOUNTER.STARTS.withConstraints(required:true),
+                // PX_ENCOUNTER.ENDS.withConstraints(required:true)
+
+                // PX_ENCOUNTER.CLASS,
+                // PX_ENCOUNTER.CODE,
+                // PX_ENCOUNTER.DESCRIPTION,
+
+                // PX_ENCOUNTER.REASON_CODE,
+                // PX_ENCOUNTER.REASON_DESCRIPTION
             ]
         ),
 
@@ -164,8 +172,11 @@ class GraphModel {
 
     @PropertyDefinition
     static enum PX_ENCOUNTER {
-        START,
-        STOP,
+        // START,
+        // STOP,
+
+        STARTS,
+        STOPS,
 
         CLASS,
         CODE,

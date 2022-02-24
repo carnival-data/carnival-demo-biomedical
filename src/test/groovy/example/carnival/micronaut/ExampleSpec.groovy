@@ -94,7 +94,8 @@ class ExampleSpec extends Specification {
         when:
         def numVertices1   = g.V().count().next()
         def patientVertex = GraphModel.VX.PATIENT.instance().withProperties(
-                GraphModel.PX.ID, "P123"
+                GraphModel.PX.ID, "P123",
+                GraphModel.PX_PATIENT.FIRST_NAME, "Bob"
         ).create(graph)
         def numVertices2 = g.V().count().next()
 
@@ -107,10 +108,10 @@ class ExampleSpec extends Specification {
         def encounterVertex = GraphModel.VX.ENCOUNTER.instance().withProperties(
                 GraphModel.PX.ID, "E500-4205"
                 // ,
-                // GraphModel.PX.START, "2021",
+                // GraphModel.PX.START, "2021"
                 // GraphModel.PX.END, "2022"
-                // GraphModel.PX_ENCOUNTER.START, "2021",
-                // GraphModel.PX_ENCOUNTER.END, "2022"
+                // GraphModel.PX_ENCOUNTER.STARTS, "2021",
+                // GraphModel.PX_ENCOUNTER.ENDS, "2022"
         ).ensure(graph, g)
 
         then:
