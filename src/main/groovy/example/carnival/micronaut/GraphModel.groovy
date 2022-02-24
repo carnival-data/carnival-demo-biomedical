@@ -46,37 +46,38 @@ class GraphModel {
         // MEDICATION(PXMedication),
 
         
-        // ENCOUNTER(
-        //     propertyDefs:[
-        //         // PX.ID.withConstraints(index:true, required:true),
-        //         // PX.START.withConstraints(required:true),
-        //         // PX.END.withConstraints(required:true),
+        ENCOUNTER(
+            propertyDefs:[
+                PX.ID.withConstraints(index:true, required:true),
+                
+                // PX.START.withConstraints(required:true),
+                // PX.END.withConstraints(required:true),
 
-        //         PX_ENCOUNTER.START.withConstraints(required:true),
-        //         PX_ENCOUNTER.END.withConstraints(required:true),
+                // PX_ENCOUNTER.START.withConstraints(required:true),
+                // PX_ENCOUNTER.END.withConstraints(required:true),
 
-        //         PX_ENCOUNTER.CLASS,
-        //         PX_ENCOUNTER.CODE,
-        //         PX_ENCOUNTER.DESCRIPTION,
+                PX_ENCOUNTER.CLASS,
+                PX_ENCOUNTER.CODE,
+                PX_ENCOUNTER.DESCRIPTION,
 
-        //         PX_ENCOUNTER.REASON_CODE,
-        //         PX_ENCOUNTER.REASON_DESCRIPTION
-        //     ]
-        // ),
+                PX_ENCOUNTER.REASON_CODE,
+                PX_ENCOUNTER.REASON_DESCRIPTION
+            ]
+        ),
 
-        // PATIENT(
-        //     propertyDefs:[
-        //         PX.ID.withConstraints(index:true, required:true)
-        //         // ,
+        PATIENT(
+            propertyDefs:[
+                PX.ID.withConstraints(index:true, required:true)
+                ,
 
-        //         // PX_PATIENT.BIRTH_DATE,
-        //         // PX_PATIENT.DEATH_DATE,
-        //         // PX_PATIENT.FIRST_NAME,
-        //         // PX_PATIENT.LAST_NAME,
-        //         // PX_PATIENT.LATITUDE,
-        //         // PX_PATIENT.LONGITUDE
-        //     ]
-        // ),
+                PX_PATIENT.BIRTH_DATE,
+                PX_PATIENT.DEATH_DATE,
+                PX_PATIENT.FIRST_NAME,
+                PX_PATIENT.LAST_NAME,
+                PX_PATIENT.LATITUDE,
+                PX_PATIENT.LONGITUDE
+            ]
+        ),
 
 //         SURVEY(
 //             propertyDefs: [
@@ -150,29 +151,29 @@ class GraphModel {
         TEXT
     }
 
-    // @PropertyDefinition
-    // static enum PX_PATIENT {
-    //     // ID,
-    //     BIRTH_DATE,
-    //     DEATH_DATE,
-    //     FIRST_NAME,
-    //     LAST_NAME,
-    //     LATITUDE,
-    //     LONGITUDE
-    // }
+    @PropertyDefinition
+    static enum PX_PATIENT {
+        // ID,
+        BIRTH_DATE,
+        DEATH_DATE,
+        FIRST_NAME,
+        LAST_NAME,
+        LATITUDE,
+        LONGITUDE
+    }
 
-    // @PropertyDefinition
-    // static enum PX_ENCOUNTER {
-    //     START,
-    //     STOP,
+    @PropertyDefinition
+    static enum PX_ENCOUNTER {
+        START,
+        STOP,
 
-    //     CLASS,
-    //     CODE,
-    //     DESCRIPTION,
+        CLASS,
+        CODE,
+        DESCRIPTION,
 
-    //     REASON_CODE,
-    //     REASON_DESCRIPTION
-    // }
+        REASON_CODE,
+        REASON_DESCRIPTION
+    }
 
     // @PropertyDefinition
     // static enum PX_SURVEY {
