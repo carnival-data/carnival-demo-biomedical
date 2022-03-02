@@ -14,6 +14,7 @@ import io.micronaut.context.annotation.Requires
 import carnival.core.graph.CoreGraphNeo4j
 
 import example.carnival.micronaut.config.AppConfig
+import example.carnival.micronaut.service.SyncService
 
 
 
@@ -30,6 +31,8 @@ class ApplicationInitializer implements AutoCloseable {
 
     @Inject ApplicationContext applicationContext
     @Inject AppConfig config
+    
+    @Inject SyncService syncService
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -46,6 +49,8 @@ class ApplicationInitializer implements AutoCloseable {
 
         // exit if we're in a test environment
         if (env.getActiveNames().contains("test")) return
+
+        syncService.syncExample()
     }
     
 

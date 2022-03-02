@@ -20,8 +20,6 @@ class GraphModel {
                 PX.ID.withConstraints(index:true, required:true),
                 PX.START.withConstraints(required:true),
                 PX.STOP.withConstraints(required:true),
-                PX.PATIENT.withConstraints(required:true),
-                PX.ENCOUNTER.withConstraints(required:true),
                 PX.CODE,
                 PX.DESCRIPTION,
                 PX.REASON_CODE,
@@ -34,14 +32,12 @@ class GraphModel {
                 PX.ID.withConstraints(index:true, required:true),
                 PX.START.withConstraints(required:true),
                 PX.STOP.withConstraints(required:true),
-                PX.PATIENT.withConstraints(required:true),
-                PX.ENCOUNTER.withConstraints(required:true),
                 PX.CODE,
                 PX.DESCRIPTION
             ]
         ),
 
-        ENCOUNTER(PXEncounter),
+        //ENCOUNTER(PXEncounter),
 
         // MEDICATION(PXMedication),
         ENCOUNTER(
@@ -84,7 +80,7 @@ class GraphModel {
         HAS_BEEN_CALLED(
             domain:[VX.DOGGIE],
             range:[VX.NAME]
-        ),
+        )
     }
 
 
@@ -111,8 +107,7 @@ class GraphModel {
     static enum PXEncounter {
         ID,
         START,
-        STOP,
-        PATIENT,
+        END,
         PROVIDER,
         ENCOUNTER_CLASS,
         CODE,

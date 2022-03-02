@@ -128,9 +128,9 @@ class ExampleSpec extends Specification {
         def c1V = GraphModel.VX.CAREPLAN.instance().withProperties(
                 GraphModel.PX.ID, "C415",
                 GraphModel.PX.START, "2021",
-                GraphModel.PX.STOP, "2022",
-                GraphModel.PX.PATIENT, "P123",
-                GraphModel.PX.ENCOUNTER, "E500-4205"
+                GraphModel.PX.STOP, "2022"
+                //GraphModel.PX.PATIENT, "P123",
+                //GraphModel.PX.ENCOUNTER, "E500-4205"
         ).create(graph)
         def numVertices4 = g.V().count().next()
 
