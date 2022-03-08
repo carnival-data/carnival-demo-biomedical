@@ -47,10 +47,11 @@ class ApplicationInitializer implements AutoCloseable {
         // environment.getActiveNames().contains("test")
         Environment env = applicationContext.getEnvironment()
 
-        // exit if we're in a test environment
-        if (env.getActiveNames().contains("test")) return
 
         syncService.syncExample()
+        
+        // exit if we're in a test environment
+        if (env.getActiveNames().contains("test")) return
     }
     
 

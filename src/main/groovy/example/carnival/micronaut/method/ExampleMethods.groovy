@@ -12,6 +12,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 import carnival.core.graph.GraphMethods
 import carnival.core.graph.GraphMethod
 
+import example.carnival.micronaut.GraphModel
 import example.carnival.micronaut.config.AppConfig
 import example.carnival.micronaut.vine.ExampleDbVine
 import example.carnival.micronaut.graph.CarnivalGraph
@@ -51,7 +52,12 @@ class ExampleMethods implements GraphMethods {
 
             mdt.data.values().each { rec ->
                 log.trace "rec: ${rec}"
-                GraphModel.VX.ENCOUNTERS.instance().withNonNullMatchingProperties(rec).ensure(graph, g)
+                GraphModel.VX.ENCOUNTER.instance().withProperties(
+                    GraphModel.PX.ID, rec.id,
+                    GraphModel.PX.START, rec.start,
+                    GraphModel.PX.END, rec.stop,
+                ).ensure(graph, g)
+                
             }
 
         }

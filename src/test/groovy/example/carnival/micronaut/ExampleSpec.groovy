@@ -23,10 +23,13 @@ import example.carnival.micronaut.graph.CarnivalGraph
 class ExampleSpec extends Specification {
 
     
+    @Inject AppConfig config
+
     @Shared @Inject CarnivalGraph carnivalGraph
     @Shared Graph graph
     @Shared GraphTraversalSource g
 
+    @Shared @Inject ExampleDbVine exampleDbVine
 
     def setupSpec() {
         carnivalGraph.resetCoreGraph()
@@ -56,7 +59,18 @@ class ExampleSpec extends Specification {
     ///////////////////////////////////////////////////////////////////////////
     // TESTS
     ///////////////////////////////////////////////////////////////////////////
+    
+    void "test create encounters from postgres"() {
+        when:
+        def res = exampleDbVine
+            .method('Encounters')
+        .call().result
+        println "res: ${res}"
 
+        then:
+        res != null
+        
+    }
     void "test create and link vertices"() {
         when:
         def numVertices1 = g.V().count().next()

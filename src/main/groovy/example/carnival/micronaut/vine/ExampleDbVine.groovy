@@ -45,22 +45,26 @@ class ExampleDbVine implements Vine {
             user: config.exampleDb.user,
             password: config.exampleDb.password
         )
+        
     }
 
 
-    class MappedMethod extends MappedDataTableVineMethod { 
-
+    abstract class MappedMethod extends MappedDataTableVineMethod { 
+        
+        abstract String getQuery()
+        abstract Map getDataTableArgs()
+        
         MappedDataTable fetch(Map args) {
             log.trace "database connect()"
             def sql = connect()
 
-            def mdt = createDataTable(dataTableArgs)
+            def mdt = createDataTable( dataTableArgs )
             log.debug "query: ${query}"
 
             try {
                 log.trace "sql.eachRow()"
                 sql.eachRow(query) { row ->
-                    log.trace "row: $row"
+                    //log.trace "row: $row"
                     mdt.dataAdd(row)
                 }
             } finally {

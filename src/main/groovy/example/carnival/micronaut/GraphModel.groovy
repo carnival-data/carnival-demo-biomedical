@@ -42,9 +42,9 @@ class GraphModel {
         // MEDICATION(PXMedication),
         ENCOUNTER(
             propertyDefs:[
-                PX.ID.withConstraints(index:true, required:true),
-                PX.START.withConstraints(required:true),
-                PX.END.withConstraints(required:true)
+                PX.ID,
+                PX.START,
+                PX.END
             ]
         ),
 
@@ -103,7 +103,7 @@ class GraphModel {
         TEXT
     }
 
-    @PropertyDefinition
+    /*@PropertyDefinition
     static enum PXEncounter {
         ID,
         START,
@@ -115,7 +115,7 @@ class GraphModel {
         COST,
         REASON_CODE,
         REASON_DESCRIPTION
-    }
+    }*/
 /*
     @PropertyDefinition
     static enum PXMedication {
