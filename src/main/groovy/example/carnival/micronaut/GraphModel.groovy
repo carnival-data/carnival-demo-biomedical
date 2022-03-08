@@ -16,17 +16,15 @@ class GraphModel {
     @VertexDefinition
     static enum VX {
 
-        // CONDITION(
-        //     propertyDefs:[
-        //         PX.ID.withConstraints(index:true, required:true),
-        //         PX.START.withConstraints(required:true),
-        //         PX.STOP.withConstraints(required:true),
-        //         // PX.PATIENT.withConstraints(required:true),
-        //         // PX.ENCOUNTER.withConstraints(required:true),
-        //         // PX.CODE,
-        //         // PX.DESCRIPTION
-        //     ]
-        // ),
+        CONDITION(
+            propertyDefs:[
+                PX.ID.withConstraints(index:true, required:true),
+                PX.START.withConstraints(required:true),
+                PX.END.withConstraints(required:true),
+                PX.CODE,
+                PX.DESCRIPTION
+            ]
+        ),
 
         // ENCOUNTER(PXEncounter),
 
@@ -36,15 +34,12 @@ class GraphModel {
             propertyDefs:[
                 PX.ID.withConstraints(index:true, required:true),
 
-                // PX_ENCOUNTER.START.withConstraints(required:true),
-                // PX_ENCOUNTER.END.withConstraints(required:true),
-
                 PX.START.withConstraints(required:true),
                 PX.END.withConstraints(required:true),                
 
                 PX_ENCOUNTER.CLASS,
-                PX_ENCOUNTER.CODE,
-                PX_ENCOUNTER.DESCRIPTION,
+                PX.CODE,
+                PX.DESCRIPTION,
 
                 PX_ENCOUNTER.REASON_CODE,
                 PX_ENCOUNTER.REASON_DESCRIPTION
@@ -70,8 +65,8 @@ class GraphModel {
 
                 PX_SURVEY.DATE,             // 2012-05-04T15:30:18Z
 
-                PX_SURVEY.CODE,             // 72166-2
-                PX_SURVEY.DESCRIPTION,      // Tobacco smoking status NHIS
+                PX.CODE,             // 72166-2
+                PX.DESCRIPTION,      // Tobacco smoking status NHIS
 
                 // Idea: use type to make one of two optional fields
                 PX_SURVEY.RESPONSE_NUMERIC, // 9.3
@@ -128,8 +123,8 @@ class GraphModel {
         // STOP,
         // PATIENT,
         // ENCOUNTER,
-        // CODE,
-        // DESCRIPTION,
+         CODE,
+         DESCRIPTION,
         // REASON_CODE,
         // REASON_DESCRIPTION,
 
@@ -155,8 +150,8 @@ class GraphModel {
         // END,
 
         CLASS,
-        CODE,
-        DESCRIPTION,
+//        CODE,
+//        DESCRIPTION,
 
         REASON_CODE,
         REASON_DESCRIPTION
@@ -165,8 +160,8 @@ class GraphModel {
     @PropertyDefinition
     static enum PX_SURVEY {
         DATE,
-        CODE,
-        DESCRIPTION,
+//        CODE,
+//        DESCRIPTION,
         RESPONSE_NUMERIC,
         RESPONSE_TEXT
     }

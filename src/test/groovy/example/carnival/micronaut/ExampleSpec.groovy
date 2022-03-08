@@ -111,7 +111,7 @@ class ExampleSpec extends Specification {
                 // GraphModel.PX_ENCOUNTER.START, "2021",
                 // GraphModel.PX_ENCOUNTER.END, "2022",
 
-                GraphModel.PX_ENCOUNTER.DESCRIPTION, "some desc"
+                GraphModel.PX.DESCRIPTION, "some desc"
         ).ensure(graph, g)
 
         then:
