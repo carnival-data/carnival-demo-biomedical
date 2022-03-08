@@ -32,7 +32,7 @@ class DbVineSpec extends Specification {
 
     void "test query"() {
         when:
-        def res = exampleDbVine.method('MyMappedMethod').call().result
+        def res = exampleDbVine.method('Encounters').call().result
         println "res: ${res}"
 
         then:
