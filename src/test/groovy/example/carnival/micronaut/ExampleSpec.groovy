@@ -23,10 +23,13 @@ import example.carnival.micronaut.graph.CarnivalGraph
 class ExampleSpec extends Specification {
 
     
+//    @Inject AppConfig config
+
     @Shared @Inject CarnivalGraph carnivalGraph
     @Shared Graph graph
     @Shared GraphTraversalSource g
 
+//    @Shared @Inject ExampleDbVine exampleDbVine
 
     def setupSpec() {
         carnivalGraph.resetCoreGraph()
