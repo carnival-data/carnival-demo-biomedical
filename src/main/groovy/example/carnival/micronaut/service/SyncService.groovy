@@ -55,6 +55,8 @@ class SyncService {
 
             exampleMethods.method('LoadEncounters').call(graph, g)
 
+            exampleMethods.method('PrintEncounters').call(graph, g)
+
         }
 
 

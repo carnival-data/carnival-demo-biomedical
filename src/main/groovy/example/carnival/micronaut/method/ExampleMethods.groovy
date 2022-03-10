@@ -65,7 +65,28 @@ class ExampleMethods implements GraphMethods {
     }
 
 
+    class PrintEncounters extends GraphMethod {
+        void execute(Graph graph, GraphTraversalSource g) {
+            // g.V().isa(GraphModel.VX.ENCOUNTER).each {
+            g.V().each { v ->
+                v.properties().each { p ->
+                    log.trace "p ${p}"
+                }
 
+
+                // def foo = v.properties()
+                // log.trace "foo ${foo}"
+                // log.trace "bar ${v.values()}"
+                // log.trace "${v.properties().length}"
+                // log.trace "${foo.length}"
+                log.trace "some node"
+            }
+            // def mylist = g.V()
+            // log.trace "g.length =? ${mylist.length}"
+            // List<Vertex> list = s.V().filter(bothE().limit(50).count().is(lt(50))).toList()
+            // s.V(list).out().has(...)....
+        }
+    }
 
 
 
