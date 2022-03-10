@@ -53,9 +53,9 @@ class ExampleMethods implements GraphMethods {
             mdt.data.values().each { rec ->
                 log.trace "rec: ${rec}"
                 GraphModel.VX.ENCOUNTER.instance().withProperties(
-                    GraphModel.PX.ID, rec.id,
-                    GraphModel.PX.START, rec.start,
-                    GraphModel.PX.END, rec.stop
+                    GraphModel.PX.ID, rec.ID,
+                    GraphModel.PX.START, rec.START,
+                    GraphModel.PX.END, rec.STOP
                 ).ensure(graph, g)
                 
             }
