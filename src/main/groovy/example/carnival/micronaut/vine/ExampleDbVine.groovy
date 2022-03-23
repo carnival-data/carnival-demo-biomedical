@@ -38,6 +38,7 @@ class ExampleDbVine implements Vine {
     ///////////////////////////////////////////////////////////////////////////
 
     Sql connect() {
+        log.trace "jdbc:postgresql://${config.exampleDb.server}:${config.exampleDb.port}/${config.exampleDb.databaseName}"
         Sql.newInstance(
             driver: "org.postgresql.Driver",
             // jdbc:postgresql://db:5432/EHR
@@ -84,11 +85,16 @@ class ExampleDbVine implements Vine {
     /** */
     class Encounters extends MappedMethod {
 
-        Map dataTableArgs = [idFieldName:'Id']
+        Map dataTableArgs = [idFieldName:'Encounter_id']
 
-        String query = """\
-SELECT * 
+        String query = """
+SELECT 
+encounters.id AS encounter_id, 
+encounters.start, 
+encounters.stop,
+patients.id AS patient_id  
 FROM encounters
+JOIN patients ON encounters.patient = patients.id
 LIMIT 10
 """
 

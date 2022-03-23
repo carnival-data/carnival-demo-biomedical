@@ -13,9 +13,9 @@ import carnival.core.graph.GraphMethods
 import carnival.core.graph.GraphMethod
 
 import example.carnival.micronaut.GraphModel
-import example.carnival.micronaut.config.AppConfig
+//import example.carnival.micronaut.config.AppConfig
 import example.carnival.micronaut.vine.ExampleDbVine
-import example.carnival.micronaut.graph.CarnivalGraph
+//import example.carnival.micronaut.graph.CarnivalGraph
 
 
 
@@ -28,9 +28,9 @@ class ExampleMethods implements GraphMethods {
     // FIELDS
     ///////////////////////////////////////////////////////////////////////////
 
-    @Inject AppConfig config
+//    @Inject AppConfig config
     @Inject ExampleDbVine exampleDbVine
-    @Inject CarnivalGraph carnivalGraph
+//    @Inject CarnivalGraph carnivalGraph
 
 
 
@@ -52,12 +52,20 @@ class ExampleMethods implements GraphMethods {
 
             mdt.data.values().each { rec ->
                 log.trace "rec: ${rec}"
-                GraphModel.VX.ENCOUNTER.instance().withProperties(
-                    GraphModel.PX.ID, rec.ID,
+                def encV = GraphModel.VX.ENCOUNTER.instance().withProperties(
+                    GraphModel.PX.ID, rec.ENCOUNTER_ID,
                     GraphModel.PX.START, rec.START,
                     GraphModel.PX.END, rec.STOP
                 ).ensure(graph, g)
-                
+                def patV = GraphModel.VX.PATIENT.instance().withProperties(
+                    GraphModel.PX.ID, rec.PATIENT_ID
+//                    ,
+//                    GraphModel.PX.START, rec.START,
+//                    GraphModel.PX.END, rec.STOP
+                ).ensure(graph, g)
+                //TH5: what is the difference between graph and g?
+//                GraphModel.EX.HAS.instance().from(patV).to(encV).create(graph, g)
+                GraphModel.EX.HAS.instance().from(patV).to(encV).ensure(g)
             }
 
         }
@@ -72,7 +80,10 @@ class ExampleMethods implements GraphMethods {
                 v.properties().each { p ->
                     log.trace "p ${p}"
                 }
-
+//                TH5, not sure why this doesn't work
+//                v.edges().each { e ->
+//                    log.trace "e ${e}"
+//                }
 
                 // def foo = v.properties()
                 // log.trace "foo ${foo}"
