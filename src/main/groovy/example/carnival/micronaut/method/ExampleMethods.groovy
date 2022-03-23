@@ -77,17 +77,18 @@ class ExampleMethods implements GraphMethods {
         void execute(Graph graph, GraphTraversalSource g) {
             // g.V().isa(GraphModel.VX.ENCOUNTER).each {
             g.V().each { v ->
-                log.trace "v ${v} ${v.label()}"
+                log.trace "v: ${v} ${v.label()}"
 
                 v.properties().each { p ->
-                    log.trace "v ${v}, p ${p}"
+                    log.trace "v: ${v}, p: ${p.label()} ${p}"
                 }
 
                 g.V(v).outE(GraphModel.EX.HAS).each { e ->
-                    log.trace "v ${v}, e ${e} ${e.label()}"
+                    log.trace "v: ${v}, e: ${e} ${e.label()}"
 
                     e.properties().each { p ->
-                        log.trace "e ${e}, p ${p}"
+//                        log.trace "e: ${e} p: ${p.label()} ${p}" //TH5: p.label() doesn't work
+                        log.trace "e: ${e} p: ${p}"
                     }
                 }
             }
