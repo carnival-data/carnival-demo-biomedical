@@ -77,21 +77,19 @@ class ExampleMethods implements GraphMethods {
         void execute(Graph graph, GraphTraversalSource g) {
             // g.V().isa(GraphModel.VX.ENCOUNTER).each {
             g.V().each { v ->
+                log.trace "v ${v} ${v.label()}"
+
                 v.properties().each { p ->
                     log.trace "v ${v}, p ${p}"
                 }
 
-                g.V(v).out(GraphModel.EX.HAS).each { e ->
-                    log.trace "v ${v}, e ${e}"
+                g.V(v).outE(GraphModel.EX.HAS).each { e ->
+                    log.trace "v ${v}, e ${e} ${e.label()}"
 
-                      //TH5 intended to print each edge's properties, which should be none
-                      //    Instead it seems to print the vertex v's properties
-//                    e.properties().each { p ->
-//                        log.trace "e ${e}, p ${p}"
-//                    }
+                    e.properties().each { p ->
+                        log.trace "e ${e}, p ${p}"
+                    }
                 }
-
-                log.trace "some node"
             }
 
         }
