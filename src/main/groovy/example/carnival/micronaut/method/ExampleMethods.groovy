@@ -78,24 +78,22 @@ class ExampleMethods implements GraphMethods {
             // g.V().isa(GraphModel.VX.ENCOUNTER).each {
             g.V().each { v ->
                 v.properties().each { p ->
-                    log.trace "p ${p}"
+                    log.trace "v ${v}, p ${p}"
                 }
-//                TH5, not sure why this doesn't work
-//                v.edges().each { e ->
-//                    log.trace "e ${e}"
-//                }
 
-                // def foo = v.properties()
-                // log.trace "foo ${foo}"
-                // log.trace "bar ${v.values()}"
-                // log.trace "${v.properties().length}"
-                // log.trace "${foo.length}"
+                g.V(v).out(GraphModel.EX.HAS).each { e ->
+                    log.trace "v ${v}, e ${e}"
+
+                      //TH5 intended to print each edge's properties, which should be none
+                      //    Instead it seems to print the vertex v's properties
+//                    e.properties().each { p ->
+//                        log.trace "e ${e}, p ${p}"
+//                    }
+                }
+
                 log.trace "some node"
             }
-            // def mylist = g.V()
-            // log.trace "g.length =? ${mylist.length}"
-            // List<Vertex> list = s.V().filter(bothE().limit(50).count().is(lt(50))).toList()
-            // s.V(list).out().has(...)....
+
         }
     }
 
