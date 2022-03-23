@@ -3,8 +3,9 @@ carnival-micronaut:
   name: CarnivalMicronaut
 
   example-db:
-    server: db
-    port: 5432
+#    server: db
+    server: localhost
+    port: 5433
     user: postgres
     password: postgres
     databaseName: EHR
@@ -21,7 +22,7 @@ carnival-micronaut:
 
 carnival:
 
-  cache-mode: OPTIONAL
+  cache-mode: IGNORE #OPTIONAL
 
   directories:
     data:
