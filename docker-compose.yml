@@ -5,9 +5,7 @@ services:
     build:
       context: .
       args:
-        GITHUB_USER: ${GITHUB_USER}
-        GITHUB_TOKEN: ${GITHUB_TOKEN}
-        JAVA_OPTS: ${JAVA_OPTS}
+        JAVA_OPTS: ${JAVA_OPTS:-="-Xms1G -Xmx2G -Dfile.encoding=UTF-8"}
       target: app
     ports:
       - "5858:5858"

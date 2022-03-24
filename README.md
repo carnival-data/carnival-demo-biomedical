@@ -12,10 +12,8 @@ tl;dr
 ```
 Install git
 Install Docker Desktop
-Create GitHub Personal Access Token with read:packages rights, https://github.com/settings/tokens
 git clone https://github.com/carnival-data/carnival-micronaut.git
 cd carnival-micronaut
-edit .env-template, save as .env
 sudo docker-compose build
 sudo docker-compose up
 Open a browser to http://localhost:5858
@@ -37,29 +35,13 @@ Note that as non-profit institutions, we can use the free "Personal" license.
 
 *No. You and your assistants may use Docker Desktop for free with a Docker Personal subscription.*
 
-### 1. Set up GitHub
-
-Set up your GitHub environment to work with [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry).
-
-Generate a [Personal Access Token](https://github.com/settings/tokens) with read:packages rights. Be sure to save it as you won't be able to look it up on GitHub later.
-
-### 2. Clone Carnival Micronaut
+### 1. Clone Carnival Micronaut
 
 ```
 git clone https://github.com/pmbb-ibi/carnival-micronaut.git
 ```
 
-### 3. Put credentials in .env
-
-```
-cd carnival-micronaut
-edit .env-template, save as .env
-```
-
-Edit .env-template, inserting your GitHub username and access token. Save as .env
-
-
-### 4. Build and run the Hello World app
+### 2. Build and run the app
 
 ```
 sudo docker-compose build
