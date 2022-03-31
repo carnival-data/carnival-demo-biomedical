@@ -92,7 +92,7 @@ class ExampleMethods implements GraphMethods {
     }
 
 
-    class PrintEncounters extends GraphMethod {
+    class PrintGraph extends GraphMethod {
         void execute(Graph graph, GraphTraversalSource g) {
             // g.V().isa(GraphModel.VX.ENCOUNTER).each {
             g.V().each { v ->
