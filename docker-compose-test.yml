@@ -10,9 +10,7 @@ services:
       context: .
       target: base
       args:
-        GITHUB_USER: ${GITHUB_USER}
-        GITHUB_TOKEN: ${GITHUB_TOKEN}
-        JAVA_OPTS: ${JAVA_OPTS}
+        JAVA_OPTS: ${JAVA_OPTS:-="-Xms1G -Xmx2G -Dfile.encoding=UTF-8"}
     command: "gradle test --no-daemon"
     tty: true
     stdin_open: true
