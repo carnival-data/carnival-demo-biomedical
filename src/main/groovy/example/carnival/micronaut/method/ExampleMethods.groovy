@@ -58,11 +58,48 @@ class ExampleMethods implements GraphMethods {
                     GraphModel.PX_PATIENT.LAST_NAME, rec.LAST_NAME,
                     GraphModel.PX_PATIENT.LATITUDE, rec.LATITUDE,
                     GraphModel.PX_PATIENT.LONGITUDE, rec.LONGITUDE
-                ).ensure(graph, g)
+//                ).ensure(graph, g)
+                ).create(graph)
             }
 
         }
 
+    }
+
+    class LoadConditions extends GraphMethod {
+
+        void execute(Graph graph, GraphTraversalSource g) {
+
+            def mdt = exampleDbVine
+                .method('Conditions')
+                .call()
+                .result
+
+            mdt.data.values().each { rec ->
+                log.trace "rec: ${rec}"
+                def conditionVBuilder = GraphModel.VX.CONDITION.instance()
+                    .withProperty(GraphModel.PX.ID, rec.CONDITION_ID)
+                    .withProperty(GraphModel.PX.START, rec.START)
+                    .withProperty(GraphModel.PX.CODE, rec.CODE)
+                    .withProperty(GraphModel.PX.DESCRIPTION, rec.DESCRIPTION)
+
+                if (rec.END != null) {
+                    conditionVBuilder.withProperty(GraphModel.PX.END, rec.END)
+                }
+
+                def conditionV = conditionVBuilder.create(graph)
+
+                def patient_id = rec.PATIENT_ID
+//                def encounter_id = rec.ENCOUNTER_ID
+
+                g.V()
+                    .isa(GraphModel.VX.PATIENT)
+                    .has(GraphModel.PX.ID, patient_id)
+                .each { patV ->
+                    GraphModel.EX.HAS.instance().from(patV).to(conditionV).create()
+                }
+            }
+        }
     }
 
     /** */

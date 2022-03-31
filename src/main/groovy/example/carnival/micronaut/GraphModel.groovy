@@ -49,7 +49,7 @@ class GraphModel {
             propertyDefs:[
                 PX.ID.withConstraints(index:true, required:true),
                 PX.START.withConstraints(required:true),
-                PX.END.withConstraints(required:true),
+                PX.END,
                 PX.CODE,
                 PX.DESCRIPTION
             ]

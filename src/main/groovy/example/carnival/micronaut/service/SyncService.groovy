@@ -55,9 +55,13 @@ class SyncService {
 
             exampleMethods.method('LoadPatients').call(graph, g)
 
-            exampleMethods.method('LoadEncounters').call(graph, g)
+            exampleMethods.method('LoadConditions').call(graph, g)
+
+//            exampleMethods.method('LoadEncounters').call(graph, g)
 
             exampleMethods.method('PrintGraph').call(graph, g)
+
+            graph.tx().commit()
 
         }
 

@@ -95,7 +95,38 @@ patients.last AS last_name,
 patients.lat AS latitude,
 patients.lon AS longitude 
 FROM patients
---JOIN encounters ON encounters.patient = patients.id
+LIMIT 10
+"""
+
+    }
+
+    class Conditions extends MappedMethod {
+
+        Map dataTableArgs = [idFieldName:'Condition_id']
+
+        String query = """
+SELECT 
+patient || '-' || encounter || '-' || cond.rownum AS condition_id,
+cond.start,
+cond.stop AS end,
+cond.patient AS patient_id,
+cond.encounter AS encounter_id,
+cond.code,
+cond.description
+FROM
+(
+    SELECT 
+    patient || '-' || encounter AS condition_id,
+    start,
+    stop,
+    patient,
+    encounter,
+    code,
+    description
+    ,
+    ROW_NUMBER() OVER() AS rownum
+    from conditions
+) AS cond
 LIMIT 10
 """
 
@@ -110,10 +141,8 @@ LIMIT 10
 SELECT 
 encounters.id AS encounter_id, 
 encounters.start, 
-encounters.stop,
-patients.id AS patient_id  
+encounters.stop
 FROM encounters
-JOIN patients ON encounters.patient = patients.id
 LIMIT 10
 """
 
