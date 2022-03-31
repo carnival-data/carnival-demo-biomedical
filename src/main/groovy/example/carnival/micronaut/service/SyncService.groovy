@@ -53,6 +53,8 @@ class SyncService {
 
         carnivalGraph.coreGraph.withTraversal { graph, g ->
 
+            exampleMethods.method('LoadPatients').call(graph, g)
+
             exampleMethods.method('LoadEncounters').call(graph, g)
 
             exampleMethods.method('PrintEncounters').call(graph, g)

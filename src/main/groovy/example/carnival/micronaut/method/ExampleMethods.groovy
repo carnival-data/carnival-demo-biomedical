@@ -39,6 +39,31 @@ class ExampleMethods implements GraphMethods {
     // SERVICE METHOD
     ///////////////////////////////////////////////////////////////////////////
 
+    class LoadPatients extends GraphMethod {
+
+        void execute(Graph graph, GraphTraversalSource g) {
+
+            def mdt = exampleDbVine
+                .method('Patients')
+                .call()
+                .result
+
+            mdt.data.values().each { rec ->
+                log.trace "rec: ${rec}"
+                def patV = GraphModel.VX.PATIENT.instance().withProperties(
+                    GraphModel.PX.ID, rec.ID,
+                    GraphModel.PX_PATIENT.BIRTH_DATE, rec.BIRTH_DATE,
+//                    GraphModel.PX_PATIENT.DEATH_DATE, rec.DEATH_DATE, //death_date always null
+                    GraphModel.PX_PATIENT.FIRST_NAME, rec.FIRST_NAME,
+                    GraphModel.PX_PATIENT.LAST_NAME, rec.LAST_NAME,
+                    GraphModel.PX_PATIENT.LATITUDE, rec.LATITUDE,
+                    GraphModel.PX_PATIENT.LONGITUDE, rec.LONGITUDE
+                ).ensure(graph, g)
+            }
+
+        }
+
+    }
 
     /** */
     class LoadEncounters extends GraphMethod {
@@ -59,17 +84,11 @@ class ExampleMethods implements GraphMethods {
                 ).ensure(graph, g)
                 def patV = GraphModel.VX.PATIENT.instance().withProperties(
                     GraphModel.PX.ID, rec.PATIENT_ID
-//                    ,
-//                    GraphModel.PX.START, rec.START,
-//                    GraphModel.PX.END, rec.STOP
                 ).ensure(graph, g)
-                //TH5: what is the difference between graph and g?
-//                GraphModel.EX.HAS.instance().from(patV).to(encV).create(graph, g)
+
                 GraphModel.EX.HAS.instance().from(patV).to(encV).ensure(g)
             }
-
         }
-
     }
 
 

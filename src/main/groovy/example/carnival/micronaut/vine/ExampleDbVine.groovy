@@ -81,6 +81,25 @@ class ExampleDbVine implements Vine {
     // VINE METHODS
     ///////////////////////////////////////////////////////////////////////////
 
+    class Patients extends MappedMethod {
+
+        Map dataTableArgs = [idFieldName:'Id']
+
+        String query = """
+SELECT 
+patients.id,
+patients.birthdate AS birth_date,
+patients.deathdate AS death_date,
+patients.first AS first_name,
+patients.last AS last_name,
+patients.lat AS latitude,
+patients.lon AS longitude 
+FROM patients
+--JOIN encounters ON encounters.patient = patients.id
+LIMIT 10
+"""
+
+    }
 
     /** */
     class Encounters extends MappedMethod {

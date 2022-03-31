@@ -16,6 +16,35 @@ class GraphModel {
     @VertexDefinition
     static enum VX {
 
+        PATIENT(
+            propertyDefs:[
+                PX.ID.withConstraints(index:true, required:true),
+
+                PX_PATIENT.BIRTH_DATE,
+                PX_PATIENT.DEATH_DATE,
+                PX_PATIENT.FIRST_NAME,
+                PX_PATIENT.LAST_NAME,
+                PX_PATIENT.LATITUDE,
+                PX_PATIENT.LONGITUDE
+            ]
+        ),
+
+        ENCOUNTER(
+            propertyDefs:[
+                PX.ID.withConstraints(index:true, required:true),
+
+                PX.START.withConstraints(required:true),
+                PX.END.withConstraints(required:true),
+
+                PX_ENCOUNTER.CLASS,
+                PX.CODE,
+                PX.DESCRIPTION,
+
+                PX_ENCOUNTER.REASON_CODE,
+                PX_ENCOUNTER.REASON_DESCRIPTION
+            ]
+        ),
+
         CONDITION(
             propertyDefs:[
                 PX.ID.withConstraints(index:true, required:true),
@@ -29,35 +58,6 @@ class GraphModel {
         // ENCOUNTER(PXEncounter),
 
         // MEDICATION(PXMedication),
-        
-        ENCOUNTER(
-            propertyDefs:[
-                PX.ID.withConstraints(index:true, required:true),
-
-                PX.START.withConstraints(required:true),
-                PX.END.withConstraints(required:true),                
-
-                PX_ENCOUNTER.CLASS,
-                PX.CODE,
-                PX.DESCRIPTION,
-
-                PX_ENCOUNTER.REASON_CODE,
-                PX_ENCOUNTER.REASON_DESCRIPTION
-            ]
-        ),
-
-        PATIENT(
-            propertyDefs:[
-                PX.ID.withConstraints(index:true, required:true),
-
-                PX_PATIENT.BIRTH_DATE,
-                PX_PATIENT.DEATH_DATE,
-                PX_PATIENT.FIRST_NAME,
-                PX_PATIENT.LAST_NAME,
-                PX_PATIENT.LATITUDE,
-                PX_PATIENT.LONGITUDE
-            ]
-        ),
 
         SURVEY(
             propertyDefs: [
