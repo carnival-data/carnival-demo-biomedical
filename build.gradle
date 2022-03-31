@@ -1,5 +1,12 @@
 buildscript {
     repositories {
+        // We may have to manually comment out earlier repos to pull from later ones (disable maven to use github)
+        maven {
+            name = "MavenCentralSnapshots"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            url = carnivalVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
         mavenCentral()
         maven {
             name = "GitHubPackages"
@@ -12,7 +19,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath group:'org.carnival', name:'carnival-gradle', version:'2.1.0'
+        classpath group:'io.github.carnival-data', name:'carnival-gradle', version:project.findProperty("carnivalVersion")
     }    
 }
 
@@ -25,9 +32,16 @@ plugins {
 apply plugin: 'carnival.application'
 
 version "0.1"
-group "org.carnival"
+group "io.github.carnival-data"
 
 repositories {
+    // We may have to manually comment out earlier repos to pull from later ones (disable maven to use github)
+    maven {
+        name = "MavenCentralSnapshots"
+        def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+        def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+        url = carnivalVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+    }
     mavenCentral()
     maven {
         name = "GitHubPackages"
