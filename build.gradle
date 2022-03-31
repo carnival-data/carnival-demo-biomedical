@@ -7,16 +7,11 @@ buildscript {
             def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
             url = carnivalVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
-        mavenCentral()
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/carnival-data/carnival")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
+
         mavenLocal()
+
+        mavenCentral()
+
     }
     dependencies {
         classpath group:'io.github.carnival-data', name:'carnival-gradle', version:project.findProperty("carnivalVersion")
@@ -25,7 +20,7 @@ buildscript {
 
 plugins {
     id "groovy"
-    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id "com.github.johnrengelman.shadow" version "7.1.2"
     id "io.micronaut.application" version '1.0.5'
     id 'com.github.ManifestClasspath' version '0.1.0-RELEASE'
 }
@@ -42,15 +37,10 @@ repositories {
         def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
         url = carnivalVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
     }
+
+    mavenLocal()
+
     mavenCentral()
-    maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/carnival-data/carnival")
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
-            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-        }
-    }
 }
 
 micronaut {
@@ -63,11 +53,15 @@ micronaut {
 }
 
 dependencies {
+//    annotationProcessor "io.micronaut:micronaut-inject-java"
+
     implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut.groovy:micronaut-runtime-groovy")
     implementation("javax.annotation:javax.annotation-api")
     implementation("io.micronaut:micronaut-http-client")
     runtimeOnly("ch.qos.logback:logback-classic")
+
+//    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 }
 
 mainClassName = "example.carnival.micronaut.Application"
