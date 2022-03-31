@@ -64,7 +64,7 @@ class ExampleDbVine implements Vine {
             try {
                 log.trace "sql.eachRow()"
                 sql.eachRow(query) { row ->
-                    //log.trace "row: $row"
+                    log.trace "row: $row"
                     mdt.dataAdd(row)
                 }
             } finally {
@@ -84,11 +84,63 @@ class ExampleDbVine implements Vine {
     /** */
     class Encounters extends MappedMethod {
 
-        Map dataTableArgs = [idFieldName:'Id']
+        Map dataTableArgs = [idFieldName:'encounter_id']
 
         String query = """\
-SELECT * 
+SELECT 
+encounters.id AS encounter_id, 
+encounters.start, 
+encounters.stop,
+patients.id AS patient_id,
+patients.birthdate,
+patients.deathdate,
+patients.first,
+patients.last,
+patients.lat,
+patients.lon
+
 FROM encounters
+JOIN patients ON encounters.patient = patients.id
+LIMIT 10
+"""
+
+    }
+
+//     /** */
+//     class Conditions extends MappedMethod {
+
+//         Map dataTableArgs = [idFieldName:'start']
+
+//         String query = """\
+// SELECT 
+// conditions.start, 
+// conditions.stop,
+// conditions.patient as patient_id,
+// conditions.encounter as encounter_id,
+// conditions.code,
+// conditions.description
+// FROM conditions
+// LIMIT 10
+// """
+
+//     }
+
+    /** */
+    class Careplans extends MappedMethod {
+
+        Map dataTableArgs = [idFieldName:'careplan_id']
+
+        String query = """\
+SELECT 
+careplans.id as careplan_id,
+careplans.start, 
+careplans.stop,
+careplans.patient as patient_id,
+careplans.encounter as encounter_id,
+careplans.code,
+careplans.description
+FROM careplans
+LIMIT 10
 """
 
     }

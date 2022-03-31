@@ -15,7 +15,8 @@ import org.apache.tinkerpop.gremlin.structure.Graph
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
 
 import example.carnival.micronaut.graph.CarnivalGraph
-
+//import example.carnival.micronaut.config.AppConfig
+import example.carnival.micronaut.method.ExampleMethods
 
 
 
@@ -23,13 +24,13 @@ import example.carnival.micronaut.graph.CarnivalGraph
 class ExampleSpec extends Specification {
 
     
-    @Inject AppConfig config
+    //@Inject AppConfig config
 
     @Shared @Inject CarnivalGraph carnivalGraph
     @Shared Graph graph
     @Shared GraphTraversalSource g
 
-    @Shared @Inject ExampleDbVine exampleDbVine
+    @Shared @Inject ExampleMethods exampleMethods
 
     def setupSpec() {
         carnivalGraph.resetCoreGraph()
@@ -62,15 +63,16 @@ class ExampleSpec extends Specification {
     
     void "test create encounters from postgres"() {
         when:
-        def res = exampleDbVine
-            .method('Encounters')
-        .call().result
+        def res = exampleMethods
+            .method('LoadEncounters')
+            .call(graph, g).result
         println "res: ${res}"
 
         then:
         res != null
         
     }
+    
     void "test create and link vertices"() {
         when:
         def numVertices1 = g.V().count().next()

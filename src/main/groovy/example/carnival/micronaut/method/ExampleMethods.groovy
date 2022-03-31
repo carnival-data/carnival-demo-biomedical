@@ -52,16 +52,73 @@ class ExampleMethods implements GraphMethods {
 
             mdt.data.values().each { rec ->
                 log.trace "rec: ${rec}"
-                GraphModel.VX.ENCOUNTER.instance().withProperties(
-                    GraphModel.PX.ID, rec.id,
-                    GraphModel.PX.START, rec.start,
-                    GraphModel.PX.END, rec.stop,
+                def encV = GraphModel.VX.ENCOUNTER.instance().withProperties(
+                    GraphModel.PX.ID, rec.ENCOUNTER_ID,
+                    GraphModel.PX.START, rec.START,
+                    GraphModel.PX.END, rec.STOP
                 ).ensure(graph, g)
-                
+                def patV = GraphModel.VX.PATIENT.instance().withProperties(
+                    GraphModel.PX.ID, rec.PATIENT_ID,
+                    GraphModel.PX_PATIENT.BIRTH_DATE, rec.BIRTHDATE,
+                    // GraphModel.PX_PATIENT.DEATH_DATE, rec.DEATHDATE,
+                    GraphModel.PX_PATIENT.FIRST_NAME, rec.FIRST,
+                    GraphModel.PX_PATIENT.LAST_NAME, rec.LAST,
+                    GraphModel.PX_PATIENT.LATITUDE, rec.LAT,
+                    GraphModel.PX_PATIENT.LONGITUDE, rec.LON
+                ).ensure(graph, g)
+                //TH5: what is the difference between graph and g?
+//                GraphModel.EX.HAS.instance().from(patV).to(encV).create(graph, g)
+                GraphModel.EX.HAS.instance().from(patV).to(encV).ensure(g)
             }
-
         }
+    }
 
+    /** */
+    class LoadConditions extends GraphMethod {
+
+        void execute(Graph graph, GraphTraversalSource g) {
+
+            def mdt = exampleDbVine
+                .method('Conditions')
+                .call()
+            .result
+
+            mdt.data.values().each { rec ->
+                log.trace "rec: ${rec}"
+                def encV = GraphModel.VX.CONDITION.instance().withProperties(
+                    GraphModel.PX.START, rec.START,
+                    GraphModel.PX.END, rec.STOP,
+                    GraphModel.PX.PATIENT, rec.PATIENT_ID,
+                    GraphModel.PX.CODE, rec.CODE,
+                    GraphModel.PX.DESCRIPTION, rec.DESCRIPTION
+                ).ensure(graph, g)
+            }
+        }
+    }
+
+    /** */
+    class LoadCareplans extends GraphMethod {
+
+        void execute(Graph graph, GraphTraversalSource g) {
+
+            def mdt = exampleDbVine
+                .method('Careplans')
+                .call()
+            .result
+
+            mdt.data.values().each { rec ->
+                log.trace "rec: ${rec}"
+                def encV = GraphModel.VX.CAREPLAN.instance().withProperties(
+                    GraphModel.PX.ID, rec.CAREPLAN_ID,
+                    GraphModel.PX.START, rec.START,
+                    //GraphModel.PX.END, rec.STOP,
+                    GraphModel.PX.PATIENT, rec.PATIENT_ID,
+                    GraphModel.PX.ENCOUNTER, rec.ENCOUNTER_ID,
+                    GraphModel.PX.CODE, rec.CODE,
+                    GraphModel.PX.DESCRIPTION, rec.DESCRIPTION
+                ).ensure(graph, g)
+            }
+        }
     }
 
 
