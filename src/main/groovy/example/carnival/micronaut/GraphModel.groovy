@@ -15,6 +15,43 @@ class GraphModel {
 
     @VertexDefinition
     static enum VX {
+        PATIENT(
+            propertyDefs:[
+                PX.ID.withConstraints(index:true, required:true),
+            
+                PX_PATIENT.BIRTH_DATE,
+                PX_PATIENT.DEATH_DATE,
+                PX_PATIENT.FIRST_NAME,
+                PX_PATIENT.LAST_NAME,
+                PX_PATIENT.LATITUDE,
+                PX_PATIENT.LONGITUDE
+            ]
+        ),
+
+        ENCOUNTER(
+            propertyDefs:[
+                PX.ID.withConstraints(index:true, required:true),
+                PX.START,
+                PX.END,
+                
+                PX_ENCOUNTER.CLASS,
+                PX.CODE,
+                PX.DESCRIPTION,
+                
+                PX_ENCOUNTER.REASON_CODE,
+                PX_ENCOUNTER.REASON_DESCRIPTION
+            ]
+        ),
+
+        CONDITION(
+            propertyDefs:[
+                PX.START.withConstraints(required:true),
+                PX.END,
+                PX.CODE,
+                PX.DESCRIPTION
+            ]
+        ),
+
         CAREPLAN(
             propertyDefs:[
                 PX.ID.withConstraints(index:true, required:true),
@@ -29,49 +66,10 @@ class GraphModel {
             ]
         ),
 
-        CONDITION(
-            propertyDefs:[
-                PX.START.withConstraints(required:true),
-                PX.END.withConstraints(required:true),
-                PX.PATIENT,
-                PX.CODE,
-                PX.DESCRIPTION
-            ]
-        ),
-
         //ENCOUNTER(PXEncounter),
 
         // MEDICATION(PXMedication),
-        ENCOUNTER(
-            propertyDefs:[
-                PX.ID,
-                PX.START,
-                PX.END,
-                
-                PX_ENCOUNTER.CLASS,
-                PX.CODE,
-                PX.DESCRIPTION,
-                PX_ENCOUNTER.BASE_ENCOUNTER_COST,
-                PX_ENCOUNTER.TOTAL_CLAIM_COST,
-                PX.PAYER_COVERAGE,
-                PX_ENCOUNTER.REASON_CODE,
-                PX_ENCOUNTER.REASON_DESCRIPTION
-            ]
-        ),
-
-        PATIENT(
-            propertyDefs:[
-                PX.ID.withConstraints(index:true, required:true),
-            
-                PX_PATIENT.BIRTH_DATE,
-                PX_PATIENT.DEATH_DATE,
-                PX_PATIENT.FIRST_NAME,
-                PX_PATIENT.LAST_NAME,
-                PX_PATIENT.LATITUDE,
-                PX_PATIENT.LONGITUDE
-            ]
-        ),
-
+        
         SURVEY(
             propertyDefs: [
 //              PX.ID.withConstraints(index: true, required: true), // Generate unique id?
@@ -85,7 +83,9 @@ class GraphModel {
                 PX_SURVEY.RESPONSE_NUMERIC, // 9.3
                 PX_SURVEY.RESPONSE_TEXT     // Never smoker
             ]
-        ),
+        )
+        
+        /*,
 
         DOGGIE(
             propertyDefs:[
@@ -97,7 +97,7 @@ class GraphModel {
             propertyDefs:[
                 PX.TEXT.withConstraints(index:true, unique:true, required:true),
             ]
-        )
+        )*/
     }
 
 
@@ -105,11 +105,16 @@ class GraphModel {
     @EdgeDefinition
     static enum EX {
         HAS,
+        DIAGNOSED(
+            domain:[VX.ENCOUNTER],
+            range:[VX.CONDITION]
+        )
         
+        /*,
         HAS_BEEN_CALLED(
             domain:[VX.DOGGIE],
             range:[VX.NAME]
-        )
+        )*/
     }
 
 
@@ -123,12 +128,12 @@ class GraphModel {
         ENCOUNTER,
         
         CODE,
-        DESCRIPTION,
-        PAYER_COVERAGE,
-
+        DESCRIPTION
+        
+        //,
         // doggie properties
-        IS_ADORABLE,
-        TEXT
+        //IS_ADORABLE,
+        //TEXT
     }
     
     @PropertyDefinition
@@ -144,8 +149,6 @@ class GraphModel {
     @PropertyDefinition
     static enum PX_ENCOUNTER {
         CLASS,
-        BASE_ENCOUNTER_COST,
-        TOTAL_CLAIM_COST,
         REASON_CODE,
         REASON_DESCRIPTION
     }

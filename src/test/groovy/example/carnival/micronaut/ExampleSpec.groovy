@@ -73,7 +73,7 @@ class ExampleSpec extends Specification {
         
     }
     
-    void "test create and link vertices"() {
+    /*void "test create and link vertices"() {
         when:
         def numVertices1 = g.V().count().next()
         def dottieV = GraphModel.VX.DOGGIE.instance().withProperties(
@@ -104,7 +104,7 @@ class ExampleSpec extends Specification {
             .isa(GraphModel.VX.NAME)
             .has(GraphModel.PX.TEXT, 'Dottie')
         .tryNext().isPresent()
-    }
+    }*/
     void "test create and link patient vertices"() {
         when:
         def numVertices1   = g.V().count().next()

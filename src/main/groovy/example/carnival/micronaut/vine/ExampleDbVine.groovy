@@ -75,11 +75,54 @@ class ExampleDbVine implements Vine {
 
     }
 
+    abstract class GenericMappedMethod extends GenericDataTableVineMethod { 
+        
+        abstract String getQuery()
+        
+        GenericDataTable fetch(Map args) {
+            log.trace "database connect()"
+            def sql = connect()
+
+            def gdt = createDataTable()
+            log.debug "query: ${query}"
+
+            try {
+                log.trace "sql.eachRow()"
+                sql.eachRow(query) { row ->
+                    log.trace "row: $row"
+                    gdt.dataAdd(row)
+                }
+            } finally {
+                if (sql) sql.close()
+            }
+            gdt
+        }
+
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // VINE METHODS
     ///////////////////////////////////////////////////////////////////////////
 
+    class Patients extends MappedMethod {
+
+        Map dataTableArgs = [idFieldName:'Id']
+
+        String query = """
+SELECT 
+patients.id,
+patients.birthdate AS birth_date,
+patients.deathdate AS death_date,
+patients.first AS first_name,
+patients.last AS last_name,
+patients.lat AS latitude,
+patients.lon AS longitude 
+FROM patients
+LIMIT 100
+"""
+
+    }
 
     /** */
     class Encounters extends MappedMethod {
@@ -91,39 +134,31 @@ SELECT
 encounters.id AS encounter_id, 
 encounters.start, 
 encounters.stop,
-patients.id AS patient_id,
-patients.birthdate,
-patients.deathdate,
-patients.first,
-patients.last,
-patients.lat,
-patients.lon
+patients.id AS patient_id
 
 FROM encounters
 JOIN patients ON encounters.patient = patients.id
-LIMIT 10
+LIMIT 100
 """
 
     }
 
-//     /** */
-//     class Conditions extends MappedMethod {
+    class Conditions extends GenericMappedMethod {
 
-//         Map dataTableArgs = [idFieldName:'start']
+        String query = """\
+SELECT 
+conditions.start,
+conditions.stop AS end,
+conditions.patient AS patient_id,
+conditions.encounter AS encounter_id,
+conditions.code,
+conditions.description
+FROM
+conditions
+LIMIT 100
+"""
 
-//         String query = """\
-// SELECT 
-// conditions.start, 
-// conditions.stop,
-// conditions.patient as patient_id,
-// conditions.encounter as encounter_id,
-// conditions.code,
-// conditions.description
-// FROM conditions
-// LIMIT 10
-// """
-
-//     }
+    }
 
     /** */
     class Careplans extends MappedMethod {
@@ -140,7 +175,7 @@ careplans.encounter as encounter_id,
 careplans.code,
 careplans.description
 FROM careplans
-LIMIT 10
+LIMIT 100
 """
 
     }
