@@ -30,7 +30,7 @@ For this example the researcher is looking for a case and control cohort of pati
 >Controls
 >* Age - between 18 and 55
 >* No indications of *DISEASE* via *CRITERIA*
->* Has not been prescribes medication *XXX*
+>* Has not been prescribed medication *XXX*
 >* Self-reported social history of drinking or smoking
 
 
