@@ -31,9 +31,8 @@ class ApplicationInitializer implements AutoCloseable {
 
     @Inject ApplicationContext applicationContext
     @Inject AppConfig config
-
+    
     @Inject SyncService syncService
-
 
     ///////////////////////////////////////////////////////////////////////////
     // METHODS

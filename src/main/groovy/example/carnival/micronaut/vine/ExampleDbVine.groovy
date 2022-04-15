@@ -46,15 +46,15 @@ class ExampleDbVine implements Vine {
             user: config.exampleDb.user,
             password: config.exampleDb.password
         )
-
+        
     }
 
 
-    abstract class MappedMethod extends MappedDataTableVineMethod {
-
+    abstract class MappedMethod extends MappedDataTableVineMethod { 
+        
         abstract String getQuery()
         abstract Map getDataTableArgs()
-
+        
         MappedDataTable fetch(Map args) {
             log.trace "database connect()"
             def sql = connect()
@@ -72,6 +72,31 @@ class ExampleDbVine implements Vine {
                 if (sql) sql.close()
             }
             mdt
+        }
+
+    }
+
+    abstract class GenericMappedMethod extends GenericDataTableVineMethod { 
+        
+        abstract String getQuery()
+        
+        GenericDataTable fetch(Map args) {
+            log.trace "database connect()"
+            def sql = connect()
+
+            def gdt = createDataTable()
+            log.debug "query: ${query}"
+
+            try {
+                log.trace "sql.eachRow()"
+                sql.eachRow(query) { row ->
+                    log.trace "row: $row"
+                    gdt.dataAdd(row)
+                }
+            } finally {
+                if (sql) sql.close()
+            }
+            gdt
         }
 
     }
@@ -95,39 +120,7 @@ patients.last AS last_name,
 patients.lat AS latitude,
 patients.lon AS longitude 
 FROM patients
-LIMIT 10
-"""
-
-    }
-
-    class Conditions extends MappedMethod {
-
-        Map dataTableArgs = [idFieldName:'Condition_id']
-
-        String query = """
-SELECT 
-patient || '-' || encounter || '-' || cond.rownum AS condition_id,
-cond.start,
-cond.stop AS end,
-cond.patient AS patient_id,
-cond.encounter AS encounter_id,
-cond.code,
-cond.description
-FROM
-(
-    SELECT 
-    patient || '-' || encounter AS condition_id,
-    start,
-    stop,
-    patient,
-    encounter,
-    code,
-    description
-    ,
-    ROW_NUMBER() OVER() AS rownum
-    from conditions
-) AS cond
-LIMIT 10
+LIMIT 100
 """
 
     }
@@ -135,15 +128,57 @@ LIMIT 10
     /** */
     class Encounters extends MappedMethod {
 
-        Map dataTableArgs = [idFieldName:'Encounter_id']
+        Map dataTableArgs = [idFieldName:'encounter_id']
 
-        String query = """
+        String query = """\
 SELECT 
 encounters.id AS encounter_id, 
 encounters.start, 
-encounters.stop
+encounters.stop,
+patients.id AS patient_id
+
 FROM encounters
-LIMIT 10
+JOIN patients ON encounters.patient = patients.id
+LIMIT 100
+"""
+
+    }
+
+    class Conditions extends GenericMappedMethod {
+
+        String query = """\
+SELECT 
+conditions.start,
+conditions.stop AS end,
+conditions.patient AS patient_id,
+conditions.encounter AS encounter_id,
+conditions.code,
+conditions.description
+FROM
+conditions
+LIMIT 100
+"""
+
+    }
+
+    class Medications extends GenericMappedMethod {
+
+        String query = """\
+SELECT 
+medications.start,
+medications.stop AS end,
+medications.patient AS patient_id,
+medications.encounter AS encounter_id,
+medications.base_cost,
+medications.dispenses,
+medications.total_cost,
+medications.code,
+medications.description,
+medications.reason_code,
+medications.reason_description
+FROM
+medications
+LIMIT 100
 """
 
     }

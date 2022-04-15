@@ -11,6 +11,7 @@ import java.util.concurrent.Callable
 import groovy.util.logging.Slf4j
 import groovy.transform.CompileStatic
 import groovy.transform.ToString
+import groovy.time.TimeCategory
 
 import io.reactivex.Observer
 import io.reactivex.Single
@@ -211,12 +212,7 @@ numEdges: ${numEdges}
 
     @Get("/patients")
     @Produces(MediaType.TEXT_PLAIN)
-    String patients(
-//            @Nullable @QueryValue Boolean isAdorable,
-//            @Nullable @QueryValue String name
-    ) {
-
-//        log.trace "doggies isAdorable:${isAdorable} name:${name}"
+    String patients() {
 
         String response = ""
 
@@ -226,27 +222,29 @@ numEdges: ${numEdges}
                 .count().next()
             response += "There are ${numPatients} total patients."
 
-//            g.V()
-//                    .isa(GraphModel.VX.DOGGIE).as('d')
-//                    .out(GraphModel.EX.HAS_BEEN_CALLED)
-//                    .isa(GraphModel.VX.NAME).as('n')
-//                    .select('d', 'n')
-//                    .each { m ->
-//                        response += "\n${m.d} ${GraphModel.PX.TEXT.valueOf(m.n)}"
-//                    }
-//
-//            if (isAdorable != null) {
-//                Integer numAdorableDoggies = g.V()
-//                        .isa(GraphModel.VX.DOGGIE)
-//                        .has(GraphModel.PX.IS_ADORABLE, isAdorable)
-//                        .count().next()
-//                response += "\nThere are ${numAdorableDoggies} doggies that are"
-//                if (!isAdorable) response += " not"
-//                response += " adorable."
-//            }
+        //use(groovy.time.TimeCategory){
+           g.V()
+                   .isa(GraphModel.VX.PATIENT).as('p')
+                   //.has(GraphModel.PX_PATIENT.BIRTH_DATE, between(new Date()-18.year, new Date()-55.year))
+                   .out(GraphModel.EX.HAS)
+                   .isa(GraphModel.VX.ENCOUNTER).as('e')
+                   .select('p', 'e')
+                   .each { m ->
+                       response += "\n${m.p.BIRTH_DATE} ${m.e}"
+                   }
+
+           /*if (isAdorable != null) {
+               Integer numAdorableDoggies = g.V()
+                       .isa(GraphModel.VX.DOGGIE)
+                       .has(GraphModel.PX.IS_ADORABLE, isAdorable)
+                       .count().next()
+               response += "\nThere are ${numAdorableDoggies} doggies that are"
+               if (!isAdorable) response += " not"
+               response += " adorable."
+           }*/
+        //}
         }
 
         response
     }
-
 }

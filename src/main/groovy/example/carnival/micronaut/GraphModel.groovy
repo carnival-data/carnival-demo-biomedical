@@ -15,11 +15,10 @@ class GraphModel {
 
     @VertexDefinition
     static enum VX {
-
         PATIENT(
             propertyDefs:[
                 PX.ID.withConstraints(index:true, required:true),
-
+            
                 PX_PATIENT.BIRTH_DATE,
                 PX_PATIENT.DEATH_DATE,
                 PX_PATIENT.FIRST_NAME,
@@ -32,14 +31,13 @@ class GraphModel {
         ENCOUNTER(
             propertyDefs:[
                 PX.ID.withConstraints(index:true, required:true),
-
-                PX.START.withConstraints(required:true),
-                PX.END.withConstraints(required:true),
-
+                PX.START,
+                PX.END,
+                
                 PX_ENCOUNTER.CLASS,
                 PX.CODE,
                 PX.DESCRIPTION,
-
+                
                 PX_ENCOUNTER.REASON_CODE,
                 PX_ENCOUNTER.REASON_DESCRIPTION
             ]
@@ -47,7 +45,6 @@ class GraphModel {
 
         CONDITION(
             propertyDefs:[
-                PX.ID.withConstraints(index:true, required:true),
                 PX.START.withConstraints(required:true),
                 PX.END,
                 PX.CODE,
@@ -55,10 +52,26 @@ class GraphModel {
             ]
         ),
 
-        // ENCOUNTER(PXEncounter),
+        MEDICATION(
+            propertyDefs:[
+                PX.START.withConstraints(required:true),
+                PX.END,
+                
+                PX_MEDICATION.COST,
+                PX_MEDICATION.DISPENSES,
+                PX_MEDICATION.TOTAL_COST,
+
+                PX.CODE,
+                PX.DESCRIPTION,
+                PX_MEDICATION.REASON_CODE,
+                PX_MEDICATION.REASON_DESCRIPTION
+            ]
+        ),
+
+        //ENCOUNTER(PXEncounter),
 
         // MEDICATION(PXMedication),
-
+        
         SURVEY(
             propertyDefs: [
 //              PX.ID.withConstraints(index: true, required: true), // Generate unique id?
@@ -70,21 +83,12 @@ class GraphModel {
 
                 // Idea: use type to make one of two optional fields
                 PX_SURVEY.RESPONSE_NUMERIC, // 9.3
-                PX_SURVEY.RESPONSE_TEXT     // Never smoker
-            ]
-        ),
-
-        DOGGIE(
-            propertyDefs:[
-                PX.IS_ADORABLE.withConstraints(index:true, required:true),
-            ]
-        ),
-
-        NAME(
-            propertyDefs:[
-                PX.TEXT.withConstraints(index:true, unique:true, required:true),
+                PX_SURVEY.RESPONSE_TEXT,     // Never smoker
+                
+                PX_SURVEY.RESPONSE_UNIT    
             ]
         )
+        
     }
 
     /*
@@ -105,10 +109,27 @@ class GraphModel {
         //     range:[VX.ENCOUNTER]
         // ),
 
-        HAS_BEEN_CALLED(
-            domain:[VX.DOGGIE],
-            range:[VX.NAME]
+        DIAGNOSED_WITH(
+            domain:[VX.PATIENT],
+            range:[VX.CONDITION]
         ),
+        DIAGNOSED_AT(
+            domain:[VX.ENCOUNTER],
+            range:[VX.CONDITION]
+        ),
+        SELF_REPORTED(
+            domain:[VX.PATIENT],
+            range:[VX.SURVEY]
+        ),
+        PRESCRIBED(
+            domain:[VX.PATIENT],
+            range:[VX.MEDICATION]
+        ),
+        PRESCRIBED_AT(
+            domain:[VX.ENCOUNTER],
+            range:[VX.MEDICATION]
+        )
+        
     }
 
 
@@ -120,22 +141,14 @@ class GraphModel {
 
         START,
         END,
-        // STOP,
-        // PATIENT,
-        // ENCOUNTER,
-         CODE,
-         DESCRIPTION,
-        // REASON_CODE,
-        // REASON_DESCRIPTION,
-
-        // doggie properties
-        IS_ADORABLE,
-        TEXT
+        
+        CODE,
+        DESCRIPTION
+        
     }
-
+    
     @PropertyDefinition
     static enum PX_PATIENT {
-        // ID,
         BIRTH_DATE,
         DEATH_DATE,
         FIRST_NAME,
@@ -146,13 +159,7 @@ class GraphModel {
 
     @PropertyDefinition
     static enum PX_ENCOUNTER {
-        // START,
-        // END,
-
         CLASS,
-//        CODE,
-//        DESCRIPTION,
-
         REASON_CODE,
         REASON_DESCRIPTION
     }
@@ -160,12 +167,32 @@ class GraphModel {
     @PropertyDefinition
     static enum PX_SURVEY {
         DATE,
-//        CODE,
-//        DESCRIPTION,
         RESPONSE_NUMERIC,
-        RESPONSE_TEXT
+        RESPONSE_TEXT,
+        RESPONSE_UNIT
     }
 
+    @PropertyDefinition
+    static enum PX_MEDICATION {
+        COST,
+        DISPENSES,
+        TOTAL_COST,
+        REASON_CODE,
+        REASON_DESCRIPTION
+    }
+    /*@PropertyDefinition
+    static enum PXEncounter {
+        ID,
+        START,
+        END,
+        PROVIDER,
+        ENCOUNTER_CLASS,
+        CODE,
+        DESCRIPTION,
+        COST,
+        REASON_CODE,
+        REASON_DESCRIPTION
+    }*/
 /*
     @PropertyDefinition
     static enum PXMedication {
