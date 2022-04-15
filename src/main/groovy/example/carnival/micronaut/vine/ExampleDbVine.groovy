@@ -160,24 +160,27 @@ LIMIT 100
 
     }
 
-    /** */
-    class Careplans extends MappedMethod {
-
-        Map dataTableArgs = [idFieldName:'careplan_id']
+    class Medications extends GenericMappedMethod {
 
         String query = """\
 SELECT 
-careplans.id as careplan_id,
-careplans.start, 
-careplans.stop,
-careplans.patient as patient_id,
-careplans.encounter as encounter_id,
-careplans.code,
-careplans.description
-FROM careplans
+medications.start,
+medications.stop AS end,
+medications.patient AS patient_id,
+medications.encounter AS encounter_id,
+medications.base_cost,
+medications.dispenses,
+medications.total_cost,
+medications.code,
+medications.description,
+medications.reason_code,
+medications.reason_description
+FROM
+medications
 LIMIT 100
 """
 
     }
+
 
 }

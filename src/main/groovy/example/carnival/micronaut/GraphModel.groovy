@@ -52,17 +52,19 @@ class GraphModel {
             ]
         ),
 
-        CAREPLAN(
+        MEDICATION(
             propertyDefs:[
-                PX.ID.withConstraints(index:true, required:true),
                 PX.START.withConstraints(required:true),
                 PX.END,
-                PX.PATIENT,
-                PX.ENCOUNTER,
+                
+                PX_MEDICATION.COST,
+                PX_MEDICATION.DISPENSES,
+                PX_MEDICATION.TOTAL_COST,
+
                 PX.CODE,
-                PX.DESCRIPTION
-                //PX.REASON_CODE,
-                //PX.REASON_DESCRIPTION
+                PX.DESCRIPTION,
+                PX_MEDICATION.REASON_CODE,
+                PX_MEDICATION.REASON_DESCRIPTION
             ]
         ),
 
@@ -81,7 +83,9 @@ class GraphModel {
 
                 // Idea: use type to make one of two optional fields
                 PX_SURVEY.RESPONSE_NUMERIC, // 9.3
-                PX_SURVEY.RESPONSE_TEXT     // Never smoker
+                PX_SURVEY.RESPONSE_TEXT,     // Never smoker
+                
+                PX_SURVEY.RESPONSE_UNIT    
             ]
         )
         
@@ -105,9 +109,25 @@ class GraphModel {
     @EdgeDefinition
     static enum EX {
         HAS,
-        DIAGNOSED(
+        DIAGNOSED_WITH(
+            domain:[VX.PATIENT],
+            range:[VX.CONDITION]
+        ),
+        DIAGNOSED_AT(
             domain:[VX.ENCOUNTER],
             range:[VX.CONDITION]
+        ),
+        SELF_REPORTED(
+            domain:[VX.PATIENT],
+            range:[VX.SURVEY]
+        ),
+        PRESCRIBED(
+            domain:[VX.PATIENT],
+            range:[VX.MEDICATION]
+        ),
+        PRESCRIBED_AT(
+            domain:[VX.ENCOUNTER],
+            range:[VX.MEDICATION]
         )
         
         /*,
@@ -124,8 +144,6 @@ class GraphModel {
         ID,
         START,
         END,
-        PATIENT,
-        ENCOUNTER,
         
         CODE,
         DESCRIPTION
@@ -157,7 +175,17 @@ class GraphModel {
     static enum PX_SURVEY {
         DATE,
         RESPONSE_NUMERIC,
-        RESPONSE_TEXT
+        RESPONSE_TEXT,
+        RESPONSE_UNIT
+    }
+
+    @PropertyDefinition
+    static enum PX_MEDICATION {
+        COST,
+        DISPENSES,
+        TOTAL_COST,
+        REASON_CODE,
+        REASON_DESCRIPTION
     }
     /*@PropertyDefinition
     static enum PXEncounter {
