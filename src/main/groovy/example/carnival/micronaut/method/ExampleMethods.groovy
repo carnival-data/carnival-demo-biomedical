@@ -6,6 +6,10 @@ import groovy.transform.ToString
 import groovy.util.logging.Slf4j
 import javax.inject.Singleton
 import javax.inject.Inject
+import java.text.*
+import java.time.Period
+import java.time.LocalDate
+import java.time.ZoneId
 
 import org.apache.tinkerpop.gremlin.structure.Graph
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
@@ -59,7 +63,17 @@ class ExampleMethods implements GraphMethods {
                     GraphModel.PX_PATIENT.LAST_NAME, rec.LAST_NAME,
                     GraphModel.PX_PATIENT.LATITUDE, rec.LATITUDE,
                     GraphModel.PX_PATIENT.LONGITUDE, rec.LONGITUDE
-                ).ensure(graph, g)
+                )
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd")
+
+                def age = Period.between(
+                    formatter.parse(rec.BIRTH_DATE)
+                        .toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate(), LocalDate.now()).getYears()
+
+                patV.withProperty(GraphModel.PX_PATIENT.AGE, age)
+                patV.ensure(graph, g)
 
 //                ).create(graph)
             }

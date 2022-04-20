@@ -43,6 +43,7 @@ import org.apache.tinkerpop.gremlin.structure.Vertex
 import org.apache.tinkerpop.gremlin.structure.Edge
 import org.apache.tinkerpop.gremlin.structure.Graph
 import org.apache.tinkerpop.gremlin.structure.T
+import org.apache.tinkerpop.gremlin.process.traversal.P
 
 import carnival.core.graph.Core
 import example.carnival.micronaut.config.AppConfig
@@ -222,15 +223,14 @@ numEdges: ${numEdges}
                 .count().next()
             response += "There are ${numPatients} total patients."
 
-        //use(groovy.time.TimeCategory){
            g.V()
                    .isa(GraphModel.VX.PATIENT).as('p')
-                   //.has(GraphModel.PX_PATIENT.BIRTH_DATE, between(new Date()-18.year, new Date()-55.year))
+                   .has(GraphModel.PX_PATIENT.AGE, P.between(18, 55))
                    .out(GraphModel.EX.HAS)
                    .isa(GraphModel.VX.ENCOUNTER).as('e')
                    .select('p', 'e')
                    .each { m ->
-                       response += "\n${m.p.BIRTH_DATE} ${m.e}"
+                       response += "\n${m.p} ${m.e} ${GraphModel.PX_PATIENT.AGE.valueOf(m.p)}"
                    }
 
            /*if (isAdorable != null) {
@@ -242,7 +242,6 @@ numEdges: ${numEdges}
                if (!isAdorable) response += " not"
                response += " adorable."
            }*/
-        //}
         }
 
         response
