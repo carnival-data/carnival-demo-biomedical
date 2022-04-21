@@ -23,16 +23,19 @@ For this example the researcher is looking for a case and control cohort of pati
 
 >Cases
 >* Age - between 18 and 55
->* At least two healthcare encounters with indications of *DISEASE* via *CRITERIA*
->* Has been prescribed medication *XXX*
->* Self-reported social history of drinking or smoking
+>* At least two healthcare encounters with indications of diabetes, based on ICD code*
+>* Has been prescribed medication lisinopril*
+>* Self-reported social history of drinking or smoking*
 >
 >Controls
 >* Age - between 18 and 55
->* No indications of *DISEASE* via *CRITERIA*
->* Has not been prescribed medication *XXX*
->* Self-reported social history of drinking or smoking
+>* No indications of diabetes, based on ICD code*
+>* Has not been prescribed medication lisinopril*
+>* Self-reported social history of drinking or smoking*
 
+\* Feel free to change any of 18-55/diabetes/lisinopril/smoking specifics to better match what's in the synthetic dataset. For instance, if lisinopril isn't represented in the data, but atorvastatin is, then switch to that.
+
+\* SQL queries may be helpful to find useable values.
 
 ## Examining the Source Data
 There are two synthetic relational datasources:
