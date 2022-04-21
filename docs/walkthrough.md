@@ -35,7 +35,7 @@ For this example the researcher is looking for a case and control cohort of pati
 
 \* Feel free to change any of 18-55/diabetes/lisinopril/smoking specifics to better match what's in the synthetic dataset. For instance, if lisinopril isn't represented in the data, but atorvastatin is, then switch to that.
 
-\* SQL queries may be helpful to find useable values.
+\* SQL queries may be helpful to find usable values.
 
 ## Examining the Source Data
 There are two synthetic relational datasources:
