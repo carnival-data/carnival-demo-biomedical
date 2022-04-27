@@ -119,7 +119,13 @@ patients.last AS last_name,
 patients.lat AS latitude,
 patients.lon AS longitude 
 FROM patients
-LIMIT 100
+/*WHERE patients.id IN
+(
+SELECT encounters.patient FROM encounters 
+JOIN conditions ON encounters.id = conditions.encounter
+WHERE conditions.description = 'Prediabetes'
+GROUP BY encounters.patient HAVING COUNT(encounters.patient) > 1
+)*/
 """
 
     }
@@ -138,7 +144,14 @@ patients.id AS patient_id
 
 FROM encounters
 JOIN patients ON encounters.patient = patients.id
-LIMIT 100
+WHERE patients.id IN
+(
+SELECT encounters.patient FROM encounters
+JOIN conditions ON encounters.id = conditions.encounter
+/*WHERE conditions.description = 'Prediabetes'*/
+GROUP BY encounters.patient, conditions.CODE HAVING COUNT(encounters.patient) > 1 AND COUNT(conditions.CODE) >1
+)
+LIMIT 10000
 """
 
     }
@@ -155,7 +168,8 @@ conditions.code,
 conditions.description
 FROM
 conditions
-LIMIT 100
+WHERE description = 'Prediabetes'
+LIMIT 10000
 """
 
     }
@@ -177,7 +191,8 @@ medications.reason_code,
 medications.reason_description
 FROM
 medications
-LIMIT 100
+WHERE description = 'Hydrochlorothiazide 25 MG Oral Tablet'
+LIMIT 10000
 """
 
     }

@@ -75,4 +75,22 @@ groovydoc {
 
 shadowJar {
   zip64 true
+<<<<<<< Updated upstream
 }
+=======
+}
+
+task myDeleteTask(type: Delete) {
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Conditions.csv")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Conditions.yaml")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Patients.csv")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Patients.yaml")
+
+    delete fileTree(dir:'./carnival-micronaut-home/data/graph/app', include: '**')
+    delete files('./carnival-micronaut-home/data/graph/app/index')
+    delete files('./carnival-micronaut-home/data/graph/app/metrics')
+    delete files('./carnival-micronaut-home/data/graph/app/profiles')
+    delete files('./carnival-micronaut-home/data/graph/app/schema')
+    delete files('./carnival-micronaut-home/data/graph/app/logs')
+}
+>>>>>>> Stashed changes

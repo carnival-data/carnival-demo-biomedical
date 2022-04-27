@@ -57,9 +57,9 @@ class SyncService {
 
             exampleMethods.method('LoadPatients').call(graph, g)
             exampleMethods.method('LoadEncounters').call(graph, g)
-            exampleMethods.method('LoadConditions').call(graph, g)
-            exampleMethods.method('LoadMedications').call(graph, g)
-            exampleMethods.method('LoadSurveys').call(graph, g)
+            //exampleMethods.method('LoadConditions').call(graph, g)
+            //exampleMethods.method('LoadMedications').call(graph, g)
+            //exampleMethods.method('LoadSurveys').call(graph, g)
 
             //exampleMethods.method('LoadCareplans').call(graph, g)
             //reasoners.method('LinkConditionsAndPatients').call(graph, g)
