@@ -119,13 +119,13 @@ patients.last AS last_name,
 patients.lat AS latitude,
 patients.lon AS longitude 
 FROM patients
-/*WHERE patients.id IN
+WHERE patients.id IN
 (
 SELECT encounters.patient FROM encounters 
 JOIN conditions ON encounters.id = conditions.encounter
-WHERE conditions.description = 'Prediabetes'
+WHERE conditions.description LIKE '%Viral sinusitis%'
 GROUP BY encounters.patient HAVING COUNT(encounters.patient) > 1
-)*/
+)
 """
 
     }
@@ -148,8 +148,7 @@ WHERE patients.id IN
 (
 SELECT encounters.patient FROM encounters
 JOIN conditions ON encounters.id = conditions.encounter
-/*WHERE conditions.description = 'Prediabetes'*/
-GROUP BY encounters.patient, conditions.CODE HAVING COUNT(encounters.patient) > 1 AND COUNT(conditions.CODE) >1
+WHERE conditions.description LIKE '%Viral sinusitis%'
 )
 LIMIT 10000
 """
@@ -168,7 +167,7 @@ conditions.code,
 conditions.description
 FROM
 conditions
-WHERE description = 'Prediabetes'
+WHERE description LIKE '%Viral sinusitis%'
 LIMIT 10000
 """
 
@@ -191,7 +190,7 @@ medications.reason_code,
 medications.reason_description
 FROM
 medications
-WHERE description = 'Hydrochlorothiazide 25 MG Oral Tablet'
+WHERE description LIKE '%Amoxicillin%'
 LIMIT 10000
 """
 

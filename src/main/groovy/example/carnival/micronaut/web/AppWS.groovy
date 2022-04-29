@@ -39,7 +39,7 @@ import io.micronaut.http.annotation.PathVariable
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
 import org.apache.tinkerpop.gremlin.process.traversal.Traversal
-
+import org.apache.tinkerpop.gremlin.process.traversal.P
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerFactory
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
@@ -214,8 +214,11 @@ numEdges: ${numEdges}
 
         resp
     }
-
+PatientClass {
+    property
+}
     @Get("/patients")
+    //@Produces(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     String patients() {
 
@@ -227,32 +230,8 @@ numEdges: ${numEdges}
                 .isa(GraphModel.VX.PATIENT)
                 .count().next()
             response += "There are ${numPatients} total patients."
-<<<<<<< Updated upstream
-
-        //use(groovy.time.TimeCategory){
-           g.V()
-                   .isa(GraphModel.VX.PATIENT).as('p')
-                   //.has(GraphModel.PX_PATIENT.BIRTH_DATE, between(new Date()-18.year, new Date()-55.year))
-                   .out(GraphModel.EX.HAS)
-                   .isa(GraphModel.VX.ENCOUNTER).as('e')
-                   .select('p', 'e')
-                   .each { m ->
-                       response += "\n${m.p.BIRTH_DATE} ${m.e}"
-                   }
-
-           /*if (isAdorable != null) {
-               Integer numAdorableDoggies = g.V()
-                       .isa(GraphModel.VX.DOGGIE)
-                       .has(GraphModel.PX.IS_ADORABLE, isAdorable)
-                       .count().next()
-               response += "\nThere are ${numAdorableDoggies} doggies that are"
-               if (!isAdorable) response += " not"
-               response += " adorable."
-           }*/
-        //}
-=======
             */
-
+/*
             def patientVs = g.V()
                 
                 .isa(GraphModel.VX.PATIENT).as('p')
@@ -262,11 +241,11 @@ numEdges: ${numEdges}
                 //.range(2,-1)
                 .out(GraphModel.EX.HAS)
                 //.in(GraphModel.EX.HAS)
-                //.where(out(GraphModel.EX.HAS).count()).is(gt(2))
+                //.where(__.out(GraphModel.EX.HAS).count()).is(gt(2))
                 .isa(GraphModel.VX.ENCOUNTER).as('e')
                 //.inV()
                 
-                //.group().by(outE().count()).order(local).by(values,asc)
+                //.group().by(__.outE().count()).order(local).by(values,asc)
 
                 .each { m ->
                     //response += "\n${m.p.label()} ${m.e.label()} ${m.c.label()}"
@@ -277,9 +256,9 @@ numEdges: ${numEdges}
                         response += "\n${m}" 
                     
                 }
-          
+          */
  //solution
-/*
+
             def patientVs = g.V()
                 .isa(GraphModel.VX.PATIENT).as('p')
                 .has(GraphModel.PX_PATIENT.AGE, P.between(18, 55))
@@ -289,8 +268,8 @@ numEdges: ${numEdges}
                 .isa(GraphModel.VX.CONDITION).as('c')
                 .has(GraphModel.PX.DESCRIPTION, 'Prediabetes') 
 
-                .select('p')
-                .out(GraphModel.EX.PRESCRIBED)
+                .select('e')
+                .out(GraphModel.EX.PRESCRIBED_AT)
                 .isa(GraphModel.VX.MEDICATION).as('med')
                 .has(GraphModel.PX.DESCRIPTION, 'Hydrochlorothiazide 25 MG Oral Tablet') 
 
@@ -314,20 +293,22 @@ numEdges: ${numEdges}
                     response += "\n${m}" 
                 }
                 */
+                
 
                 /**************groovy way***************/
-                /*
+                
                 .select('p','e','c','med','s')
                 .toList()
                 .groupBy({it.p})
                 .collect({it.key})
                 .each { m ->
+                    //populate object
                     response += "\n${GraphModel.PX.ID.valueOf(m)}" 
                 }
-            */    
->>>>>>> Stashed changes
+                
+                /*String cvJson = objectMapper.writeValueAsString(columnValues)*/
         }
-
+        //patientObj
         response
     }
 }
