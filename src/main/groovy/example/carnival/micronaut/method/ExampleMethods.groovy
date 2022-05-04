@@ -8,6 +8,10 @@ import groovy.util.logging.Slf4j
 
 import javax.inject.Singleton
 import javax.inject.Inject
+import java.text.*
+import java.time.Period
+import java.time.LocalDate
+import java.time.ZoneId
 
 import java.text.*
 import java.time.LocalDateTime
@@ -25,9 +29,10 @@ import carnival.core.graph.GraphMethod
 
 
 import example.carnival.micronaut.GraphModel
-//import example.carnival.micronaut.config.AppConfig
+import example.carnival.micronaut.config.AppConfig
 import example.carnival.micronaut.vine.ExampleDbVine
-//import example.carnival.micronaut.graph.CarnivalGraph
+import example.carnival.micronaut.graph.CarnivalGraph
+import carnival.util.DataTable
 
 import org.apache.tinkerpop.gremlin.process.traversal.P
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__
@@ -41,9 +46,9 @@ class ExampleMethods implements GraphMethods {
     // FIELDS
     ///////////////////////////////////////////////////////////////////////////
 
-//    @Inject AppConfig config
+    @Inject AppConfig config
     @Inject ExampleDbVine exampleDbVine
-//    @Inject CarnivalGraph carnivalGraph
+    @Inject CarnivalGraph carnivalGraph
 
 
 
@@ -91,48 +96,10 @@ class ExampleMethods implements GraphMethods {
                 patV.ensure(graph, g)
 
 //                ).create(graph)
-
             }
 
         }
 
-    }
-
-    class LoadConditions extends GraphMethod {
-
-        void execute(Graph graph, GraphTraversalSource g) {
-
-            def mdt = exampleDbVine
-                .method('Conditions')
-                .call()
-                .result
-
-            mdt.data.values().each { rec ->
-                log.trace "rec: ${rec}"
-                def conditionVBuilder = GraphModel.VX.CONDITION.instance()
-                    .withProperty(GraphModel.PX.ID, rec.CONDITION_ID)
-                    .withProperty(GraphModel.PX.START, rec.START)
-                    .withProperty(GraphModel.PX.CODE, rec.CODE)
-                    .withProperty(GraphModel.PX.DESCRIPTION, rec.DESCRIPTION)
-                    //i added
-
-                if (rec.END != null) {
-                    conditionVBuilder.withProperty(GraphModel.PX.END, rec.END)
-                }
-
-                def conditionV = conditionVBuilder.create(graph)
-
-                def patient_id = rec.PATIENT_ID
-//                def encounter_id = rec.ENCOUNTER_ID
-
-                g.V()
-                    .isa(GraphModel.VX.PATIENT)
-                    .has(GraphModel.PX.ID, patient_id)
-                .each { patV ->
-                    GraphModel.EX.HAS.instance().from(patV).to(conditionV).create()
-                }
-            }
-        }
     }
 
     /** */
@@ -152,11 +119,102 @@ class ExampleMethods implements GraphMethods {
                     GraphModel.PX.START, rec.START,
                     GraphModel.PX.END, rec.STOP
                 ).ensure(graph, g)
-                def patV = GraphModel.VX.PATIENT.instance().withProperties(
-                    GraphModel.PX.ID, rec.PATIENT_ID
-                ).ensure(graph, g)
 
-                GraphModel.EX.HAS.instance().from(patV).to(encV).ensure(g)
+                def patient_id = rec.PATIENT_ID
+
+                g.V()
+                    .isa(GraphModel.VX.PATIENT)
+                    .has(GraphModel.PX.ID, patient_id)
+                .each { patV ->
+                    GraphModel.EX.HAS.instance().from(patV).to(encV).create()
+                }
+            }
+        }
+    }
+
+    /** */
+    class LoadConditions extends GraphMethod {
+
+        void execute(Graph graph, GraphTraversalSource g) {
+
+            def gdt = exampleDbVine
+                .method('Conditions')
+                .call()
+                .result
+
+            gdt.dataIterator().each { rec ->
+                log.trace "rec: ${rec}"
+                def conditionVBuilder = GraphModel.VX.CONDITION.instance()
+                    .withProperty(GraphModel.PX.START, rec.START)
+                    .withNonNullProperties(GraphModel.PX.END, rec.END)
+                    .withProperty(GraphModel.PX.CODE, rec.CODE)
+                    .withProperty(GraphModel.PX.DESCRIPTION, rec.DESCRIPTION)
+                    //i added
+
+                def conditionV = conditionVBuilder.create(graph)
+
+                def patient_id = rec.PATIENT_ID
+                def encounter_id = rec.ENCOUNTER_ID
+
+                g.V()
+                    .isa(GraphModel.VX.PATIENT)
+                    .has(GraphModel.PX.ID, patient_id)
+                .each { patV ->
+                    log.trace "patV: ${patV} Patient: ${patient_id}"
+                    GraphModel.EX.DIAGNOSED_WITH.instance().from(patV).to(conditionV).create()
+                }
+                g.V()
+                    .isa(GraphModel.VX.ENCOUNTER)
+                    .has(GraphModel.PX.ID, encounter_id)
+                .each { encV ->
+                    log.trace "encV: ${encV} Encounter: ${encounter_id}"
+                    GraphModel.EX.DIAGNOSED_AT.instance().from(encV).to(conditionV).create()
+                }
+            }
+        }
+    }
+    
+    /** */
+    class LoadMedications extends GraphMethod {
+
+        void execute(Graph graph, GraphTraversalSource g) {
+
+            def gdt = exampleDbVine
+                .method('Medications')
+                .call()
+            .result
+
+            gdt.dataIterator().each { rec ->
+                log.trace "rec: ${rec}"
+                def medV = GraphModel.VX.MEDICATION.instance()
+                    .withProperty(GraphModel.PX.START, rec.START)
+                    //GraphModel.PX.END, rec.STOP,
+                    .withProperty(GraphModel.PX_MEDICATION.COST, rec.BASE_COST)
+                    .withProperty(GraphModel.PX_MEDICATION.DISPENSES, rec.DISPENSES)
+                    .withProperty(GraphModel.PX_MEDICATION.TOTAL_COST, rec.TOTAL_COST)
+                    .withProperty(GraphModel.PX.CODE, rec.CODE)
+                    .withProperty(GraphModel.PX.DESCRIPTION, rec.DESCRIPTION)
+                    .withNonNullProperties(GraphModel.PX_MEDICATION.REASON_CODE, rec.REASON_CODE)
+                    .withNonNullProperties(GraphModel.PX_MEDICATION.REASON_DESCRIPTION, rec.REASON_DESCRIPTION)
+                .ensure(graph, g)
+
+                def patient_id = rec.PATIENT_ID
+                def encounter_id = rec.ENCOUNTER_ID
+
+                g.V()
+                    .isa(GraphModel.VX.PATIENT)
+                    .has(GraphModel.PX.ID, patient_id)
+                .each { patV ->
+                    log.trace "patV: ${patV} Patient: ${patient_id}"
+                    GraphModel.EX.PRESCRIBED.instance().from(patV).to(medV).create()
+                }
+                g.V()
+                    .isa(GraphModel.VX.ENCOUNTER)
+                    .has(GraphModel.PX.ID, encounter_id)
+                .each { encV ->
+                    log.trace "encV: ${encV} Encounter: ${encounter_id}"
+                    GraphModel.EX.PRESCRIBED_AT.instance().from(encV).to(medV).create()
+                }
             }
         }
     }
@@ -562,6 +620,5 @@ class ExampleMethods implements GraphMethods {
 
         }
     }
-
 
 }

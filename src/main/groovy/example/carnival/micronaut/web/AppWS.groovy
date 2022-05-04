@@ -11,6 +11,7 @@ import java.util.concurrent.Callable
 import groovy.util.logging.Slf4j
 import groovy.transform.CompileStatic
 import groovy.transform.ToString
+import groovy.time.TimeCategory
 
 import io.reactivex.Observer
 import io.reactivex.Single
@@ -42,6 +43,7 @@ import org.apache.tinkerpop.gremlin.structure.Vertex
 import org.apache.tinkerpop.gremlin.structure.Edge
 import org.apache.tinkerpop.gremlin.structure.Graph
 import org.apache.tinkerpop.gremlin.structure.T
+import org.apache.tinkerpop.gremlin.process.traversal.P
 
 import carnival.core.graph.Core
 import example.carnival.micronaut.config.AppConfig
@@ -211,12 +213,7 @@ numEdges: ${numEdges}
 
     @Get("/patients")
     @Produces(MediaType.TEXT_PLAIN)
-    String patients(
-//            @Nullable @QueryValue Boolean isAdorable,
-//            @Nullable @QueryValue String name
-    ) {
-
-//        log.trace "doggies isAdorable:${isAdorable} name:${name}"
+    String patients() {
 
         String response = ""
 
@@ -226,27 +223,27 @@ numEdges: ${numEdges}
                 .count().next()
             response += "There are ${numPatients} total patients."
 
-//            g.V()
-//                    .isa(GraphModel.VX.DOGGIE).as('d')
-//                    .out(GraphModel.EX.HAS_BEEN_CALLED)
-//                    .isa(GraphModel.VX.NAME).as('n')
-//                    .select('d', 'n')
-//                    .each { m ->
-//                        response += "\n${m.d} ${GraphModel.PX.TEXT.valueOf(m.n)}"
-//                    }
-//
-//            if (isAdorable != null) {
-//                Integer numAdorableDoggies = g.V()
-//                        .isa(GraphModel.VX.DOGGIE)
-//                        .has(GraphModel.PX.IS_ADORABLE, isAdorable)
-//                        .count().next()
-//                response += "\nThere are ${numAdorableDoggies} doggies that are"
-//                if (!isAdorable) response += " not"
-//                response += " adorable."
-//            }
+           g.V()
+                   .isa(GraphModel.VX.PATIENT).as('p')
+                   .has(GraphModel.PX_PATIENT.AGE, P.between(18, 55))
+                   .out(GraphModel.EX.HAS)
+                   .isa(GraphModel.VX.ENCOUNTER).as('e')
+                   .select('p', 'e')
+                   .each { m ->
+                       response += "\n${m.p} ${m.e} ${GraphModel.PX_PATIENT.AGE.valueOf(m.p)}"
+                   }
+
+           /*if (isAdorable != null) {
+               Integer numAdorableDoggies = g.V()
+                       .isa(GraphModel.VX.DOGGIE)
+                       .has(GraphModel.PX.IS_ADORABLE, isAdorable)
+                       .count().next()
+               response += "\nThere are ${numAdorableDoggies} doggies that are"
+               if (!isAdorable) response += " not"
+               response += " adorable."
+           }*/
         }
 
         response
     }
-
 }

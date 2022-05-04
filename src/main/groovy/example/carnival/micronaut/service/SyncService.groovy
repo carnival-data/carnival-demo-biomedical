@@ -21,6 +21,7 @@ import example.carnival.micronaut.config.AppConfig
 import example.carnival.micronaut.vine.ExampleDbVine
 import example.carnival.micronaut.method.ExampleMethods
 import example.carnival.micronaut.graph.CarnivalGraph
+import example.carnival.micronaut.method.Reasoners
 
 
 
@@ -40,6 +41,7 @@ class SyncService {
     @Inject ExampleDbVine exampleDbVine
     @Inject CarnivalGraph carnivalGraph
     @Inject ExampleMethods exampleMethods
+    @Inject Reasoners reasoners
 
 
 
@@ -54,15 +56,18 @@ class SyncService {
         carnivalGraph.coreGraph.withTraversal { graph, g ->
 
             exampleMethods.method('LoadPatients').call(graph, g)
-
+            exampleMethods.method('LoadEncounters').call(graph, g)
             exampleMethods.method('LoadConditions').call(graph, g)
+            exampleMethods.method('LoadMedications').call(graph, g)
+            exampleMethods.method('LoadSurveys').call(graph, g)
 
-//            exampleMethods.method('LoadEncounters').call(graph, g)
-
-            exampleMethods.method('PrintGraph').call(graph, g)
-
+            //exampleMethods.method('LoadCareplans').call(graph, g)
+            //reasoners.method('LinkConditionsAndPatients').call(graph, g)
+            //reasoners.method('LinkCareplansAndPatients').call(graph, g)
+            
+            //exampleMethods.method('PrintGraph').call(graph, g)
+            
             graph.tx().commit()
-
         }
 
 
