@@ -292,7 +292,7 @@ class ExampleMethods implements GraphMethods {
 //                    .has(GraphModel.PX.DESCRIPTION, P.eq("Hypertension"))
 //                    .in(GraphModel.EX.DIAGNOSED_AT).as("e")
 //                .
-                .valueMap()
+//                .valueMap()
             .has("code", "423315002")
 
 //                    .isa(GraphModel.VX.ENCOUNTER)
@@ -367,6 +367,7 @@ class ExampleMethods implements GraphMethods {
                             __.as("a").out(GraphModel.EX.HAS).count().is(P.gt(1))
                     )
                     .select("a")
+                    .valueMap()
 
                     .each { v ->
                         log.info "${v}"

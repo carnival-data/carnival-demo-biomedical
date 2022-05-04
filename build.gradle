@@ -1,5 +1,7 @@
 buildscript {
     repositories {
+        mavenLocal()
+
         // We may have to manually comment out earlier repos to pull from later ones (disable maven to use github)
         maven {
             name = "MavenCentralSnapshots"
@@ -8,14 +10,15 @@ buildscript {
             url = carnivalVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
 
-        mavenLocal()
-
         mavenCentral()
-
     }
     dependencies {
+        classpath group:'io.github.carnival-data', name:'carnival-util', version:project.findProperty("carnivalVersion")
+        classpath group:'io.github.carnival-data', name:'carnival-core', version:project.findProperty("carnivalVersion")
+        classpath group:'io.github.carnival-data', name:'carnival-graph', version:project.findProperty("carnivalVersion")
         classpath group:'io.github.carnival-data', name:'carnival-gradle', version:project.findProperty("carnivalVersion")
-    }    
+
+    }
 }
 
 plugins {
@@ -30,6 +33,8 @@ version "0.1"
 group "io.github.carnival-data"
 
 repositories {
+    mavenLocal()
+
     // We may have to manually comment out earlier repos to pull from later ones (disable maven to use github)
     maven {
         name = "MavenCentralSnapshots"
@@ -37,8 +42,6 @@ repositories {
         def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
         url = carnivalVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
     }
-
-    mavenLocal()
 
     mavenCentral()
 }
@@ -84,3 +87,25 @@ groovydoc {
 shadowJar {
   zip64 true
 }
+
+task myDeleteTask(type: Delete) {
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Conditions.csv")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Conditions.yaml")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Patients.csv")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Patients.yaml")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Encounters.csv")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Encounters.yaml")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Conditions.csv")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Conditions.yaml")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Medications.csv")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Medications.yaml")
+
+    delete fileTree(dir:'./carnival-micronaut-home/data/graph/app', include: '**')
+    delete files('./carnival-micronaut-home/data/graph/app/index')
+    delete files('./carnival-micronaut-home/data/graph/app/metrics')
+    delete files('./carnival-micronaut-home/data/graph/app/profiles')
+    delete files('./carnival-micronaut-home/data/graph/app/schema')
+    delete files('./carnival-micronaut-home/data/graph/app/logs')
+}
+
+run.jvmArgs('-Xms1024m', '-Xmx4096m')

@@ -120,7 +120,7 @@ patients.last AS last_name,
 patients.lat AS latitude,
 patients.lon AS longitude 
 FROM patients
-LIMIT 100
+--LIMIT 100
 """
 
     }
@@ -139,7 +139,7 @@ patients.id AS patient_id
 
 FROM encounters
 JOIN patients ON encounters.patient = patients.id
-LIMIT 100
+--LIMIT 100
 """
 
     }
@@ -156,7 +156,7 @@ conditions.code,
 conditions.description
 FROM
 conditions
-LIMIT 100
+--LIMIT 100
 """
 
     }
@@ -178,7 +178,7 @@ medications.reason_code,
 medications.reason_description
 FROM
 medications
-LIMIT 100
+--LIMIT 100
 """
 
     }
