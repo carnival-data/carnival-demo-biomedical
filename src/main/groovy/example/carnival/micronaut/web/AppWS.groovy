@@ -214,23 +214,23 @@ numEdges: ${numEdges}
 
         resp
     }
-PatientClass {
-    property
-}
-    @Get("/patients")
-    //@Produces(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    String patients() {
 
-        String response = ""
+    class Patient {
+        String id = ""
+        String first_name = ""
+        String last_name = ""
+    }
+    class PatientResponse {
+        List<Patient> patients = []
+    }
+
+    @Get("/patients")
+    @Produces(MediaType.APPLICATION_JSON)
+    PatientResponse patients() {
+       def response = new PatientResponse()
 
         carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
-            /*
-            Integer numPatients = g.V()
-                .isa(GraphModel.VX.PATIENT)
-                .count().next()
-            response += "There are ${numPatients} total patients."
-            */
+            
 /*
             def patientVs = g.V()
                 
@@ -262,8 +262,10 @@ PatientClass {
             def patientVs = g.V()
                 .isa(GraphModel.VX.PATIENT).as('p')
                 .has(GraphModel.PX_PATIENT.AGE, P.between(18, 55))
+
                 .out(GraphModel.EX.HAS)
                 .isa(GraphModel.VX.ENCOUNTER).as('e')
+/*
                 .out(GraphModel.EX.DIAGNOSED_AT)
                 .isa(GraphModel.VX.CONDITION).as('c')
                 .has(GraphModel.PX.DESCRIPTION, 'Prediabetes') 
@@ -280,7 +282,7 @@ PatientClass {
 
                 .select('s')
                 .has(GraphModel.PX_SURVEY.RESPONSE_TEXT, P.neq('Never smoker'))
-
+*/
                 /*********tinkerpop way**********/
                 /*
                 .select('p')
@@ -297,18 +299,25 @@ PatientClass {
 
                 /**************groovy way***************/
                 
-                .select('p','e','c','med','s')
+                //.select('p','e','c','med','s')
+                .select('p', 'e')
                 .toList()
                 .groupBy({it.p})
                 .collect({it.key})
                 .each { m ->
-                    //populate object
-                    response += "\n${GraphModel.PX.ID.valueOf(m)}" 
+                    
+                    Patient p = new Patient()
+                    p.id = GraphModel.PX.ID.valueOf(m)
+                    p.first_name = GraphModel.PX_PATIENT.FIRST_NAME.valueOf(m)
+                    p.last_name = GraphModel.PX_PATIENT.LAST_NAME.valueOf(m)
+                    
+                    response.patients << p
+                    
+                    //response += "\n${GraphModel.PX.ID.valueOf(m)}" 
                 }
                 
                 /*String cvJson = objectMapper.writeValueAsString(columnValues)*/
         }
-        //patientObj
         response
     }
 }

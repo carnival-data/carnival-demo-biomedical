@@ -17,7 +17,11 @@ import example.carnival.micronaut.config.AppConfig
 import example.carnival.micronaut.vine.ExampleDbVine
 import example.carnival.micronaut.graph.CarnivalGraph
 import carnival.util.DataTable
-
+import java.text.SimpleDateFormat
+import java.text.DateFormat
+import java.time.Period
+import java.time.ZoneId
+import java.time.*
 
 
 @ToString(includeNames=true)
@@ -58,16 +62,9 @@ class ExampleMethods implements GraphMethods {
                     GraphModel.PX_PATIENT.BIRTH_DATE, rec.BIRTH_DATE,
 //                    GraphModel.PX_PATIENT.DEATH_DATE, rec.DEATH_DATE, //death_date always null
                     GraphModel.PX_PATIENT.FIRST_NAME, rec.FIRST_NAME,
-<<<<<<< Updated upstream
-                    GraphModel.PX_PATIENT.LAST_NAME, rec.LAST_NAME
-                    //GraphModel.PX_PATIENT.LATITUDE, rec.LATITUDE,
-                    //GraphModel.PX_PATIENT.LONGITUDE, rec.LONGITUDE
-                ).ensure(graph, g)
-=======
                     GraphModel.PX_PATIENT.LAST_NAME, rec.LAST_NAME,
                     GraphModel.PX_PATIENT.LATITUDE, rec.LATITUDE,
-                    GraphModel.PX_PATIENT.LONGITUDE, rec.LONGITUDE,
-                    GraphModel.PX_PATIENT.ENCOUNTER_COUNT, 0
+                    GraphModel.PX_PATIENT.LONGITUDE, rec.LONGITUDE
                 )
                 DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd")
 
@@ -79,7 +76,6 @@ class ExampleMethods implements GraphMethods {
 
                 patV.withProperty(GraphModel.PX_PATIENT.AGE, age)
                 patV.ensure(graph, g)
->>>>>>> Stashed changes
 
 //                ).create(graph)
             }
@@ -113,14 +109,13 @@ class ExampleMethods implements GraphMethods {
                     .isa(GraphModel.VX.PATIENT)
                     .has(GraphModel.PX.ID, patient_id)
                 .each { patV ->
-                
-
                     GraphModel.EX.HAS.instance().from(patV).to(encV).create()
-
+                    /*
                     log.trace "count: ${GraphModel.PX_PATIENT.ENCOUNTER_COUNT.valueOf(patV)}"
                     def newCount = GraphModel.PX_PATIENT.ENCOUNTER_COUNT.valueOf(patV)+1
                     GraphModel.PX_PATIENT.ENCOUNTER_COUNT.set(patV, newCount)
                     log.trace "new count: ${GraphModel.PX_PATIENT.ENCOUNTER_COUNT.valueOf(patV)}"
+                    */
                 }
             }
         }

@@ -150,7 +150,7 @@ SELECT encounters.patient FROM encounters
 JOIN conditions ON encounters.id = conditions.encounter
 WHERE conditions.description LIKE '%Viral sinusitis%'
 )
-LIMIT 10000
+LIMIT 1000
 """
 
     }
@@ -168,7 +168,7 @@ conditions.description
 FROM
 conditions
 WHERE description LIKE '%Viral sinusitis%'
-LIMIT 10000
+LIMIT 1000
 """
 
     }
@@ -191,7 +191,7 @@ medications.reason_description
 FROM
 medications
 WHERE description LIKE '%Amoxicillin%'
-LIMIT 10000
+LIMIT 1000
 """
 
     }

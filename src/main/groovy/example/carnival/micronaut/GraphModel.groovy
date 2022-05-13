@@ -20,6 +20,7 @@ class GraphModel {
                 PX.ID.withConstraints(index:true, required:true),
             
                 PX_PATIENT.BIRTH_DATE,
+                PX_PATIENT.AGE,
                 PX_PATIENT.DEATH_DATE,
                 PX_PATIENT.FIRST_NAME,
                 PX_PATIENT.LAST_NAME,
@@ -158,6 +159,7 @@ class GraphModel {
     @PropertyDefinition
     static enum PX_PATIENT {
         BIRTH_DATE,
+        AGE,
         DEATH_DATE,
         FIRST_NAME,
         LAST_NAME,
