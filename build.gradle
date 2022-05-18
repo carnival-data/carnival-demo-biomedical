@@ -108,4 +108,4 @@ task myDeleteTask(type: Delete) {
     delete files('./carnival-micronaut-home/data/graph/app/logs')
 }
 
-run.jvmArgs('-Xms1024m', '-Xmx4096m')
+run.jvmArgs('-Xms1024m', '-Xmx8000m')

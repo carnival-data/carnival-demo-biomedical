@@ -67,9 +67,9 @@ class SyncService {
             //reasoners.method('LinkConditionsAndPatients').call(graph, g)
             //reasoners.method('LinkCareplansAndPatients').call(graph, g)
             
-            exampleMethods.method('PrintGraph9').call(graph, g)
+            exampleMethods.method('PrintGraph14').call(graph, g)
             
-            graph.tx().commit()
+//            graph.tx().commit()
         }
 
 

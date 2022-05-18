@@ -1,10 +1,10 @@
 package example.carnival.micronaut.method
 
-
-
+import carnival.graph.ControlledInstance
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j
-
+import org.apache.tinkerpop.gremlin.neo4j.structure.Neo4jVertex
+import org.apache.tinkerpop.gremlin.structure.Vertex
 
 import javax.inject.Singleton
 import javax.inject.Inject
@@ -50,8 +50,10 @@ class ExampleMethods implements GraphMethods {
     @Inject ExampleDbVine exampleDbVine
     @Inject CarnivalGraph carnivalGraph
 
+//    static Map<String, Neo4jVertex> patient_cache = new HashMap<String, Neo4jVertex>()
+    static Map<String, ControlledInstance> patient_cache = new HashMap<String, ControlledInstance>()
 
-
+    static Map<String, Neo4jVertex> encounter_cache = new HashMap<String, Neo4jVertex>()
 
     ///////////////////////////////////////////////////////////////////////////
     // SERVICE METHOD
@@ -66,25 +68,9 @@ class ExampleMethods implements GraphMethods {
                 .call()
                 .result
 
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd")
+
             mdt.data.values().each { rec ->
-//                log.trace "rec: ${rec}"
-                def patV = GraphModel.VX.PATIENT.instance().withProperties(
-                    GraphModel.PX.ID, rec.ID,
-                    GraphModel.PX_PATIENT.BIRTH_DATE, rec.BIRTH_DATE,
-//                    GraphModel.PX_PATIENT.DEATH_DATE, rec.DEATH_DATE, //death_date always null
-                    GraphModel.PX_PATIENT.FIRST_NAME, rec.FIRST_NAME,
-                    GraphModel.PX_PATIENT.LAST_NAME, rec.LAST_NAME,
-                    GraphModel.PX_PATIENT.LATITUDE, rec.LATITUDE,
-                    GraphModel.PX_PATIENT.LONGITUDE, rec.LONGITUDE
-
-                )
-
-////                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//
-////                def age = Period.between(LocalDateTime.parse(rec.BIRTH_DATE, formatter), LocalDateTime.now()).getYears()
-//                def age = Period.between(LocalDateTime.parse(rec.BIRTH_DATE, "yyyy-MM-dd HH:mm:ss"), LocalDateTime.now()).getYears()
-
-                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd")
 
                 def age = Period.between(
                         formatter.parse(rec.BIRTH_DATE)
@@ -92,10 +78,31 @@ class ExampleMethods implements GraphMethods {
                                 .atZone(ZoneId.systemDefault())
                                 .toLocalDate(), LocalDate.now()).getYears()
 
-                patV.withProperty(GraphModel.PX_PATIENT.AGE, age)
-                patV.ensure(graph, g)
+                String patient_id = rec.ID
 
-//                ).create(graph)
+//                log.trace "rec: ${rec}"
+                def patient_vertex = GraphModel.VX.PATIENT.instance().withProperties(
+                    GraphModel.PX.ID, rec.ID,
+                    GraphModel.PX_PATIENT.BIRTH_DATE, rec.BIRTH_DATE,
+//                    GraphModel.PX_PATIENT.DEATH_DATE, rec.DEATH_DATE, //death_date always null
+                    GraphModel.PX_PATIENT.FIRST_NAME, rec.FIRST_NAME,
+                    GraphModel.PX_PATIENT.LAST_NAME, rec.LAST_NAME,
+                    GraphModel.PX_PATIENT.LATITUDE, rec.LATITUDE,
+                    GraphModel.PX_PATIENT.LONGITUDE, rec.LONGITUDE,
+                    GraphModel.PX_PATIENT.AGE, age
+                )
+                def foo = patient_vertex.create(graph)
+
+                patient_cache.put(patient_id, foo)
+
+////                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//
+////                def age = Period.between(LocalDateTime.parse(rec.BIRTH_DATE, formatter), LocalDateTime.now()).getYears()
+//                def age = Period.between(LocalDateTime.parse(rec.BIRTH_DATE, "yyyy-MM-dd HH:mm:ss"), LocalDateTime.now()).getYears()
+
+//                patV.ensure(graph, g)
+
+//                patV.create(graph)
             }
 
         }
@@ -107,27 +114,48 @@ class ExampleMethods implements GraphMethods {
 
         void execute(Graph graph, GraphTraversalSource g) {
 
+            log.info "hi :)"
+
             def mdt = exampleDbVine
                 .method('Encounters')
                 .call()
             .result
 
+//            Map<String, Neo4jVertex> patient_cache = new HashMap<String, Neo4jVertex>()
+
             mdt.data.values().each { rec ->
                 log.trace "rec: ${rec}"
+//                def encV = GraphModel.VX.ENCOUNTER.instance().withProperties(
+//                    GraphModel.PX.ID, rec.ENCOUNTER_ID,
+//                    GraphModel.PX.START, rec.START,
+//                    GraphModel.PX.END, rec.STOP
+//                )
+//                def foo = encV.create(graph)
                 def encV = GraphModel.VX.ENCOUNTER.instance().withProperties(
-                    GraphModel.PX.ID, rec.ENCOUNTER_ID,
-                    GraphModel.PX.START, rec.START,
-                    GraphModel.PX.END, rec.STOP
-                ).ensure(graph, g)
+                        GraphModel.PX.ID, rec.ENCOUNTER_ID,
+                        GraphModel.PX.START, rec.START,
+                        GraphModel.PX.END, rec.STOP
+                ).create(graph)
 
-                def patient_id = rec.PATIENT_ID
+                encounter_cache.put(rec.ENCOUNTER_ID, encV)
 
-                g.V()
-                    .isa(GraphModel.VX.PATIENT)
-                    .has(GraphModel.PX.ID, patient_id)
-                .each { patV ->
-                    GraphModel.EX.HAS.instance().from(patV).to(encV).create()
+//                log.info "enc vertex class: ${encV.getClass().toString()}"
+
+                String patient_id = rec.PATIENT_ID
+
+                def patient_vertex
+
+                if (patient_cache.containsKey(patient_id)) {
+                    patient_vertex = patient_cache.get(patient_id)
                 }
+
+                else {
+                    patient_vertex = g.V().isa(GraphModel.VX.PATIENT).has(GraphModel.PX.ID, patient_id).next()
+                    patient_cache.put(patient_id, patient_vertex)
+                }
+
+//                GraphModel.EX.HAS.instance().from(patient_vertex).to(encV).create()
+                GraphModel.EX.HAS.instance().from(patient_vertex).to(encV).create()
             }
         }
     }
@@ -142,34 +170,57 @@ class ExampleMethods implements GraphMethods {
                 .call()
                 .result
 
+//            Map<String, Neo4jVertex> patient_cache = new HashMap<String, Neo4jVertex>()
+//            Map<String, Neo4jVertex> encounter_cache = new HashMap<String, Neo4jVertex>()
+
             gdt.dataIterator().each { rec ->
                 log.trace "rec: ${rec}"
-                def conditionVBuilder = GraphModel.VX.CONDITION.instance()
+                def conditionV = GraphModel.VX.CONDITION.instance()
                     .withProperty(GraphModel.PX.START, rec.START)
                     .withNonNullProperties(GraphModel.PX.END, rec.END)
                     .withProperty(GraphModel.PX.CODE, rec.CODE)
                     .withProperty(GraphModel.PX.DESCRIPTION, rec.DESCRIPTION)
-                    //i added
+                    .create(graph)
 
-                def conditionV = conditionVBuilder.create(graph)
+                String patient_id = rec.PATIENT_ID
+                String encounter_id = rec.ENCOUNTER_ID
 
-                def patient_id = rec.PATIENT_ID
-                def encounter_id = rec.ENCOUNTER_ID
+                Neo4jVertex patient_vertex
+                Neo4jVertex encounter_vertex
 
-                g.V()
-                    .isa(GraphModel.VX.PATIENT)
-                    .has(GraphModel.PX.ID, patient_id)
-                .each { patV ->
-                    log.trace "patV: ${patV} Patient: ${patient_id}"
-                    GraphModel.EX.DIAGNOSED_WITH.instance().from(patV).to(conditionV).create()
+                if (patient_cache.containsKey(patient_id)) {
+                    patient_vertex = patient_cache.get(patient_id)
                 }
-                g.V()
-                    .isa(GraphModel.VX.ENCOUNTER)
-                    .has(GraphModel.PX.ID, encounter_id)
-                .each { encV ->
-                    log.trace "encV: ${encV} Encounter: ${encounter_id}"
-                    GraphModel.EX.DIAGNOSED_AT.instance().from(encV).to(conditionV).create()
+                else {
+                patient_vertex = g.V().isa(GraphModel.VX.PATIENT).has(GraphModel.PX.ID, patient_id).next()
+                    patient_cache.put(patient_id, patient_vertex)
                 }
+
+                if (encounter_cache.containsKey(encounter_id)) {
+                    encounter_vertex = encounter_cache.get(encounter_id)
+                }
+                else {
+                    encounter_vertex = g.V().isa(GraphModel.VX.ENCOUNTER).has(GraphModel.PX.ID, encounter_id).next()
+                    encounter_cache.put(encounter_id, encounter_vertex)
+                }
+
+                GraphModel.EX.DIAGNOSED_WITH.instance().from(patient_vertex).to(conditionV).create()
+                GraphModel.EX.DIAGNOSED_AT.instance().from(encounter_vertex).to(conditionV).create()
+
+//                g.V()
+//                    .isa(GraphModel.VX.PATIENT)
+//                    .has(GraphModel.PX.ID, patient_id)
+//                .each { patV ->
+//                    log.trace "patV: ${patV} Patient: ${patient_id}"
+//                    GraphModel.EX.DIAGNOSED_WITH.instance().from(patV).to(conditionV).create()
+//                }
+//                g.V()
+//                    .isa(GraphModel.VX.ENCOUNTER)
+//                    .has(GraphModel.PX.ID, encounter_id)
+//                .each { encV ->
+//                    log.trace "encV: ${encV} Encounter: ${encounter_id}"
+//                    GraphModel.EX.DIAGNOSED_AT.instance().from(encV).to(conditionV).create()
+//                }
             }
         }
     }
@@ -184,6 +235,9 @@ class ExampleMethods implements GraphMethods {
                 .call()
             .result
 
+//            Map<String, Neo4jVertex> patient_cache = new HashMap<String, Neo4jVertex>()
+//            Map<String, Neo4jVertex> encounter_cache = new HashMap<String, Neo4jVertex>()
+
             gdt.dataIterator().each { rec ->
                 log.trace "rec: ${rec}"
                 def medV = GraphModel.VX.MEDICATION.instance()
@@ -196,25 +250,33 @@ class ExampleMethods implements GraphMethods {
                     .withProperty(GraphModel.PX.DESCRIPTION, rec.DESCRIPTION)
                     .withNonNullProperties(GraphModel.PX_MEDICATION.REASON_CODE, rec.REASON_CODE)
                     .withNonNullProperties(GraphModel.PX_MEDICATION.REASON_DESCRIPTION, rec.REASON_DESCRIPTION)
-                .ensure(graph, g)
+//                .ensure(graph, g)
+                .create(graph)
 
                 def patient_id = rec.PATIENT_ID
                 def encounter_id = rec.ENCOUNTER_ID
 
-                g.V()
-                    .isa(GraphModel.VX.PATIENT)
-                    .has(GraphModel.PX.ID, patient_id)
-                .each { patV ->
-                    log.trace "patV: ${patV} Patient: ${patient_id}"
-                    GraphModel.EX.PRESCRIBED.instance().from(patV).to(medV).create()
+                def patient_vertex
+                def encounter_vertex
+
+                if (patient_cache.containsKey(patient_id)) {
+                    patient_vertex = patient_cache.get(patient_id)
                 }
-                g.V()
-                    .isa(GraphModel.VX.ENCOUNTER)
-                    .has(GraphModel.PX.ID, encounter_id)
-                .each { encV ->
-                    log.trace "encV: ${encV} Encounter: ${encounter_id}"
-                    GraphModel.EX.PRESCRIBED_AT.instance().from(encV).to(medV).create()
+                else {
+                    patient_vertex = g.V().isa(GraphModel.VX.PATIENT).has(GraphModel.PX.ID, patient_id).next()
+                    patient_cache.put(patient_id, patient_vertex)
                 }
+
+                if (encounter_cache.containsKey(encounter_id)) {
+                    encounter_vertex = encounter_cache.get(encounter_id)
+                }
+                else {
+                    encounter_vertex = g.V().isa(GraphModel.VX.ENCOUNTER).has(GraphModel.PX.ID, encounter_id).next()
+                    encounter_cache.put(encounter_id, encounter_vertex)
+                }
+
+                GraphModel.EX.PRESCRIBED.instance().from(patient_vertex).to(medV).create()
+                GraphModel.EX.PRESCRIBED_AT.instance().from(encounter_vertex).to(medV).create()
             }
         }
     }
@@ -226,10 +288,14 @@ class ExampleMethods implements GraphMethods {
             def dt = DataTable.readDataFromCsvFile(
                     "data" + File.separator + "survey" + File.separator + "observations_survey.csv")
 
+//            Map<String, Neo4jVertex> cache = new HashMap<String, Neo4jVertex>()
+
             //dt.eachWithIndex { rec, index ->
-            int count = 0
-            for (rec in dt) {
-                
+//            int count = 0
+//            for (rec in dt) {
+
+            dt.each() { rec->
+
                 log.trace "rec: ${rec}"
                 def surveyVBuilder = GraphModel.VX.SURVEY.instance().withProperties(
                     GraphModel.PX_SURVEY.DATE, rec.DATE,
@@ -248,21 +314,89 @@ class ExampleMethods implements GraphMethods {
                 def surveyV = surveyVBuilder.create(graph)
 
                 def patient_id = rec.PATIENT
-                
-                g.V()
-                    .isa(GraphModel.VX.PATIENT)
-                    .has(GraphModel.PX.ID, patient_id)
-                .each { patV ->
-                    log.trace "patV: ${patV} Patient: ${patient_id}"
-                    GraphModel.EX.SELF_REPORTED.instance().from(patV).to(surveyV).create()
+
+                def patient_vertex
+
+                if (patient_cache.containsKey(patient_id)) {
+                    patient_vertex = patient_cache.get(patient_id)
                 }
-                count++
-                if (count > 100) break
+
+                else {
+                    patient_vertex = g.V().isa(GraphModel.VX.PATIENT).has(GraphModel.PX.ID, patient_id).next()
+                    patient_cache.put(patient_id, patient_vertex)
+                }
+
+                GraphModel.EX.SELF_REPORTED.instance().from(patient_vertex).to(surveyV).create()
+
             }
 
         }
 
     }
+
+
+    class PrintGraph14 extends GraphMethod {
+        void execute(Graph graph, GraphTraversalSource g) {
+
+            g.V()
+                    .match(
+                            __.as("patient").has(GraphModel.PX_PATIENT.AGE, P.between(18, 35)),
+//                        __.as("patient").out(GraphModel.EX.HAS).as("encounter").count().is(P.gte(2)),
+                            __.as("patient").out(GraphModel.EX.HAS).as("symptomEncounter1"),
+                            __.as("symptomEncounter1").out(GraphModel.EX.DIAGNOSED_AT).as("symptomCondition1"),
+                            __.as("symptomCondition1").has(GraphModel.PX.DESCRIPTION, "Full-time employment (finding)").as("c1"),
+
+                            __.as("patient").out(GraphModel.EX.HAS).as("symptomEncounter2"),
+                            __.as("symptomEncounter2").out(GraphModel.EX.DIAGNOSED_AT).as("symptomCondition2"),
+                            __.as("symptomCondition2").has(GraphModel.PX.DESCRIPTION, "Full-time employment (finding)").as("c2"),
+
+//                            __.as("symptomEncounter1").where(P.neq("symptomEncounter2")),
+
+//                            __.as("patient").out(GraphModel.EX.HAS).as("symptomEncounter1"),
+//                            __.as("symptomEncounter1").out(GraphModel.EX.DIAGNOSED_AT).as("diagnosis"),
+//                            __.as("diagnosisCondition").has(GraphModel.PX.DESCRIPTION, "Hypertension").as("c3"),
+
+                            __.as("patient").out(GraphModel.EX.HAS).as("diagnosisEncounter"),
+                            __.as("diagnosisEncounter").out(GraphModel.EX.DIAGNOSED_AT).as("diagnosisCondition"),
+                            __.as("diagnosisCondition").has(GraphModel.PX.DESCRIPTION, "Hypertension").as("c3")
+
+//                        __.as("patient").out(GraphModel.EX.HAS).as("encounter2"),
+//                        __.as("encounter1").
+//                        __.as("encounter").in(GraphModel.EX.HAS).as("patient"),
+//                        __.as("encounter").out(GraphModel.EX.DIAGNOSED_AT).as("condition")
+//                        __.as("patient").out(GraphModel.EX.DIAGNOSED_WITH).as("condition"),
+//                            __.as("condition").has(GraphModel.PX.DESCRIPTION, "Hypertension").as("c").count().is(P.gte(2)),
+//                        __.as("condition").has(GraphModel.PX.DESCRIPTION, "Hypertension").count().is(P.gte(2)),
+
+//
+//                            __.as("patient").out(GraphModel.EX.SELF_REPORTED).as("survey"),
+//                            __.as("survey").has(GraphModel.PX_SURVEY.RESPONSE_TEXT, "Never smoker"),
+//                            __.as("patient").out(GraphModel.EX.PRESCRIBED).as("medication"),
+//                            __.as("medication").has(GraphModel.PX.DESCRIPTION, "lisinopril 10 MG Oral Tablet")
+//                        lisinopril 10 MG
+//                        __.as("encounter").out(GraphModel.EX.PRESCRIBED_AT).as("medication")
+                    )
+//                .select("patient", "encounter").dedup()
+//                .select("patient", "medication")
+//                .select("medication")
+//                    .select("patient")
+//                    .select("c1", "c2")
+//                    .select("patient", "symptomEncounter1", "symptomEncounter2", "diagnosisEncounter")
+                    .select("symptomEncounter1")
+                    .dedup()
+//                    .count()
+//                .valueMap()
+
+                    .each { v ->
+                        log.info "${v}"
+//                        log.info "${v.p}"
+                        v.properties().each { p ->
+                            log.info "v: ${v}, p: ${p.label()} ${p}"
+                        }
+                    }
+        }
+    }
+
 
 //                    .isa(GraphModel.VX.PATIENT)
 ////                .has(GraphModel.PX.ID, P.eq("7bbb9d0b-bdbd-c4b3-7a7f-422de8cd695f"))
