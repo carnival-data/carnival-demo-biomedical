@@ -15,7 +15,7 @@ class GraphModel {
 
     @VertexDefinition
     static enum VX {
-        PATIENT(
+        PATIENT([
             propertyDefs:[
                 PX.ID.withConstraints(index:true, required:true),
             
@@ -28,9 +28,9 @@ class GraphModel {
                 PX_PATIENT.LONGITUDE,
                 PX_PATIENT.ENCOUNTER_COUNT
             ]
-        ),
+        ]),
 
-        ENCOUNTER(
+        ENCOUNTER([
             propertyDefs:[
                 PX.ID.withConstraints(index:true, required:true),
                 PX.START,
@@ -43,18 +43,18 @@ class GraphModel {
                 PX_ENCOUNTER.REASON_CODE,
                 PX_ENCOUNTER.REASON_DESCRIPTION
             ]
-        ),
+        ]),
 
-        CONDITION(
+        CONDITION([
             propertyDefs:[
                 PX.START.withConstraints(required:true),
                 PX.END,
                 PX.CODE,
                 PX.DESCRIPTION
             ]
-        ),
+        ]),
 
-        MEDICATION(
+        MEDICATION([
             propertyDefs:[
                 PX.START.withConstraints(required:true),
                 PX.END,
@@ -68,13 +68,13 @@ class GraphModel {
                 PX_MEDICATION.REASON_CODE,
                 PX_MEDICATION.REASON_DESCRIPTION
             ]
-        ),
+        ]),
 
         //ENCOUNTER(PXEncounter),
 
         // MEDICATION(PXMedication),
         
-        SURVEY(
+        SURVEY([
             propertyDefs: [
 //              PX.ID.withConstraints(index: true, required: true), // Generate unique id?
 
@@ -89,7 +89,7 @@ class GraphModel {
                 
                 PX_SURVEY.RESPONSE_UNIT    
             ]
-        )
+        ])
         
     }
 
@@ -111,26 +111,26 @@ class GraphModel {
         //     range:[VX.ENCOUNTER]
         // ),
 
-        DIAGNOSED_WITH(
+        DIAGNOSED_WITH([
             domain:[VX.PATIENT],
             range:[VX.CONDITION]
-        ),
-        DIAGNOSED_AT(
+        ]),
+        DIAGNOSED_AT([
             domain:[VX.ENCOUNTER],
             range:[VX.CONDITION]
-        ),
-        SELF_REPORTED(
+        ]),
+        SELF_REPORTED([
             domain:[VX.PATIENT],
             range:[VX.SURVEY]
-        ),
-        PRESCRIBED(
+        ]),
+        PRESCRIBED([
             domain:[VX.PATIENT],
             range:[VX.MEDICATION]
-        ),
-        PRESCRIBED_AT(
+        ]),
+        PRESCRIBED_AT([
             domain:[VX.ENCOUNTER],
             range:[VX.MEDICATION]
-        )
+        ])
         
     }
 

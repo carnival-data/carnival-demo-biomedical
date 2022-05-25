@@ -57,6 +57,7 @@
         <appender-ref ref="SQL_FILE" />
     </logger>
 
+<!--    <logger name="carnival" level="TRACE"><appender-ref ref="CARNIVAL" /></logger>-->
     <logger name="carnival" level="TRACE"><appender-ref ref="CARNIVAL" /></logger>
     <logger name="carnival.util.Defaults" level="INFO"/>
     <logger name="carnival.core.graph.CoreGraph" level="INFO"/>
@@ -65,7 +66,8 @@
          level set here will be respected.  so, if the level here is trace, but
          the root logger level is info, a trace message will still flow to the
          root logger appender. -->
-    <logger name="example.carnival.micronaut" level="TRACE"/>
+<!--    <logger name="example.carnival.micronaut" level="TRACE"/>-->
+    <logger name="example.carnival.micronaut" level="INFO"/>
 
     <root level="TRACE">
         <appender-ref ref="STDOUT" />
