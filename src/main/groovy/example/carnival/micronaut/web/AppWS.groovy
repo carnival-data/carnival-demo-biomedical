@@ -39,6 +39,11 @@ import io.micronaut.http.annotation.PathVariable
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
 import org.apache.tinkerpop.gremlin.process.traversal.Traversal
+import org.apache.tinkerpop.gremlin.process.traversal.P
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__
+import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerFactory
+import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
+
 import org.apache.tinkerpop.gremlin.structure.Vertex
 import org.apache.tinkerpop.gremlin.structure.Edge
 import org.apache.tinkerpop.gremlin.structure.Graph
@@ -211,39 +216,109 @@ numEdges: ${numEdges}
         resp
     }
 
-    @Get("/patients")
-    @Produces(MediaType.TEXT_PLAIN)
-    String patients() {
+    class Patient {
+        String id = ""
+        String first_name = ""
+        String last_name = ""
+    }
+    class PatientResponse {
+        List<Patient> patients = []
+    }
 
-        String response = ""
+    @Get("/patients")
+    @Produces(MediaType.APPLICATION_JSON)
+    PatientResponse patients() {
+       def response = new PatientResponse()
 
         carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
-            Integer numPatients = g.V()
-                .isa(GraphModel.VX.PATIENT)
-                .count().next()
-            response += "There are ${numPatients} total patients."
+            
+/*
+            def patientVs = g.V()
+                
+                .isa(GraphModel.VX.PATIENT).as('p')
+                .has(GraphModel.PX_PATIENT.AGE, P.between(18, 55))
+                .has(GraphModel.PX_PATIENT.ENCOUNTER_COUNT, P.gte(2))
+                
+                //.range(2,-1)
+                .out(GraphModel.EX.HAS)
+                //.in(GraphModel.EX.HAS)
+                //.where(__.out(GraphModel.EX.HAS).count()).is(gt(2))
+                .isa(GraphModel.VX.ENCOUNTER).as('e')
+                //.inV()
+                
+                //.group().by(__.outE().count()).order(local).by(values,asc)
 
-           g.V()
-                   .isa(GraphModel.VX.PATIENT).as('p')
-                   .has(GraphModel.PX_PATIENT.AGE, P.between(18, 55))
-                   .out(GraphModel.EX.HAS)
-                   .isa(GraphModel.VX.ENCOUNTER).as('e')
-                   .select('p', 'e')
-                   .each { m ->
-                       response += "\n${m.p} ${m.e} ${GraphModel.PX_PATIENT.AGE.valueOf(m.p)}"
-                   }
+                .each { m ->
+                    //response += "\n${m.p.label()} ${m.e.label()} ${m.c.label()}"
+                    //response += "\n${m.p} ${m.e} ${m.c} ${GraphModel.PX_PATIENT.AGE.valueOf(m.p)}"
+                    //response += "\n${m} ${m.label()}" 
+                    //response += "\n${GraphModel.PX.ID.valueOf(m)}" // ${GraphModel.PX.DESCRIPTION.valueOf(m)}" 
+                    
+                        response += "\n${m}" 
+                    
+                }
+          */
+ //solution
 
-           /*if (isAdorable != null) {
-               Integer numAdorableDoggies = g.V()
-                       .isa(GraphModel.VX.DOGGIE)
-                       .has(GraphModel.PX.IS_ADORABLE, isAdorable)
-                       .count().next()
-               response += "\nThere are ${numAdorableDoggies} doggies that are"
-               if (!isAdorable) response += " not"
-               response += " adorable."
-           }*/
+            def patientVs = g.V()
+                .isa(GraphModel.VX.PATIENT).as('p')
+                .has(GraphModel.PX_PATIENT.AGE, P.between(18, 55))
+
+                .out(GraphModel.EX.HAS)
+                .isa(GraphModel.VX.ENCOUNTER).as('e')
+/*
+                .out(GraphModel.EX.DIAGNOSED_AT)
+                .isa(GraphModel.VX.CONDITION).as('c')
+                .has(GraphModel.PX.DESCRIPTION, 'Prediabetes') 
+
+                .select('e')
+                .out(GraphModel.EX.PRESCRIBED_AT)
+                .isa(GraphModel.VX.MEDICATION).as('med')
+                .has(GraphModel.PX.DESCRIPTION, 'Hydrochlorothiazide 25 MG Oral Tablet') 
+
+                .select('p')
+                .out(GraphModel.EX.SELF_REPORTED)
+                .isa(GraphModel.VX.SURVEY).as('s')
+                .has(GraphModel.PX.DESCRIPTION, 'Tobacco smoking status NHIS')
+
+                .select('s')
+                .has(GraphModel.PX_SURVEY.RESPONSE_TEXT, P.neq('Never smoker'))
+*/
+                /*********tinkerpop way**********/
+                /*
+                .select('p')
+                .group()
+                .by('id')                   
+                .toList()
+                .first()
+                .collect({it.key})
+                .each { m ->
+                    response += "\n${m}" 
+                }
+                */
+                
+
+                /**************groovy way***************/
+                
+                //.select('p','e','c','med','s')
+                .select('p', 'e')
+                .toList()
+                .groupBy({it.p})
+                .collect({it.key})
+                .each { m ->
+                    
+                    Patient p = new Patient()
+                    p.id = GraphModel.PX.ID.valueOf(m)
+                    p.first_name = GraphModel.PX_PATIENT.FIRST_NAME.valueOf(m)
+                    p.last_name = GraphModel.PX_PATIENT.LAST_NAME.valueOf(m)
+                    
+                    response.patients << p
+                    
+                    //response += "\n${GraphModel.PX.ID.valueOf(m)}" 
+                }
+                
+                /*String cvJson = objectMapper.writeValueAsString(columnValues)*/
         }
-
         response
     }
 }

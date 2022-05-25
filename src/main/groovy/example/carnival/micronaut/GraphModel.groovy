@@ -25,7 +25,8 @@ class GraphModel {
                 PX_PATIENT.FIRST_NAME,
                 PX_PATIENT.LAST_NAME,
                 PX_PATIENT.LATITUDE,
-                PX_PATIENT.LONGITUDE
+                PX_PATIENT.LONGITUDE,
+                PX_PATIENT.ENCOUNTER_COUNT
             ]
         ),
 
@@ -156,7 +157,8 @@ class GraphModel {
         FIRST_NAME,
         LAST_NAME,
         LATITUDE,
-        LONGITUDE
+        LONGITUDE,
+        ENCOUNTER_COUNT
     }
 
     @PropertyDefinition
