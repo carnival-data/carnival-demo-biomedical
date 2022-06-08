@@ -318,7 +318,8 @@ class ExampleMethods implements GraphMethods {
                         .withNonNullProperties(GraphModel.PX_SURVEY.RESPONSE_UNIT, rec.UNITS)
                 }
                 def surveyV = surveyVBuilder.create(graph)
-
+            }
+            
             dt.each { rec ->
                 def patient_id = rec.PATIENT
 
