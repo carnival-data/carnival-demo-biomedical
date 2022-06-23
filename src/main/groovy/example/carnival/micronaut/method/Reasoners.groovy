@@ -20,6 +20,8 @@ import java.time.Month
 
 import org.apache.tinkerpop.gremlin.structure.Graph
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
+import org.apache.tinkerpop.gremlin.process.traversal.Traversal
+import org.apache.tinkerpop.gremlin.process.traversal.P
 import org.apache.tinkerpop.gremlin.structure.Vertex
 import org.apache.tinkerpop.gremlin.structure.Edge
 import org.apache.tinkerpop.gremlin.structure.Direction
@@ -62,53 +64,26 @@ class Reasoners implements GraphMethods {
     // GRAPH METHODS
     ///////////////////////////////////////////////////////////////////////////
 
-    /** */
-    class LinkConditionsAndPatients extends GraphMethod {
-
+    class FindResearchAnswer extends GraphMethod {
         void execute(Graph graph, GraphTraversalSource g) {
+
+            def ansV = GraphModel.VX.RESEARCH_ANSWER.instance().ensure(graph, g)
+
             g.V()
-                .isa(GraphModel.VX.CONDITION)
-            .each { m ->
-                log.trace "m: ${m}"
-                def patientId = m.PATIENT
-                log.trace "patientId: $patientId"
+                .isa(GraphModel.VX.PATIENT).as('p')
+                .has(GraphModel.PX_PATIENT.AGE, P.between(18, 55))
+                .out(GraphModel.EX.HAS)
+                .isa(GraphModel.VX.ENCOUNTER).as('e')
 
-                g.V()
-                    .isa(GraphModel.VX.PATIENT)
-                    .has(GraphModel.PX.ID, patientId)
-                
-                .tryNext().ifPresent { pV ->
-                    log.trace "pV: $pV"
-                    GraphModel.EX.HAS.instance().from(m).to(pV).ensure(g)
+                .select('p', 'e')
+                .toList()
+                .groupBy({it.p})
+                .collect({it.key})
+                .each { m ->
+                    log.trace "m: ${m}"
+                    GraphModel.EX.CONTAINS.instance().from(ansV).to(m).ensure(g)
                 }
-            }
-        }
-
-    }
-
-    /** NOT the best way, just a demostration of a reasoner method*/
-    class LinkCareplansAndPatients extends GraphMethod {
-
-        void execute(Graph graph, GraphTraversalSource g) {
-            g.V()
-                .isa(GraphModel.VX.CAREPLAN)//.as('c')
-                //.select('c')
-            .each { m ->
-                log.trace "m: ${m}"
-                def patientId = GraphModel.PX.PATIENT.valueOf(m)
-                log.trace "patientId: $patientId"
-
-                g.V()
-                    .isa(GraphModel.VX.PATIENT)
-                    .has(GraphModel.PX.ID, patientId)
-                
-                .tryNext().ifPresent { pV ->
-                    log.trace "pV: $pV"
-                    GraphModel.EX.HAS.instance().from(pV).to(m).ensure(g)
-                }
-            }
-        }
-
+        }    
     }
 
 }
