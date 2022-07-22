@@ -48,7 +48,6 @@ import org.apache.tinkerpop.gremlin.structure.Vertex
 import org.apache.tinkerpop.gremlin.structure.Edge
 import org.apache.tinkerpop.gremlin.structure.Graph
 import org.apache.tinkerpop.gremlin.structure.T
-import org.apache.tinkerpop.gremlin.process.traversal.P
 
 import carnival.core.graph.Core
 import example.carnival.micronaut.config.AppConfig
@@ -228,83 +227,13 @@ numEdges: ${numEdges}
     @Get("/patients")
     @Produces(MediaType.APPLICATION_JSON)
     PatientResponse patients() {
-       def response = new PatientResponse()
-
+        def response = new PatientResponse()
         carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
-            
-/*
             def patientVs = g.V()
-                
+                .isa(GraphModel.VX.RESEARCH_ANSWER).as('anw')
+                .out(GraphModel.EX.CONTAINS)
                 .isa(GraphModel.VX.PATIENT).as('p')
-                .has(GraphModel.PX_PATIENT.AGE, P.between(18, 55))
-                .has(GraphModel.PX_PATIENT.ENCOUNTER_COUNT, P.gte(2))
-                
-                //.range(2,-1)
-                .out(GraphModel.EX.HAS)
-                //.in(GraphModel.EX.HAS)
-                //.where(__.out(GraphModel.EX.HAS).count()).is(gt(2))
-                .isa(GraphModel.VX.ENCOUNTER).as('e')
-                //.inV()
-                
-                //.group().by(__.outE().count()).order(local).by(values,asc)
-
-                .each { m ->
-                    //response += "\n${m.p.label()} ${m.e.label()} ${m.c.label()}"
-                    //response += "\n${m.p} ${m.e} ${m.c} ${GraphModel.PX_PATIENT.AGE.valueOf(m.p)}"
-                    //response += "\n${m} ${m.label()}" 
-                    //response += "\n${GraphModel.PX.ID.valueOf(m)}" // ${GraphModel.PX.DESCRIPTION.valueOf(m)}" 
-                    
-                        response += "\n${m}" 
-                    
-                }
-          */
- //solution
-
-            def patientVs = g.V()
-                .isa(GraphModel.VX.PATIENT).as('p')
-                .has(GraphModel.PX_PATIENT.AGE, P.between(18, 55))
-
-                .out(GraphModel.EX.HAS)
-                .isa(GraphModel.VX.ENCOUNTER).as('e')
-/*
-                .out(GraphModel.EX.DIAGNOSED_AT)
-                .isa(GraphModel.VX.CONDITION).as('c')
-                .has(GraphModel.PX.DESCRIPTION, 'Prediabetes') 
-
-                .select('e')
-                .out(GraphModel.EX.PRESCRIBED_AT)
-                .isa(GraphModel.VX.MEDICATION).as('med')
-                .has(GraphModel.PX.DESCRIPTION, 'Hydrochlorothiazide 25 MG Oral Tablet') 
-
                 .select('p')
-                .out(GraphModel.EX.SELF_REPORTED)
-                .isa(GraphModel.VX.SURVEY).as('s')
-                .has(GraphModel.PX.DESCRIPTION, 'Tobacco smoking status NHIS')
-
-                .select('s')
-                .has(GraphModel.PX_SURVEY.RESPONSE_TEXT, P.neq('Never smoker'))
-*/
-                /*********tinkerpop way**********/
-                /*
-                .select('p')
-                .group()
-                .by('id')                   
-                .toList()
-                .first()
-                .collect({it.key})
-                .each { m ->
-                    response += "\n${m}" 
-                }
-                */
-                
-
-                /**************groovy way***************/
-                
-                //.select('p','e','c','med','s')
-                .select('p', 'e')
-                .toList()
-                .groupBy({it.p})
-                .collect({it.key})
                 .each { m ->
                     
                     Patient p = new Patient()
@@ -312,12 +241,9 @@ numEdges: ${numEdges}
                     p.first_name = GraphModel.PX_PATIENT.FIRST_NAME.valueOf(m)
                     p.last_name = GraphModel.PX_PATIENT.LAST_NAME.valueOf(m)
                     
-                    response.patients << p
-                    
-                    //response += "\n${GraphModel.PX.ID.valueOf(m)}" 
+                    response.patients << p   
+                    //response += "\n ${p.id}" 
                 }
-                
-                /*String cvJson = objectMapper.writeValueAsString(columnValues)*/
         }
         response
     }
