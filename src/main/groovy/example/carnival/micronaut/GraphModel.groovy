@@ -89,6 +89,12 @@ class GraphModel {
                 
                 PX_SURVEY.RESPONSE_UNIT    
             ]
+        ]),
+
+        RESEARCH_ANSWER([
+                propertyDefs:[
+
+                ]
         ])
         
     }
@@ -130,6 +136,10 @@ class GraphModel {
         PRESCRIBED_AT([
             domain:[VX.ENCOUNTER],
             range:[VX.MEDICATION]
+        ]),
+        CONTAINS([
+                domain:[VX.RESEARCH_ANSWER],
+                range:[VX.PATIENT]
         ])
         
     }

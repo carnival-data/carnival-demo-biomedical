@@ -56,9 +56,7 @@ class ExampleMethods implements GraphMethods {
     @Inject ExampleDbVine exampleDbVine
     @Inject CarnivalGraph carnivalGraph
 
-//    static Map<String, Neo4jVertex> patient_cache = new HashMap<String, Neo4jVertex>()
     static Map<String, ControlledInstance> patient_cache = new HashMap<String, ControlledInstance>()
-
     static Map<String, Neo4jVertex> encounter_cache = new HashMap<String, Neo4jVertex>()
 
     ///////////////////////////////////////////////////////////////////////////
@@ -86,7 +84,6 @@ class ExampleMethods implements GraphMethods {
 
                 String patient_id = rec.ID
 
-//                log.trace "rec: ${rec}"
                 def patient_vertex = GraphModel.VX.PATIENT.instance().withProperties(
                     GraphModel.PX.ID, rec.ID,
                     GraphModel.PX_PATIENT.BIRTH_DATE, rec.BIRTH_DATE,
@@ -120,23 +117,14 @@ class ExampleMethods implements GraphMethods {
 
         void execute(Graph graph, GraphTraversalSource g) {
 
-            log.info "hi :)"
-
             def mdt = exampleDbVine
                 .method('Encounters')
                 .call()
             .result
 
-//            Map<String, Neo4jVertex> patient_cache = new HashMap<String, Neo4jVertex>()
-
             mdt.data.values().each { rec ->
                 log.trace "rec: ${rec}"
-//                def encV = GraphModel.VX.ENCOUNTER.instance().withProperties(
-//                    GraphModel.PX.ID, rec.ENCOUNTER_ID,
-//                    GraphModel.PX.START, rec.START,
-//                    GraphModel.PX.END, rec.STOP
-//                )
-//                def foo = encV.create(graph)
+
                 def encV = GraphModel.VX.ENCOUNTER.instance().withProperties(
                         GraphModel.PX.ID, rec.ENCOUNTER_ID,
                         GraphModel.PX.START, rec.START,
@@ -144,8 +132,6 @@ class ExampleMethods implements GraphMethods {
                 ).create(graph)
 
                 encounter_cache.put(rec.ENCOUNTER_ID, encV)
-
-//                log.info "enc vertex class: ${encV.getClass().toString()}"
 
                 String patient_id = rec.PATIENT_ID
 
@@ -160,7 +146,6 @@ class ExampleMethods implements GraphMethods {
                     patient_cache.put(patient_id, patient_vertex)
                 }
 
-//                GraphModel.EX.HAS.instance().from(patient_vertex).to(encV).create()
                 GraphModel.EX.HAS.instance().from(patient_vertex).to(encV).create()
             }
         }
@@ -175,9 +160,6 @@ class ExampleMethods implements GraphMethods {
                 .method('Conditions')
                 .call()
                 .result
-
-//            Map<String, Neo4jVertex> patient_cache = new HashMap<String, Neo4jVertex>()
-//            Map<String, Neo4jVertex> encounter_cache = new HashMap<String, Neo4jVertex>()
 
             gdt.dataIterator().each { rec ->
                 log.trace "rec: ${rec}"
@@ -213,20 +195,6 @@ class ExampleMethods implements GraphMethods {
                 GraphModel.EX.DIAGNOSED_WITH.instance().from(patient_vertex).to(conditionV).create()
                 GraphModel.EX.DIAGNOSED_AT.instance().from(encounter_vertex).to(conditionV).create()
 
-//                g.V()
-//                    .isa(GraphModel.VX.PATIENT)
-//                    .has(GraphModel.PX.ID, patient_id)
-//                .each { patV ->
-//                    log.trace "patV: ${patV} Patient: ${patient_id}"
-//                    GraphModel.EX.DIAGNOSED_WITH.instance().from(patV).to(conditionV).create()
-//                }
-//                g.V()
-//                    .isa(GraphModel.VX.ENCOUNTER)
-//                    .has(GraphModel.PX.ID, encounter_id)
-//                .each { encV ->
-//                    log.trace "encV: ${encV} Encounter: ${encounter_id}"
-//                    GraphModel.EX.DIAGNOSED_AT.instance().from(encV).to(conditionV).create()
-//                }
             }
         }
     }
@@ -240,9 +208,6 @@ class ExampleMethods implements GraphMethods {
                 .method('Medications')
                 .call()
             .result
-
-//            Map<String, Neo4jVertex> patient_cache = new HashMap<String, Neo4jVertex>()
-//            Map<String, Neo4jVertex> encounter_cache = new HashMap<String, Neo4jVertex>()
 
             gdt.dataIterator().each { rec ->
                 log.trace "rec: ${rec}"
@@ -294,33 +259,25 @@ class ExampleMethods implements GraphMethods {
             def dt = DataTable.readDataFromCsvFile(
                     "data" + File.separator + "survey" + File.separator + "observations_survey.csv")
 
-//            Map<String, Neo4jVertex> cache = new HashMap<String, Neo4jVertex>()
-
-            //dt.eachWithIndex { rec, index ->
-//            int count = 0
-//            for (rec in dt) {
-
             dt.each() { rec->
 
                 log.trace "rec: ${rec}"
                 def surveyVBuilder = GraphModel.VX.SURVEY.instance().withProperties(
-                    GraphModel.PX_SURVEY.DATE, rec.DATE,
-                    GraphModel.PX.CODE, rec.CODE,
-                    GraphModel.PX.DESCRIPTION, rec.DESCRIPTION
+                        GraphModel.PX_SURVEY.DATE, rec.DATE,
+                        GraphModel.PX.CODE, rec.CODE,
+                        GraphModel.PX.DESCRIPTION, rec.DESCRIPTION
                 )
                 if (rec.TYPE == "text") {
                     surveyVBuilder = GraphModel.VX.SURVEY.instance().withProperty(
-                        GraphModel.PX_SURVEY.RESPONSE_TEXT, rec.VALUE
+                            GraphModel.PX_SURVEY.RESPONSE_TEXT, rec.VALUE
                     )
                 } else if (rec.TYPE == "numeric") {
                     surveyVBuilder = GraphModel.VX.SURVEY.instance()
-                        .withProperty(GraphModel.PX_SURVEY.RESPONSE_NUMERIC, rec.VALUE)
-                        .withNonNullProperties(GraphModel.PX_SURVEY.RESPONSE_UNIT, rec.UNITS)
+                            .withProperty(GraphModel.PX_SURVEY.RESPONSE_NUMERIC, rec.VALUE)
+                            .withNonNullProperties(GraphModel.PX_SURVEY.RESPONSE_UNIT, rec.UNITS)
                 }
                 def surveyV = surveyVBuilder.create(graph)
-            }
-            
-            dt.each { rec ->
+
                 def patient_id = rec.PATIENT
 
                 def patient_vertex
@@ -337,71 +294,178 @@ class ExampleMethods implements GraphMethods {
                 GraphModel.EX.SELF_REPORTED.instance().from(patient_vertex).to(surveyV).create()
 
             }
+
         }
+
     }
 
+    class PrintGraph15 extends GraphMethod {
+        void execute(Graph graph, GraphTraversalSource g) {
+            def symptomLabel = "Full-time employment (finding)"
+            def symptomCode = "160903007"
+
+            def diagnosisLabel = "Hypertension"
+            def diagnosisCode = "59621000"
+
+            g.V(4).as("p1")
+
+
+                    .out().isa(GraphModel.VX.SURVEY).as("s1")
+//                    .path()
+//            g.V().isa(GraphModel.VX.SURVEY)
+//                    .in()
+                    .each { v ->
+                        log.info "${v}"
+
+                        v.each { w ->
+                            log.info "${w}"
+                        }
+
+//                        log.info "${v.p}"
+//                        v.properties().each { p ->
+//                            log.info "v: ${v}, p: ${p}"
+//                            log.info "v: ${v}, p: ${p.label()} ${p}"
+//                        }
+                    }
+        }
+    }
 
     class PrintGraph14 extends GraphMethod {
         void execute(Graph graph, GraphTraversalSource g) {
 
+            def symptomLabel = "Full-time employment (finding)"
+            def symptomCode = "160903007"
+
+            def diagnosisLabel = "Hypertension"
+            def diagnosisCode = "59621000"
+
+            def ageMinimumInclusive = 18
+            def ageMaximumInclusive = 35
+
+            def responseLabel = "Former smoker"
+
+            def medicationLabel = "lisinopril 10 MG Oral Tablet"
+
             g.V()
                     .match(
-                            __.as("patient").has(GraphModel.PX_PATIENT.AGE, P.between(18, 35)),
+                            __.as("patient").has(GraphModel.PX_PATIENT.AGE, P.between(ageMinimumInclusive, ageMaximumInclusive)),
+
 //                        __.as("patient").out(GraphModel.EX.HAS).as("encounter").count().is(P.gte(2)),
+
                             __.as("patient").out(GraphModel.EX.HAS).as("symptomEncounter1"),
                             __.as("symptomEncounter1").out(GraphModel.EX.DIAGNOSED_AT).as("symptomCondition1"),
-                            __.as("symptomCondition1").has(GraphModel.PX.DESCRIPTION, "Full-time employment (finding)").as("c1"),
+                            __.as("symptomCondition1").has(GraphModel.PX.DESCRIPTION, symptomLabel).as("c1"),
 
                             __.as("patient").out(GraphModel.EX.HAS).as("symptomEncounter2"),
                             __.as("symptomEncounter2").out(GraphModel.EX.DIAGNOSED_AT).as("symptomCondition2"),
-                            __.as("symptomCondition2").has(GraphModel.PX.DESCRIPTION, "Full-time employment (finding)").as("c2"),
+                            __.as("symptomCondition2").has(GraphModel.PX.DESCRIPTION, symptomLabel).as("c2"),
 
-//                            __.as("symptomEncounter1").where(P.neq("symptomEncounter2")),
-
-//                            __.as("patient").out(GraphModel.EX.HAS).as("symptomEncounter1"),
-//                            __.as("symptomEncounter1").out(GraphModel.EX.DIAGNOSED_AT).as("diagnosis"),
-//                            __.as("diagnosisCondition").has(GraphModel.PX.DESCRIPTION, "Hypertension").as("c3"),
+                            __.as("symptomEncounter1").where(P.neq("symptomEncounter2")),
 
                             __.as("patient").out(GraphModel.EX.HAS).as("diagnosisEncounter"),
                             __.as("diagnosisEncounter").out(GraphModel.EX.DIAGNOSED_AT).as("diagnosisCondition"),
-                            __.as("diagnosisCondition").has(GraphModel.PX.DESCRIPTION, "Hypertension").as("c3")
-
-//                        __.as("patient").out(GraphModel.EX.HAS).as("encounter2"),
-//                        __.as("encounter1").
-//                        __.as("encounter").in(GraphModel.EX.HAS).as("patient"),
-//                        __.as("encounter").out(GraphModel.EX.DIAGNOSED_AT).as("condition")
-//                        __.as("patient").out(GraphModel.EX.DIAGNOSED_WITH).as("condition"),
-//                            __.as("condition").has(GraphModel.PX.DESCRIPTION, "Hypertension").as("c").count().is(P.gte(2)),
-//                        __.as("condition").has(GraphModel.PX.DESCRIPTION, "Hypertension").count().is(P.gte(2)),
-
+                            __.as("diagnosisCondition").has(GraphModel.PX.DESCRIPTION, diagnosisLabel).as("c3"),
 //
-//                            __.as("patient").out(GraphModel.EX.SELF_REPORTED).as("survey"),
-//                            __.as("survey").has(GraphModel.PX_SURVEY.RESPONSE_TEXT, "Never smoker"),
-//                            __.as("patient").out(GraphModel.EX.PRESCRIBED).as("medication"),
-//                            __.as("medication").has(GraphModel.PX.DESCRIPTION, "lisinopril 10 MG Oral Tablet")
-//                        lisinopril 10 MG
-//                        __.as("encounter").out(GraphModel.EX.PRESCRIBED_AT).as("medication")
+                            __.as("patient").out(GraphModel.EX.SELF_REPORTED).as("survey"),
+                            __.as("survey").has(GraphModel.PX_SURVEY.RESPONSE_TEXT, responseLabel),
+
+                            __.as("patient").out(GraphModel.EX.PRESCRIBED).as("medication"),
+                            __.as("medication").has(GraphModel.PX.DESCRIPTION, medicationLabel)
+
                     )
-//                .select("patient", "encounter").dedup()
-//                .select("patient", "medication")
-//                .select("medication")
-//                    .select("patient")
-//                    .select("c1", "c2")
+
 //                    .select("patient", "symptomEncounter1", "symptomEncounter2", "diagnosisEncounter")
-                    .select("symptomEncounter1")
+//                    .select("patient","diagnosisEncounter","survey")
+                    .select("patient")
                     .dedup()
 //                    .count()
-//                .valueMap()
+//                    .valueMap()
 
                     .each { v ->
-                        log.info "${v}"
+                        log.info "v ${v}"
+//                        v.each { w ->
+//                            log.info "w ${w}"
+//
+//                            log.info "w.key ${w.key}"
+//                            log.info "w.value ${w.value}"
+//
+////                            log.info "${w.value.properties()}"
+//                            w.value.properties().each { p ->
+//                                log.info "w.v.p ${p}"
+////                                log.info "v: ${v}, p: ${p.label()} ${p}"
+//                            }
+//
+//                        }
+
 //                        log.info "${v.p}"
-                        v.properties().each { p ->
-                            log.info "v: ${v}, p: ${p.label()} ${p}"
-                        }
+//                        v.properties().each { p ->
+//                            log.info "v: ${v}, p: ${p.label()} ${p}"
+//                        }
                     }
         }
     }
+
+//    class PrintGraph14 extends GraphMethod {
+//        void execute(Graph graph, GraphTraversalSource g) {
+//
+//            g.V()
+//                    .match(
+//                            __.as("patient").has(GraphModel.PX_PATIENT.AGE, P.between(18, 35)),
+////                        __.as("patient").out(GraphModel.EX.HAS).as("encounter").count().is(P.gte(2)),
+//                            __.as("patient").out(GraphModel.EX.HAS).as("symptomEncounter1"),
+//                            __.as("symptomEncounter1").out(GraphModel.EX.DIAGNOSED_AT).as("symptomCondition1"),
+//                            __.as("symptomCondition1").has(GraphModel.PX.DESCRIPTION, "Full-time employment (finding)").as("c1"),
+//
+//                            __.as("patient").out(GraphModel.EX.HAS).as("symptomEncounter2"),
+//                            __.as("symptomEncounter2").out(GraphModel.EX.DIAGNOSED_AT).as("symptomCondition2"),
+//                            __.as("symptomCondition2").has(GraphModel.PX.DESCRIPTION, "Full-time employment (finding)").as("c2"),
+//
+////                            __.as("symptomEncounter1").where(P.neq("symptomEncounter2")),
+//
+////                            __.as("patient").out(GraphModel.EX.HAS).as("symptomEncounter1"),
+////                            __.as("symptomEncounter1").out(GraphModel.EX.DIAGNOSED_AT).as("diagnosis"),
+////                            __.as("diagnosisCondition").has(GraphModel.PX.DESCRIPTION, "Hypertension").as("c3"),
+//
+//                            __.as("patient").out(GraphModel.EX.HAS).as("diagnosisEncounter"),
+//                            __.as("diagnosisEncounter").out(GraphModel.EX.DIAGNOSED_AT).as("diagnosisCondition"),
+//                            __.as("diagnosisCondition").has(GraphModel.PX.DESCRIPTION, "Hypertension").as("c3")
+//
+////                        __.as("patient").out(GraphModel.EX.HAS).as("encounter2"),
+////                        __.as("encounter1").
+////                        __.as("encounter").in(GraphModel.EX.HAS).as("patient"),
+////                        __.as("encounter").out(GraphModel.EX.DIAGNOSED_AT).as("condition")
+////                        __.as("patient").out(GraphModel.EX.DIAGNOSED_WITH).as("condition"),
+////                            __.as("condition").has(GraphModel.PX.DESCRIPTION, "Hypertension").as("c").count().is(P.gte(2)),
+////                        __.as("condition").has(GraphModel.PX.DESCRIPTION, "Hypertension").count().is(P.gte(2)),
+//
+////
+////                            __.as("patient").out(GraphModel.EX.SELF_REPORTED).as("survey"),
+////                            __.as("survey").has(GraphModel.PX_SURVEY.RESPONSE_TEXT, "Never smoker"),
+////                            __.as("patient").out(GraphModel.EX.PRESCRIBED).as("medication"),
+////                            __.as("medication").has(GraphModel.PX.DESCRIPTION, "lisinopril 10 MG Oral Tablet")
+////                        lisinopril 10 MG
+////                        __.as("encounter").out(GraphModel.EX.PRESCRIBED_AT).as("medication")
+//                    )
+////                .select("patient", "encounter").dedup()
+////                .select("patient", "medication")
+////                .select("medication")
+////                    .select("patient")
+////                    .select("c1", "c2")
+////                    .select("patient", "symptomEncounter1", "symptomEncounter2", "diagnosisEncounter")
+//                    .select("symptomEncounter1")
+//                    .dedup()
+////                    .count()
+////                .valueMap()
+//
+//                    .each { v ->
+//                        log.info "${v}"
+////                        log.info "${v.p}"
+//                        v.properties().each { p ->
+//                            log.info "v: ${v}, p: ${p.label()} ${p}"
+//                        }
+//                    }
+//        }
+//    }
 
 
 //                    .isa(GraphModel.VX.PATIENT)
