@@ -55,31 +55,18 @@ class SyncService {
 
         carnivalGraph.coreGraph.withTraversal { graph, g ->
         
-//            exampleMethods.method('LoadPatients').call(graph, g)
-//            exampleMethods.method('LoadEncounters').call(graph, g)
-//            exampleMethods.method('LoadConditions').call(graph, g)
-//            exampleMethods.method('LoadMedications').call(graph, g)
-//            exampleMethods.method('LoadSurveys').call(graph, g)
-
-            //exampleMethods.method('LoadCareplans').call(graph, g)
-            //reasoners.method('LinkConditionsAndPatients').call(graph, g)
-            //reasoners.method('LinkCareplansAndPatients').call(graph, g)
+            exampleMethods.method('LoadPatients').call(graph, g)
+            exampleMethods.method('LoadEncounters').call(graph, g)
+            exampleMethods.method('LoadConditions').call(graph, g)
+            exampleMethods.method('LoadMedications').call(graph, g)
+            exampleMethods.method('LoadSurveys').call(graph, g)
 
             reasoners.method('FindResearchAnswer').call(graph, g)
 
-//            exampleMethods.method('PrintGraph14').call(graph, g)
+            if (graph.features().graph().supportsTransactions()) {
+                graph.tx().commit()
+            }
 
-            /* neo4j graph */
-//            graph.tx().commit()
-
-            /* tinker graph does not support transactions */
-//            if (graph.features().graph().supportsTransactions()) {
-//                graph.tx().commit()
-//            }
-                
         }
-
-
     }
-
 }

@@ -54,6 +54,8 @@ COPY ./carnival-micronaut-home ${CARNIVAL_MICRONAUT_HOME}/.
 
 COPY micronaut-cli.yml ${CARNIVAL_MICRONAUT}/.
 
+COPY data/survey/observations_survey.csv ${CARNIVAL_MICRONAUT}/data/survey/observations_survey.csv
+
 WORKDIR ${CARNIVAL_MICRONAUT}
 
 
@@ -77,11 +79,15 @@ FROM adoptopenjdk/openjdk11-openj9:jdk-11.0.1.13-alpine-slim AS app
 ENV CARNIVAL_MICRONAUT      /opt/carnival-micronaut
 ENV CARNIVAL_MICRONAUT_HOME /opt/carnival-micronaut-home
 
+WORKDIR ${CARNIVAL_MICRONAUT}
+
 COPY --from=builder ${CARNIVAL_MICRONAUT_HOME} ${CARNIVAL_MICRONAUT_HOME}/.
 
 COPY --from=builder ${CARNIVAL_MICRONAUT}/build/libs/carnival-micronaut-0.1-all.jar \
                     ${CARNIVAL_MICRONAUT}/build/libs/carnival-micronaut.jar
 
+COPY --from=builder ${CARNIVAL_MICRONAUT}/data/survey/observations_survey.csv \
+                    ${CARNIVAL_MICRONAUT}/data/survey/observations_survey.csv
 
 CMD java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} \
       -Dcarnival.home=${CARNIVAL_MICRONAUT_HOME} \

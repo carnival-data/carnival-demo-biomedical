@@ -3,18 +3,12 @@ carnival-micronaut:
   name: CarnivalMicronaut
 
   example-db:
-#    server: db
-    server: localhost
+    server: db
+#    server: localhost
     port: 5433
     user: postgres
     password: postgres
     databaseName: EHR
-
-  sub-config:
-    someNumber: 58
-    someString: "Hello"
-    sub-sub-config:
-      another-string: "Yall"
 
   graph:
     runtime: "neo4j"
