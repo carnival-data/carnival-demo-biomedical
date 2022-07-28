@@ -53,18 +53,15 @@ sudo docker-compose up
 
 There should now be a server running at http://localhost:5858.
 
-## Set up instructions without Docker
+## Set up instructions for running the app with less Docker
 
-Prerequisite: JDK 11
+Prerequisite: JDK 11, Docker, git
 
-### 1. Set up GitHub
-
-Set up your GitHub environment to work with [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry).
-
-### 2. Clone Carnival Micronaut
+### 1. Clone Carnival Micronaut
 
 ```
-git clone https://github.com/pmbb-ibi/carnival-micronaut.git
+git clone https://github.com/carnival-data/carnival-demo-biomedical.git
+cd carnival-demo-biomedical
 ```
 
 <!--
@@ -79,22 +76,22 @@ export CARNIVAL_MICRONAUT_HOME=/full/path/to/carnival-micronaut/carnival-microna
 ```
 -->
 
-### 3. Build and run the Hello World app
+### 2. Start the database using Docker
 
 ```
-cd carnival-micronaut
+docker-compose build db
+docker-compose up db
+# To run in the background as a daemon use:
+# docker-compose up -d db
+```
+
+### 3. Build and run the app
+
+```
 ./gradlew run
 ```
 
-There should now be a server running at http://localhost:5858.
-
-
-### 4. Create and run Docker container
-
-```
-./docker-build.zsh
-docker run --publish 5858:5858 carnival-micronaut:0.1
-```
+After a few minutes, there should now be a server running at http://localhost:5858.
 
 ## Testing with Docker
 Run tests with the following:

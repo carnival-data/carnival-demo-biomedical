@@ -17,22 +17,21 @@ This example will cover:
 
 
 # Research Problem
-For this example the researcher is looking for a case and control cohort of patients that meet certian criteria:
-
-*IN PROGRESS, pending info on EHR data*
+For this example the researcher is looking for a case and control cohort of patients that meet certain criteria:
 
 >Cases
->* Age - between 18 and 55
->* At least two healthcare encounters with indications of *DISEASE* via *CRITERIA*
->* Has been perscribed medication *XXX*
->* Self-reported social history of drinking or smoking
->
->Controls
->* Age - between 18 and 55
->* No indications of *DISEASE* via *CRITERIA*
->* Has not been perscribes medication *XXX*
->* Self-reported social history of drinking or smoking
+>* Aged between 18 and 35, inclusive
+>* At least two healthcare encounters with indications of *employment*
+>* Diagnosis of *hypertension*
+>* Has been prescribed medication *lisinopril*
+>* Self-reported social history of *smoking*
 
+>Controls
+>* Aged between 18 and 35, inclusive
+>* At least two healthcare encounters with indications of *employment*
+>* No diagnosis of *hypertension*
+>* Has not been prescribed medication lisinopril
+>* Self-reported social history of drinking or smoking
 
 ## Examining the Source Data
 There are two synthetic relational datasources:
