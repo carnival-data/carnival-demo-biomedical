@@ -19,7 +19,7 @@ git clone https://github.com/carnival-data/carnival-micronaut.git
 cd carnival-micronaut
 sudo docker-compose build
 sudo docker-compose up
-Open a browser to http://localhost:5858
+Open a browser to http://localhost:5858 and to http://localhost:5858/patients
 
 To run the database test
 docker-compose -f docker-compose-test.yml up
