@@ -41,17 +41,19 @@ Note that as non-profit institutions, we can use the free "Personal" license.
 ### 1. Clone Carnival Micronaut
 
 ```
-git clone https://github.com/pmbb-ibi/carnival-micronaut.git
+git clone https://github.com/carnival-data/carnival-demo-biomedical.git
+cd carnival-demo-biomedical
 ```
 
 ### 2. Build and run the app
 
 ```
-sudo docker-compose build
-sudo docker-compose up
+docker-compose build
+docker-compose up
 ```
 
-There should now be a server running at http://localhost:5858.
+There should now be a server running at http://localhost:5858. 
+http://localhost:5858/patients will serve the JSON response containing the research cohort.
 
 ## Set up instructions for running the app with less Docker
 
