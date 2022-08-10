@@ -83,7 +83,7 @@ class AppWs {
         int numEdges
         carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
             numVertices = g.V().count().next()
-            numEdges = g.V().count().next()
+            numEdges = g.E().count().next()
         }     
 
         return """\
@@ -107,13 +107,13 @@ numEdges: ${numEdges}
         List<Patient> patients = []
     }
 
-    @Get("/patients")
+    @Get("/cohort_patients")
     @Produces(MediaType.APPLICATION_JSON)
     PatientResponse patients() {
         def response = new PatientResponse()
         carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
             def patientVs = g.V()
-                .isa(GraphModel.VX.RESEARCH_ANSWER).as('anw')
+                .isa(GraphModel.VX.COHORT_PATIENTS).as('anw')
                 .out(GraphModel.EX.CONTAINS)
                 .isa(GraphModel.VX.PATIENT).as('p')
                 .select('p')
@@ -127,6 +127,31 @@ numEdges: ${numEdges}
                     response.patients << p   
                     //response += "\n ${p.id}" 
                 }
+        }
+        response
+    }
+
+    @Get("/control_patients")
+    @Produces(MediaType.APPLICATION_JSON)
+    PatientResponse patients2() {
+        def response = new PatientResponse()
+        carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
+            def patientVs = g.V()
+                    .isa(GraphModel.VX.CONTROL_PATIENTS).as('anw')
+                    .out(GraphModel.EX.HAS)
+//                    .isa(GraphModel.VX.PATIENT)
+                    .as('p')
+                    .select('p')
+                    .each { m ->
+
+                        Patient p = new Patient()
+                        p.id = GraphModel.PX.ID.valueOf(m)
+                        p.first_name = GraphModel.PX_PATIENT.FIRST_NAME.valueOf(m)
+                        p.last_name = GraphModel.PX_PATIENT.LAST_NAME.valueOf(m)
+
+                        response.patients << p
+                        //response += "\n ${p.id}"
+                    }
         }
         response
     }

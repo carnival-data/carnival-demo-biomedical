@@ -62,6 +62,7 @@ class SyncService {
             exampleMethods.method('LoadSurveys').call(graph, g)
 
             reasoners.method('FindResearchAnswer').call(graph, g)
+            reasoners.method('FindControlPatients').call(graph, g)
 
             if (graph.features().graph().supportsTransactions()) {
                 graph.tx().commit()

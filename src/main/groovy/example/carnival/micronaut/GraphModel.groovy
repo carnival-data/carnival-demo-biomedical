@@ -69,21 +69,14 @@ class GraphModel {
                 PX_MEDICATION.REASON_DESCRIPTION
             ]
         ]),
-
-        //ENCOUNTER(PXEncounter),
-
-        // MEDICATION(PXMedication),
         
         SURVEY([
             propertyDefs: [
-//              PX.ID.withConstraints(index: true, required: true), // Generate unique id?
-
                 PX_SURVEY.DATE,             // 2012-05-04T15:30:18Z
 
                 PX.CODE,             // 72166-2
                 PX.DESCRIPTION,      // Tobacco smoking status NHIS
 
-                // Idea: use type to make one of two optional fields
                 PX_SURVEY.RESPONSE_NUMERIC, // 9.3
                 PX_SURVEY.RESPONSE_TEXT,     // Never smoker
                 
@@ -91,31 +84,15 @@ class GraphModel {
             ]
         ]),
 
-        RESEARCH_ANSWER([
-                propertyDefs:[
+        COHORT_PATIENTS([propertyDefs:[]]),
 
-                ]
-        ])
+        CONTROL_PATIENTS([propertyDefs:[]])
         
     }
-
-    /*
-    patient has encounters
-    encounter has surveys
-    encounter has procedures
-    encounter has conditions
-    encounter has medications
-     */
 
     @EdgeDefinition
     static enum EX {
         HAS,
-
-        // // remove (need to convert any tests?)
-        // PATIENT_HAS_ENCOUNTER(
-        //     domain:[VX.PATIENT],
-        //     range:[VX.ENCOUNTER]
-        // ),
 
         DIAGNOSED_WITH([
             domain:[VX.PATIENT],
@@ -138,7 +115,7 @@ class GraphModel {
             range:[VX.MEDICATION]
         ]),
         CONTAINS([
-                domain:[VX.RESEARCH_ANSWER],
+                domain:[VX.COHORT_PATIENTS],
                 range:[VX.PATIENT]
         ])
         
@@ -150,13 +127,11 @@ class GraphModel {
     static enum PX {
         ID,
 
-
         START,
         END,
         
         CODE,
         DESCRIPTION
-        
     }
     
     @PropertyDefinition
@@ -194,36 +169,5 @@ class GraphModel {
         REASON_CODE,
         REASON_DESCRIPTION
     }
-    /*@PropertyDefinition
-    static enum PXEncounter {
-        ID,
-        START,
-        END,
-        PROVIDER,
-        ENCOUNTER_CLASS,
-        CODE,
-        DESCRIPTION,
-        COST,
-        REASON_CODE,
-        REASON_DESCRIPTION
-    }*/
-/*
-    @PropertyDefinition
-    static enum PXMedication {
-        START,
-        STOP,
-        PATIENT,
-        ENCOUNTER,
-        CODE,
-        DESCRIPTION,
-        COST,
-        DISPENSES,
-        TOTAL_COST,
-        REASON_CODE,
-        REASON_DESCRIPTION
-    }
-    */
-    
 
-    
 }
