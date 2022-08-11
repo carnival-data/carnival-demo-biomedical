@@ -55,18 +55,35 @@ class SyncService {
 
         carnivalGraph.coreGraph.withTraversal { graph, g ->
         
+            log.info("Loading Patients")
             exampleMethods.method('LoadPatients').call(graph, g)
+            log.info("Loading Encounters")
             exampleMethods.method('LoadEncounters').call(graph, g)
+            log.info("Loading Conditions")
             exampleMethods.method('LoadConditions').call(graph, g)
+            log.info("Loading Medications")
             exampleMethods.method('LoadMedications').call(graph, g)
+            log.info("Loading Surveys")
             exampleMethods.method('LoadSurveys').call(graph, g)
 
+            log.info("Searching graph for case patients")
             reasoners.method('FindResearchAnswer').call(graph, g)
+            log.info("Searching graph for control patients")
             reasoners.method('FindControlPatients').call(graph, g)
+            log.info("Identified case and control groups successfully")
 
             if (graph.features().graph().supportsTransactions()) {
                 graph.tx().commit()
+                log.info("Graph Committed")
             }
+
+            log.info("")
+            log.info("The following API endpoints should now be reachable:")
+            log.info("http://localhost:5858/")
+            log.info("http://localhost:5858/case_patients")
+            log.info("http://localhost:5858/cohort_patients")
+            log.info("Try opening a browser to http://localhost:5858/")
+            log.info("")
 
         }
     }

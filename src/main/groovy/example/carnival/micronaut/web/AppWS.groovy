@@ -125,9 +125,9 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
         List<Patient> patients = []
     }
 
-    @Get("/cohort_patients")
+    @Get("/case_patients")
     @Produces(MediaType.APPLICATION_JSON)
-    PatientResponse cohortPatients() {
+    PatientResponse casePatients() {
         def response = new PatientResponse()
         carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
             def patientVs = g.V()
@@ -157,7 +157,7 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
             def patientVs = g.V()
                     .isa(GraphModel.VX.CONTROL_PATIENTS).as('anw')
                     .out(GraphModel.EX.HAS)
-//                    .isa(GraphModel.VX.PATIENT)
+                    .isa(GraphModel.VX.PATIENT)
                     .as('p')
                     .select('p')
                     .each { m ->
