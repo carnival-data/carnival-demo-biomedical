@@ -53,7 +53,7 @@
     <logger name="org.neo4j.ogm" level="INFO"/>
 
     <!-- carnival -->
-    <logger name="sql" level="TRACE">
+    <logger name="sql" level="INFO">
         <appender-ref ref="SQL_FILE" />
     </logger>
 
@@ -67,9 +67,9 @@
          the root logger level is info, a trace message will still flow to the
          root logger appender. -->
 <!--    <logger name="example.carnival.micronaut" level="TRACE"/>-->
-    <logger name="example.carnival.micronaut" level="INFO"/>
+        <logger name="example.carnival.micronaut" level="INFO"/>
 
-    <root level="TRACE">
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
     

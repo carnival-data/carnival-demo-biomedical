@@ -1,9 +1,7 @@
 package example.carnival.micronaut.method
 
-import carnival.graph.ControlledInstance
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j
-import org.apache.tinkerpop.gremlin.neo4j.structure.Neo4jVertex
 import org.apache.tinkerpop.gremlin.structure.Vertex
 
 import javax.inject.Singleton
@@ -56,8 +54,8 @@ class ExampleMethods implements GraphMethods {
     @Inject ExampleDbVine exampleDbVine
     @Inject CarnivalGraph carnivalGraph
 
-    static Map<String, ControlledInstance> patient_cache = new HashMap<String, ControlledInstance>()
-    static Map<String, Neo4jVertex> encounter_cache = new HashMap<String, Neo4jVertex>()
+    static Map<String, Vertex> patient_cache = new HashMap<String, Vertex>()
+    static Map<String, Vertex> encounter_cache = new HashMap<String, Vertex>()
 
     ///////////////////////////////////////////////////////////////////////////
     // SERVICE METHOD
@@ -163,8 +161,8 @@ class ExampleMethods implements GraphMethods {
                 String patient_id = rec.PATIENT_ID
                 String encounter_id = rec.ENCOUNTER_ID
 
-                Neo4jVertex patient_vertex
-                Neo4jVertex encounter_vertex
+                Vertex patient_vertex
+                Vertex encounter_vertex
 
                 if (patient_cache.containsKey(patient_id)) {
                     patient_vertex = patient_cache.get(patient_id)
