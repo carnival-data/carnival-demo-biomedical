@@ -11,7 +11,7 @@ services:
       target: base
       args:
         JAVA_OPTS: ${JAVA_OPTS:-="-Xms1G -Xmx2G -Dfile.encoding=UTF-8"}
-    command: "gradle test --no-daemon"
+    command: "gradle run --no-daemon"
     tty: true
     stdin_open: true
     
