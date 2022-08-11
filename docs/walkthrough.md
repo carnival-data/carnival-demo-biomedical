@@ -28,10 +28,10 @@ For this example the researcher is looking for a case and control cohort of pati
 
 >Controls
 >* Aged between 18 and 35, inclusive
->* At least two healthcare encounters with indications of *employment*
+>* Does not have two or more healthcare encounters with indications of *employment*
 >* No diagnosis of *hypertension*
->* Has not been prescribed medication lisinopril
->* Self-reported social history of drinking or smoking
+>* Has been prescribed medication lisinopril
+>* Self-reported social history of *smoking*
 
 ## Examining the Source Data
 There are two synthetic relational datasources:

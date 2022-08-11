@@ -113,10 +113,6 @@ class GraphModel {
         PRESCRIBED_AT([
             domain:[VX.ENCOUNTER],
             range:[VX.MEDICATION]
-        ]),
-        CONTAINS([
-                domain:[VX.COHORT_PATIENTS],
-                range:[VX.PATIENT]
         ])
         
     }

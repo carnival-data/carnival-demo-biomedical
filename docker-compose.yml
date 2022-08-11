@@ -5,7 +5,7 @@ services:
     build:
       context: .
       args:
-        JAVA_OPTS: ${JAVA_OPTS:-="-Xms1G -Xmx2G -Dfile.encoding=UTF-8"}
+        JAVA_OPTS: ${JAVA_OPTS:-="-Xms1G -Xmx6G -Dfile.encoding=UTF-8"}
       target: app
     ports:
       - "5858:5858"

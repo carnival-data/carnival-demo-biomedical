@@ -86,44 +86,38 @@ class Reasoners implements GraphMethods {
             def ansV = GraphModel.VX.COHORT_PATIENTS.instance().ensure(graph, g)
 
             g.V()
-                    .match(
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("patient").has(GraphModel.PX_PATIENT.AGE, P.between(ageMinimumInclusive, ageMaximumInclusive)),
+                .match(
+                    __.as("patient").has(GraphModel.PX_PATIENT.AGE, P.between(ageMinimumInclusive, ageMaximumInclusive)),
 
-//                        __.as("patient").out(GraphModel.EX.HAS).as("encounter").count().is(P.gte(2)),
+                    __.as("patient").out(GraphModel.EX.HAS).as("symptomEncounter1"),
+                    __.as("symptomEncounter1").out(GraphModel.EX.DIAGNOSED_AT).as("symptomCondition1"),
+                    __.as("symptomCondition1").has(GraphModel.PX.DESCRIPTION, symptomLabel).as("c1"),
 
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("patient").out(GraphModel.EX.HAS).as("symptomEncounter1"),
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("symptomEncounter1").out(GraphModel.EX.DIAGNOSED_AT).as("symptomCondition1"),
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("symptomCondition1").has(GraphModel.PX.DESCRIPTION, symptomLabel).as("c1"),
+                    __.as("patient").out(GraphModel.EX.HAS).as("symptomEncounter2"),
+                    __.as("symptomEncounter2").out(GraphModel.EX.DIAGNOSED_AT).as("symptomCondition2"),
+                    __.as("symptomCondition2").has(GraphModel.PX.DESCRIPTION, symptomLabel).as("c2"),
 
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("patient").out(GraphModel.EX.HAS).as("symptomEncounter2"),
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("symptomEncounter2").out(GraphModel.EX.DIAGNOSED_AT).as("symptomCondition2"),
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("symptomCondition2").has(GraphModel.PX.DESCRIPTION, symptomLabel).as("c2"),
+                    __.as("symptomEncounter1").where(P.neq("symptomEncounter2")),
 
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("symptomEncounter1").where(P.neq("symptomEncounter2")),
+                    __.as("patient").out(GraphModel.EX.HAS).as("diagnosisEncounter"),
+                    __.as("diagnosisEncounter").out(GraphModel.EX.DIAGNOSED_AT).as("diagnosisCondition"),
+                    __.as("diagnosisCondition").has(GraphModel.PX.DESCRIPTION, diagnosisLabel).as("c3"),
 
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("patient").out(GraphModel.EX.HAS).as("diagnosisEncounter"),
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("diagnosisEncounter").out(GraphModel.EX.DIAGNOSED_AT).as("diagnosisCondition"),
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("diagnosisCondition").has(GraphModel.PX.DESCRIPTION, diagnosisLabel).as("c3"),
-//
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("patient").out(GraphModel.EX.SELF_REPORTED).as("survey"),
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("survey").has(GraphModel.PX_SURVEY.RESPONSE_TEXT, responseLabel),
+                    __.as("patient").out(GraphModel.EX.SELF_REPORTED).as("survey"),
+                    __.as("survey").has(GraphModel.PX_SURVEY.RESPONSE_TEXT, responseLabel),
 
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("patient").out(GraphModel.EX.PRESCRIBED).as("medication"),
-                            org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.as("medication").has(GraphModel.PX.DESCRIPTION, medicationLabel)
+                    __.as("patient").out(GraphModel.EX.PRESCRIBED).as("medication"),
+                    __.as("medication").has(GraphModel.PX.DESCRIPTION, medicationLabel)
 
-                    )
+                )
 
-//                    .select("patient", "symptomEncounter1", "symptomEncounter2", "diagnosisEncounter")
-//                    .select("patient","diagnosisEncounter","survey")
-                    .select("patient")
-                    .dedup()
-//                    .count()
-//                    .valueMap()
+                .select("patient")
+                .dedup()
 
-                    .each { patV ->
-                        log.trace "patV: ${patV}"
-                        GraphModel.EX.CONTAINS.instance().from(ansV).to(patV).ensure(g)
-                    }
+                .each { patV ->
+                    log.trace "patV: ${patV}"
+                    GraphModel.EX.HAS.instance().from(ansV).to(patV).ensure(g)
+                }
         }
     }
 
@@ -144,9 +138,7 @@ class Reasoners implements GraphMethods {
 
             def medicationLabel = "lisinopril 10 MG Oral Tablet"
 
-//            def ansV = GraphModel.VX.CONTROL_PATIENTS.instance().ensure(graph, g)
-
-            def cohortPatients = g.V().isa(GraphModel.VX.COHORT_PATIENTS).out(GraphModel.EX.CONTAINS).toList()
+            def cohortPatients = g.V().isa(GraphModel.VX.COHORT_PATIENTS).out(GraphModel.EX.HAS).toList()
 
             def controlPatients =
                 g.V().match(
@@ -162,13 +154,9 @@ class Reasoners implements GraphMethods {
                 .dedup()
                 .toList()
 
-            System.out.println(controlPatients)
             controlPatients.removeAll(cohortPatients)
 
             def controlV = GraphModel.VX.CONTROL_PATIENTS.instance().ensure(graph, g)
-//            GraphModel.EX.CONTAINS.instance().from(ansV).to(patV).ensure(g)
-
-            System.out.println(controlPatients)
 
             controlPatients.each { p -> GraphModel.EX.HAS.instance().from(controlV).to(p).ensure(g)}
         }

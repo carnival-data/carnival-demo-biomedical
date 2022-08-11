@@ -81,9 +81,21 @@ class AppWs {
 
         int numVertices
         int numEdges
+        int numPatients
+        int numEncounters
+        int numConditions
+        int numMedications
+        int numSurveyResponses
+
         carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
             numVertices = g.V().count().next()
             numEdges = g.E().count().next()
+
+            numPatients = g.V().isa(GraphModel.VX.PATIENT).count().next()
+            numEncounters = g.V().isa(GraphModel.VX.ENCOUNTER).count().next()
+            numConditions = g.V().isa(GraphModel.VX.CONDITION).count().next()
+            numMedications = g.V().isa(GraphModel.VX.MEDICATION).count().next()
+            numSurveyResponses = g.V().isa(GraphModel.VX.SURVEY).count().next()
         }     
 
         return """\
@@ -93,8 +105,14 @@ Config:
 ${config.name}
 
 Graph:
-numVertices: ${numVertices}
-numEdges: ${numEdges}
+Total Number of Vertices: ${numVertices}
+Total Number of Edges: ${numEdges}
+
+Total Number of Patients: ${numPatients}
+Total Number of Encounters: ${numEncounters}
+Total Number of Conditions: ${numConditions}
+Total Number of Medications: ${numMedications}
+Total Number of Survey Question Responses: ${numSurveyResponses}
 """
     }
 
@@ -109,12 +127,12 @@ numEdges: ${numEdges}
 
     @Get("/cohort_patients")
     @Produces(MediaType.APPLICATION_JSON)
-    PatientResponse patients() {
+    PatientResponse cohortPatients() {
         def response = new PatientResponse()
         carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
             def patientVs = g.V()
                 .isa(GraphModel.VX.COHORT_PATIENTS).as('anw')
-                .out(GraphModel.EX.CONTAINS)
+                .out(GraphModel.EX.HAS)
                 .isa(GraphModel.VX.PATIENT).as('p')
                 .select('p')
                 .each { m ->
@@ -133,7 +151,7 @@ numEdges: ${numEdges}
 
     @Get("/control_patients")
     @Produces(MediaType.APPLICATION_JSON)
-    PatientResponse patients2() {
+    PatientResponse controlPatients() {
         def response = new PatientResponse()
         carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
             def patientVs = g.V()

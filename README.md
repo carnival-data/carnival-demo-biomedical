@@ -10,19 +10,19 @@ This demonstration been set up as a Docker multi-container project, with a conta
 ## Running the Project
 ## Set up instructions with Docker
 
-tl;dr
+To run the demo
 
 ```
 Install git
 Install Docker Desktop
-git clone https://github.com/carnival-data/carnival-micronaut.git
-cd carnival-micronaut
-sudo docker-compose build
-sudo docker-compose up
-Open a browser to http://localhost:5858 and to http://localhost:5858/patients
+git clone -b demo https://github.com/carnival-data/carnival-demo-biomedical.git
+cd carnival-demo-biomedical
+sudo docker-compose up --build
 
-To run the database test
-docker-compose -f docker-compose-test.yml up
+Open a browser to check API endpoints:
+http://localhost:5858
+http://localhost:5858/cohort_patients
+http://localhost:5858/control_patients
 
 ctrl+c to stop
 ```

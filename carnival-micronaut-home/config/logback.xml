@@ -57,8 +57,8 @@
         <appender-ref ref="SQL_FILE" />
     </logger>
 
-<!--    <logger name="carnival" level="TRACE"><appender-ref ref="CARNIVAL" /></logger>-->
     <logger name="carnival" level="TRACE"><appender-ref ref="CARNIVAL" /></logger>
+    <!-- <logger name="carnival" level="INFO"><appender-ref ref="CARNIVAL" /></logger> -->
     <logger name="carnival.util.Defaults" level="INFO"/>
     <logger name="carnival.core.graph.CoreGraph" level="INFO"/>
 
