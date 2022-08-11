@@ -17,7 +17,8 @@ Install git
 Install Docker Desktop
 git clone -b demo https://github.com/carnival-data/carnival-demo-biomedical.git
 cd carnival-demo-biomedical
-sudo docker-compose up --build
+sudo docker-compose build
+sudo docker-compose up
 
 Open a browser to check API endpoints:
 http://localhost:5858
