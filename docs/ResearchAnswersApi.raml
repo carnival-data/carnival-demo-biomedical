@@ -1,0 +1,65 @@
+#%RAML 1.0
+title: ResearchAnswers
+baseUri: https://localhost:5858/
+types:
+  patients:
+    type: patient[]
+    uniqueItems: true
+  patient:
+    type: object
+    properties:
+      id: number
+      first_name: string
+      last_name: string
+
+
+/case_patients:
+  get:
+    description: |
+      return a list of all case patients (refer to the Walkthrough document)
+    responses:
+      200:
+        body:
+          application/json:
+            type: patients
+            example: |
+              {
+                "patients":[
+                  {
+                    "id":"821c1a88-ebfa-9ee9-a629-4e9eb546df6b",
+                    "first_name":"Fernando603",
+                    "last_name":"Reyes140"
+                  },
+                  {
+                    "id":"63c057d5-857c-f0c8-9ce4-0c439f7f7868",
+                    "first_name":"Ardella559",
+                    "last_name":"Keeling57"
+                  }
+                ]
+              }
+
+/control_patients:
+  get:
+    description: |
+      return a list of all control patients (refer to the Walkthrough document)
+    responses:
+      200:
+        body:
+          application/json:
+            type: patients
+            example: |
+              {
+                "patients":[
+                  {
+                    "id":"e6adb1a1-bb82-f4e8-78b3-bdca6f1d7142",
+                    "first_name":"Lieselotte680",
+                    "last_name":"Gulgowski816"
+                  },
+                  {
+                    "id":"412555ca-6413-096d-e4a3-a83614b725e5",
+                    "first_name":"Suzanna632",
+                    "last_name":"Hansen121"
+                  }
+                ]
+              }
+  
