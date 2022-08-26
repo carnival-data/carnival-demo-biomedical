@@ -15,7 +15,6 @@
 
 
 ARG GRADLE_VERSION=7.2.0-jdk11
-ARG JAVA_OPTS
 
 #####
 # Stage 1: Downloads and caches dependencies including Carnival, and prepares build environment

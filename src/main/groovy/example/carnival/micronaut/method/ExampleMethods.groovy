@@ -283,6 +283,9 @@ class ExampleMethods implements GraphMethods {
 
             }
 
+            patient_cache = null
+            encounter_cache = null
+
         }
 
     }
