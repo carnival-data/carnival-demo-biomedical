@@ -72,10 +72,14 @@ class SyncService {
             reasoners.method('FindControlPatients').call(graph, g)
             log.info("Identified case and control groups successfully")
 
+            System.gc()
+
             if (graph.features().graph().supportsTransactions()) {
                 graph.tx().commit()
                 log.info("Graph Committed")
             }
+
+            System.gc()
 
             log.info("")
             log.info("The following API endpoints should now be reachable:")
