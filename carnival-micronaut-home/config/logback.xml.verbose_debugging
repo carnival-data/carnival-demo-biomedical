@@ -30,21 +30,28 @@
     <!-- loggers -->
 
     <!-- java -->
-    <logger name="javax.management" level="INFO"/>
+    <!-- <logger name="javax.management" level="INFO"/> -->
+    <logger name="javax.management" level="TRACE"/>
     <logger name="org.reflections" level="WARN"/>    
 
     <!-- groovy -->
     <logger name="groovy.util" level="INFO"/>
 
     <!-- netty -->
-    <logger name="org.jboss.netty" level="INFO"/>
+    <!-- <logger name="org.jboss.netty" level="INFO"/>
     <logger name="com.ning.http.client" level="INFO"/>
     <logger name="reactor.ipc.netty.http.server" level="INFO"/>
     <logger name="reactor.ipc.netty.channel" level="INFO"/>
-    <logger name="io.netty" level="INFO"/>
+    <logger name="io.netty" level="INFO"/> -->
+    <logger name="org.jboss.netty" level="TRACE"/>
+    <logger name="com.ning.http.client" level="TRACE"/>
+    <logger name="reactor.ipc.netty.http.server" level="TRACE"/>
+    <logger name="reactor.ipc.netty.channel" level="TRACE"/>
+    <logger name="io.netty" level="TRACE"/>
 
     <!-- micronaut -->
-    <logger name="io.micronaut" level="INFO"/>
+    <logger name="io.micronaut" level="TRACE"/>
+    <!-- <logger name="io.micronaut" level="INFO"/> -->
 
     <!-- reactor -->
     <logger name="reactor" level="INFO"/>
@@ -57,19 +64,23 @@
         <appender-ref ref="SQL_FILE" />
     </logger>
 
-    <logger name="carnival" level="INFO"><appender-ref ref="CARNIVAL" /></logger>
+    <logger name="carnival" level="TRACE"><appender-ref ref="CARNIVAL" /></logger>
     <!-- <logger name="carnival" level="INFO"><appender-ref ref="CARNIVAL" /></logger> -->
-    <logger name="carnival.util.Defaults" level="INFO"/>
-    <logger name="carnival.core.graph.CoreGraph" level="INFO"/>
+    
+    <!-- <logger name="carnival.util.Defaults" level="INFO"/>
+    <logger name="carnival.core.graph.CoreGraph" level="INFO"/> -->
+    <logger name="carnival.util.Defaults" level="TRACE"/>
+    <logger name="carnival.core.graph.CoreGraph" level="TRACE"/>
 
     <!-- with no appender-ref, log statements will flow to the root logger. the
          level set here will be respected.  so, if the level here is trace, but
          the root logger level is info, a trace message will still flow to the
          root logger appender. -->
-<!--    <logger name="example.carnival.micronaut" level="TRACE"/>-->
-        <logger name="example.carnival.micronaut" level="INFO"/>
+        <logger name="example.carnival.micronaut" level="TRACE"/>
+        <!-- <logger name="example.carnival.micronaut" level="INFO"/> -->
 
-    <root level="INFO">
+    <!-- <root level="INFO"> -->
+    <root level="TRACE">
         <appender-ref ref="STDOUT" />
     </root>
     
