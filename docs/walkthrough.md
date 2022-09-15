@@ -36,13 +36,13 @@ For this example the researcher is looking for a case and control cohort of pati
 ## Examining the Source Data
 There are two synthetic relational datasources:
 
-* **Electronic Heath Records(EHR) data** is stored in a Postgres database. The data is in **XXX** format.
+* **Electronic Heath Records(EHR) data** is relational data loaded into a Postgres database
 * **Self-reported patient survey data** is stored in csv spreadsheets
 
 
 ### EHR Data in Postgres
 
-The EHR data is represented by synthetically-generated **XXX** formated dataset that contains information about patients and heathcare encounters. This data was generated using **XXX** (synthea?)
+The EHR data is represented by synthetically-generated datasets that contain information about patients and heathcare encounters. This data was generated using [Synthea](https://synthetichealth.github.io/synthea/), using the configuration details found [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/data/db/synthea/readme.md).
 
 
 For this example, we set up a Postgres database in a docker container using the default [Postgres docker image](https://hub.docker.com/_/postgres/). The raw data is located in `data/db`, and the image has been configured to automatically load the data when docker is started.
@@ -64,18 +64,24 @@ CSV files that contain the results of self-reported surveys are located in `data
 This demonstration been set up as a Docker multi-container project, with a container that holds the Carnival/Micronaut server applications and other containers that have databases with test data. The source data for the carnival server is located in `/src`
 
 
-## Creating a new Carnival Project
-
 ## Defining the graph model
-Now that we have examined the data and created an initial carnival project, we want to create a data model that harmonizes patient and encounter data and the survey data.
+We have defined a simple carnival data model for our graph that that describes patients, healthcare encounters, medications and conditions [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/demo/src/main/groovy/example/carnival/micronaut/GraphModel.groovy). 
 
-## Doing graph operations
-### Drawing conclusions
+## Loading the data into the graph
+Data is loaded into the graph using vine methods. The vines can be found [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/demo/src/main/groovy/example/carnival/micronaut/vine/ExampleDbVine.groovy).
 
-## Key Idea - Providence
+## Graph Reasoning
+We have defined reasoner methods to search for the patient cohorts defined in this example and update the graph with this information. The reasonsers can be found [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/demo/src/main/groovy/example/carnival/micronaut/method/Reasoners.groovy)
 
 ## Presenting an API with Micronaut
-### Finding the patient cohort
-### Generating a report
+Using the micronaut framework, we present an api with two endpoints to return the case and control patient cohorts in the graph. The endpoints are defined [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/demo/src/main/groovy/example/carnival/micronaut/web/AppWS.groovy).
+
+The endpoints are:
+```
+http://localhost:5858
+http://localhost:5858/cohort_patients
+http://localhost:5858/control_patients
+```
 
 ## Examining the Graph in Neo4j Desktop
+**Todo**
