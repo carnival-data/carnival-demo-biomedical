@@ -2,7 +2,7 @@
 
 Carnival is a graph framework that allows for a large variety of ETL and analysis tasks related to relational data and property graphs. For this demonstration project, we will show how to use Carnival to harmonize relational data from various sources into a Carnival property graph, and present some of the ways the Carnival graph can be manipulated and analyzed.
 
-To motivate this, we will be acting in the role of a biomedical researcher who has a research question and data about patients, healthcare encounters and related information (lab tests, medications, health survey answers, etc.) collected in databases and spreadsheets. We want use Carnival to harmonize the data, determine if there are any patient populations that meet the criteria to be included in the research project, and then do some graph analysis on the data and produce some reports.
+To motivate this, we will be acting in the role of a biomedical researcher who has a research question and data about patients, healthcare encounters and related information (lab tests, medications, health survey answers, etc.) collected in databases and spreadsheets. We want to use Carnival to harmonize the data, determine if there are any patient populations that meet the criteria to be included in the research project, and then do some graph analysis on the data and produce some reports.
 
 This example will cover:
 * How to set up a new Carnival application
@@ -32,6 +32,7 @@ For this example the researcher is looking for a case and control cohort of pati
 >* No diagnosis of *hypertension*
 >* Has been prescribed medication lisinopril
 >* Self-reported social history of *smoking*
+
 
 ## Examining the Source Data
 There are two synthetic relational datasources:
