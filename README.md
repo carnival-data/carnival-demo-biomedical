@@ -8,6 +8,7 @@ This demonstration been set up as a Docker multi-container project, with a conta
 * A developer walkthrough of Carnival application can be found here: [Developer Walkthrough](docs/walkthrough.md)
 
 ## Running the Project
+
 ## Set up instructions with Docker
 
 To run the demo
@@ -22,13 +23,13 @@ sudo docker-compose up
 
 Open a browser to check API endpoints:
 http://localhost:5858
-http://localhost:5858/cohort_patients
+http://localhost:5858/case_patients
 http://localhost:5858/control_patients
 
 ctrl+c to stop
 ```
 
-Prerequisites: Docker and git
+### Prerequisites: Docker and git
 
 On [Windows](https://docs.docker.com/desktop/windows/install/) and [Mac](https://docs.docker.com/desktop/mac/install/), install Docker Desktop. 
 
