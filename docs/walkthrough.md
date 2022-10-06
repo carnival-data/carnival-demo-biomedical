@@ -83,6 +83,3 @@ http://localhost:5858
 http://localhost:5858/cohort_patients
 http://localhost:5858/control_patients
 ```
-
-## Examining the Graph in Neo4j Desktop
-**Todo**
