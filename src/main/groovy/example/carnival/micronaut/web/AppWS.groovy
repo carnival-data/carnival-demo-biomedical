@@ -11,6 +11,7 @@ import java.util.concurrent.Callable
 import groovy.util.logging.Slf4j
 import groovy.transform.CompileStatic
 import groovy.transform.ToString
+import groovy.time.TimeCategory
 
 import io.reactivex.Observer
 import io.reactivex.Single
@@ -38,6 +39,11 @@ import io.micronaut.http.annotation.PathVariable
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
 import org.apache.tinkerpop.gremlin.process.traversal.Traversal
+import org.apache.tinkerpop.gremlin.process.traversal.P
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__
+import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerFactory
+import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
+
 import org.apache.tinkerpop.gremlin.structure.Vertex
 import org.apache.tinkerpop.gremlin.structure.Edge
 import org.apache.tinkerpop.gremlin.structure.Graph
@@ -75,9 +81,21 @@ class AppWs {
 
         int numVertices
         int numEdges
+        int numPatients
+        int numEncounters
+        int numConditions
+        int numMedications
+        int numSurveyResponses
+
         carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
             numVertices = g.V().count().next()
-            numEdges = g.V().count().next()
+            numEdges = g.E().count().next()
+
+            numPatients = g.V().isa(GraphModel.VX.PATIENT).count().next()
+            numEncounters = g.V().isa(GraphModel.VX.ENCOUNTER).count().next()
+            numConditions = g.V().isa(GraphModel.VX.CONDITION).count().next()
+            numMedications = g.V().isa(GraphModel.VX.MEDICATION).count().next()
+            numSurveyResponses = g.V().isa(GraphModel.VX.SURVEY).count().next()
         }     
 
         return """\
@@ -85,98 +103,74 @@ Carnival Micronaut Example Server
 
 Config:
 ${config.name}
-${config.subConfig.someNumber}
-${config.subConfig.subSubConfig.anotherString}
 
 Graph:
-numVertices: ${numVertices}
-numEdges: ${numEdges}
+Total Number of Vertices: ${numVertices}
+Total Number of Edges: ${numEdges}
+
+Total Number of Patients: ${numPatients}
+Total Number of Encounters: ${numEncounters}
+Total Number of Conditions: ${numConditions}
+Total Number of Medications: ${numMedications}
+Total Number of Survey Question Responses: ${numSurveyResponses}
 """
     }
 
-
-
-    @ToString(includeNames=true)
-    static class CreateDoggieBody {
-        Boolean isAdorable = true
-        String name
+    class Patient {
+        String id = ""
+        String first_name = ""
+        String last_name = ""
+    }
+    class PatientResponse {
+        List<Patient> patients = []
     }
 
-    @ToString(includeNames=true)
-    static class CreateDoggieResponse {
-        String message = ""
-    }
-
-    @Post(value = "/doggie/create", consumes = MediaType.APPLICATION_JSON)
-    CreateDoggieResponse createDoggie(@Size(max = 1024) @Body CreateDoggieBody args) {
-        log.trace "createDoggie args:$args"
-
-        assert args.name
-        
-        def resp = new CreateDoggieResponse()
-        
+    @Get("/case_patients")
+    @Produces(MediaType.APPLICATION_JSON)
+    PatientResponse casePatients() {
+        def response = new PatientResponse()
         carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
-
-            def dV = GraphModel.VX.DOGGIE.instance()
-                .withProperty(GraphModel.PX.IS_ADORABLE, args.isAdorable)
-            .create(graph)
-
-            def nV = GraphModel.VX.NAME.instance()
-                .withProperty(GraphModel.PX.TEXT, args.name)
-            .ensure(graph, g)
-
-            def dnE = GraphModel.EX.HAS_BEEN_CALLED.instance()
-                .from(dV)
-                .to(nV)
-            .create()
-
-            resp.message = "created doggie ${dV}, name ${nV}, and name relationship ${dnE}"
+            def patientVs = g.V()
+                .isa(GraphModel.VX.COHORT_PATIENTS).as('anw')
+                .out(GraphModel.EX.HAS)
+                .isa(GraphModel.VX.PATIENT).as('p')
+                .select('p')
+                .each { m ->
+                    
+                    Patient p = new Patient()
+                    p.id = GraphModel.PX.ID.valueOf(m)
+                    p.first_name = GraphModel.PX_PATIENT.FIRST_NAME.valueOf(m)
+                    p.last_name = GraphModel.PX_PATIENT.LAST_NAME.valueOf(m)
+                    
+                    response.patients << p   
+                    //response += "\n ${p.id}" 
+                }
         }
-
-        resp
-    }
-
-
-
-    @Get("/doggies")
-    @Produces(MediaType.TEXT_PLAIN)
-    String doggies(
-        @Nullable @QueryValue Boolean isAdorable,
-        @Nullable @QueryValue String name
-    ) {
-
-        log.trace "doggies isAdorable:${isAdorable} name:${name}"
-
-        String response = ""
-
-        carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
-            Integer numDoggies = g.V()
-                .isa(GraphModel.VX.DOGGIE)
-            .count().next()
-            response += "There are ${numDoggies} total doggies."
-
-            g.V()
-                .isa(GraphModel.VX.DOGGIE).as('d')
-                .out(GraphModel.EX.HAS_BEEN_CALLED)
-                .isa(GraphModel.VX.NAME).as('n')
-                .select('d', 'n')
-            .each { m ->
-                response += "\n${m.d} ${GraphModel.PX.TEXT.valueOf(m.n)}"
-            }
-
-            if (isAdorable != null) {
-                Integer numAdorableDoggies = g.V()
-                    .isa(GraphModel.VX.DOGGIE)
-                    .has(GraphModel.PX.IS_ADORABLE, isAdorable)
-                .count().next()
-                response += "\nThere are ${numAdorableDoggies} doggies that are"
-                if (!isAdorable) response += " not"
-                response += " adorable."      
-            }
-        }
-        
         response
     }
 
+    @Get("/control_patients")
+    @Produces(MediaType.APPLICATION_JSON)
+    PatientResponse controlPatients() {
+        def response = new PatientResponse()
+        carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
+            def patientVs = g.V()
+                    .isa(GraphModel.VX.CONTROL_PATIENTS).as('anw')
+                    .out(GraphModel.EX.HAS)
+                    .isa(GraphModel.VX.PATIENT)
+                    .as('p')
+                    .select('p')
+                    .each { m ->
 
+                        Patient p = new Patient()
+                        p.id = GraphModel.PX.ID.valueOf(m)
+                        p.first_name = GraphModel.PX_PATIENT.FIRST_NAME.valueOf(m)
+                        p.last_name = GraphModel.PX_PATIENT.LAST_NAME.valueOf(m)
+
+                        response.patients << p
+                        //response += "\n ${p.id}"
+                    }
+        }
+        response
+    }
 }

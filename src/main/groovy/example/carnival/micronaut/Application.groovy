@@ -25,7 +25,7 @@ class Application {
     static void main(String[] args) {
 
         // start the application
-        ApplicationContext ctx = Micronaut.run(Application)
+        ApplicationContext ctx = Micronaut.run(Application, args)
 
         // validate configuration
         //ctx.getBean(AppConfig).errors().ifPresent { errs ->

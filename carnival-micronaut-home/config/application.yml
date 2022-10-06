@@ -4,24 +4,19 @@ carnival-micronaut:
 
   example-db:
     server: db
-    port: 5432
+#    server: localhost
+    port: 5433
     user: postgres
     password: postgres
     databaseName: EHR
 
-  sub-config:
-    someNumber: 58
-    someString: "Hello"
-    sub-sub-config:
-      another-string: "Yall"
-
   graph:
-    runtime: "neo4j"
-    test: "tinker"
+    runtime: tinker # neo4j tinker
+    test: tinker 
 
 carnival:
 
-  cache-mode: OPTIONAL
+  cache-mode: IGNORE #OPTIONAL
 
   directories:
     data:

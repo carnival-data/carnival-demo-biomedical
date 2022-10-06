@@ -12,3 +12,9 @@ out/
 .settings
 .classpath
 .env
+carnival-micronaut-home/data/cache/*.csv
+carnival-micronaut-home/data/cache/*.yaml
+carnival-micronaut-home/data/cache/*.yml
+carnival-micronaut-home/data/graph/app/*
+!carnival-micronaut-home/data/graph/app/.gitkeep
+carnival-micronaut-home/log/*.log

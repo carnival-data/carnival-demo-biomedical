@@ -8,26 +8,28 @@ This demonstration been set up as a Docker multi-container project, with a conta
 * A developer walkthrough of Carnival application can be found here: [Developer Walkthrough](docs/walkthrough.md)
 
 ## Running the Project
+
 ## Set up instructions with Docker
 
-tl;dr
+To run the demo
 
 ```
 Install git
 Install Docker Desktop
-git clone https://github.com/carnival-data/carnival-micronaut.git
-cd carnival-micronaut
+git clone -b demo https://github.com/carnival-data/carnival-demo-biomedical.git
+cd carnival-demo-biomedical
 sudo docker-compose build
 sudo docker-compose up
-Open a browser to http://localhost:5858
 
-To run the database test
-docker-compose -f docker-compose-test.yml up
+Open a browser to check API endpoints:
+http://localhost:5858
+http://localhost:5858/case_patients
+http://localhost:5858/control_patients
 
 ctrl+c to stop
 ```
 
-Prerequisites: Docker and git
+### Prerequisites: Docker and git
 
 On [Windows](https://docs.docker.com/desktop/windows/install/) and [Mac](https://docs.docker.com/desktop/mac/install/), install Docker Desktop. 
 
@@ -41,30 +43,29 @@ Note that as non-profit institutions, we can use the free "Personal" license.
 ### 1. Clone Carnival Micronaut
 
 ```
-git clone https://github.com/pmbb-ibi/carnival-micronaut.git
+git clone https://github.com/carnival-data/carnival-demo-biomedical.git
+cd carnival-demo-biomedical
 ```
 
 ### 2. Build and run the app
 
 ```
-sudo docker-compose build
-sudo docker-compose up
+docker-compose build
+docker-compose up
 ```
 
-There should now be a server running at http://localhost:5858.
+There should now be a server running at http://localhost:5858. 
+http://localhost:5858/patients will serve the JSON response containing the research cohort.
 
-## Set up instructions without Docker
+## Set up instructions for running the app with less Docker
 
-Prerequisite: JDK 11
+Prerequisite: JDK 11, Docker, git
 
-### 1. Set up GitHub
-
-Set up your GitHub environment to work with [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry).
-
-### 2. Clone Carnival Micronaut
+### 1. Clone Carnival Micronaut
 
 ```
-git clone https://github.com/pmbb-ibi/carnival-micronaut.git
+git clone https://github.com/carnival-data/carnival-demo-biomedical.git
+cd carnival-demo-biomedical
 ```
 
 <!--
@@ -79,22 +80,22 @@ export CARNIVAL_MICRONAUT_HOME=/full/path/to/carnival-micronaut/carnival-microna
 ```
 -->
 
-### 3. Build and run the Hello World app
+### 2. Start the database using Docker
 
 ```
-cd carnival-micronaut
+docker-compose build db
+docker-compose up db
+# To run in the background as a daemon use:
+# docker-compose up -d db
+```
+
+### 3. Build and run the app
+
+```
 ./gradlew run
 ```
 
-There should now be a server running at http://localhost:5858.
-
-
-### 4. Create and run Docker container
-
-```
-./docker-build.zsh
-docker run --publish 5858:5858 carnival-micronaut:0.1
-```
+After a few minutes, there should now be a server running at http://localhost:5858.
 
 ## Testing with Docker
 Run tests with the following:
@@ -107,6 +108,7 @@ This will run the unit tests. The test results will be printed in the docker log
 
 Once docker has been started using `docker-compose up`, the database can be browsed using database GUI tool like DBeaver with the credentials:
 * Host: localhost
+* Port: specified in `.env`
 * Database: EHR
 * Username: postgres
 * Password: postgres

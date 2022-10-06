@@ -15,7 +15,8 @@ import org.apache.tinkerpop.gremlin.structure.Graph
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
 
 import example.carnival.micronaut.graph.CarnivalGraph
-
+//import example.carnival.micronaut.config.AppConfig
+import example.carnival.micronaut.method.ExampleMethods
 
 
 
@@ -23,10 +24,14 @@ import example.carnival.micronaut.graph.CarnivalGraph
 class ExampleSpec extends Specification {
 
     
+    //@Inject AppConfig config
+
     @Shared @Inject CarnivalGraph carnivalGraph
     @Shared Graph graph
     @Shared GraphTraversalSource g
 
+//    @Shared @Inject ExampleDbVine exampleDbVine
+    @Shared @Inject ExampleMethods exampleMethods
 
     def setupSpec() {
         carnivalGraph.resetCoreGraph()
@@ -56,8 +61,20 @@ class ExampleSpec extends Specification {
     ///////////////////////////////////////////////////////////////////////////
     // TESTS
     ///////////////////////////////////////////////////////////////////////////
+    
+    void "test create encounters from postgres"() {
+        when:
+        def res = exampleMethods
+            .method('LoadEncounters')
+            .call(graph, g).result
+        println "res: ${res}"
 
-    void "test create and link vertices"() {
+        then:
+        res != null
+        
+    }
+    
+    /*void "test create and link vertices"() {
         when:
         def numVertices1 = g.V().count().next()
         def dottieV = GraphModel.VX.DOGGIE.instance().withProperties(
@@ -88,6 +105,70 @@ class ExampleSpec extends Specification {
             .isa(GraphModel.VX.NAME)
             .has(GraphModel.PX.TEXT, 'Dottie')
         .tryNext().isPresent()
+    }*/
+    void "test create and link patient vertices"() {
+        when:
+        def numVertices1   = g.V().count().next()
+        def patientVertex = GraphModel.VX.PATIENT.instance().withProperties(
+                GraphModel.PX.ID, "P123",
+                GraphModel.PX_PATIENT.FIRST_NAME, "Bob"
+        ).create(graph)
+        def numVertices2 = g.V().count().next()
+
+        then:
+        patientVertex != null
+        numVertices2 == numVertices1 + 1
+
+        when:
+        def encounterVertex = GraphModel.VX.ENCOUNTER.instance().withProperties(
+                GraphModel.PX.ID, "E500-4205",
+                GraphModel.PX.START, "2021",
+                GraphModel.PX.END, "2022",
+                // GraphModel.PX_ENCOUNTER.START, "2021",
+                // GraphModel.PX_ENCOUNTER.END, "2022",
+
+                GraphModel.PX.DESCRIPTION, "some desc"
+        ).ensure(graph, g)
+
+        then:
+        encounterVertex != null
+
+        when:
+        // def edge1E = GraphModel.EX.PATIENT_HAS_ENCOUNTER.instance().from(p1V).to(e1V).create()
+        def edge = GraphModel.EX.HAS.instance()
+                        .from(patientVertex)
+                        .to(encounterVertex).create()
+
+
+        then:
+        g.V(patientVertex)
+            .out(GraphModel.EX.HAS)
+            .isa(GraphModel.VX.ENCOUNTER)
+        .tryNext().isPresent()
+        // edge1E == null
+        
+        when:
+        def numVertices3   = g.V().count().next()
+        def c1V = GraphModel.VX.CAREPLAN.instance().withProperties(
+                GraphModel.PX.ID, "C415",
+                GraphModel.PX.START, "2021",
+                GraphModel.PX.STOP, "2022"
+                //GraphModel.PX.PATIENT, "P123",
+                //GraphModel.PX.ENCOUNTER, "E500-4205"
+        ).create(graph)
+        def numVertices4 = g.V().count().next()
+
+
+        g.V(patientVertex)
+            .out(GraphModel.EX.HAS)
+            .isa(GraphModel.VX.ENCOUNTER)
+            // .has(GraphModel.PX_ENCOUNTER.END, '2022')
+            .has(GraphModel.PX.END, '2022')
+        .tryNext().isPresent()
+        
+        edge != null
+    
     }
+
 
 }

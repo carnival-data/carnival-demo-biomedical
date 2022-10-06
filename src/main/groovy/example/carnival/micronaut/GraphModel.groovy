@@ -15,36 +15,155 @@ class GraphModel {
 
     @VertexDefinition
     static enum VX {
-        DOGGIE(
+        PATIENT([
             propertyDefs:[
-                PX.IS_ADORABLE.withConstraints(index:true, required:true),
+                PX.ID.withConstraints(index:true, required:true),
+            
+                PX_PATIENT.BIRTH_DATE,
+                PX_PATIENT.AGE,
+                PX_PATIENT.DEATH_DATE,
+                PX_PATIENT.FIRST_NAME,
+                PX_PATIENT.LAST_NAME,
+                PX_PATIENT.LATITUDE,
+                PX_PATIENT.LONGITUDE,
+                PX_PATIENT.ENCOUNTER_COUNT
             ]
-        ),
+        ]),
 
-        NAME(
+        ENCOUNTER([
             propertyDefs:[
-                PX.TEXT.withConstraints(index:true, unique:true, required:true),
+                PX.ID.withConstraints(index:true, required:true),
+                PX.START,
+                PX.END,
+                
+                PX_ENCOUNTER.CLASS,
+                PX.CODE,
+                PX.DESCRIPTION,
+                
+                PX_ENCOUNTER.REASON_CODE,
+                PX_ENCOUNTER.REASON_DESCRIPTION
             ]
-        )
+        ]),
+
+        CONDITION([
+            propertyDefs:[
+                PX.START.withConstraints(required:true),
+                PX.END,
+                PX.CODE,
+                PX.DESCRIPTION
+            ]
+        ]),
+
+        MEDICATION([
+            propertyDefs:[
+                PX.START.withConstraints(required:true),
+                PX.END,
+                
+                PX_MEDICATION.COST,
+                PX_MEDICATION.DISPENSES,
+                PX_MEDICATION.TOTAL_COST,
+
+                PX.CODE,
+                PX.DESCRIPTION,
+                PX_MEDICATION.REASON_CODE,
+                PX_MEDICATION.REASON_DESCRIPTION
+            ]
+        ]),
+        
+        SURVEY([
+            propertyDefs: [
+                PX_SURVEY.DATE,             // 2012-05-04T15:30:18Z
+
+                PX.CODE,             // 72166-2
+                PX.DESCRIPTION,      // Tobacco smoking status NHIS
+
+                PX_SURVEY.RESPONSE_NUMERIC, // 9.3
+                PX_SURVEY.RESPONSE_TEXT,     // Never smoker
+                
+                PX_SURVEY.RESPONSE_UNIT    
+            ]
+        ]),
+
+        COHORT_PATIENTS([propertyDefs:[]]),
+
+        CONTROL_PATIENTS([propertyDefs:[]])
+        
     }
-
-
 
     @EdgeDefinition
     static enum EX {
-        HAS_BEEN_CALLED(
-            domain:[VX.DOGGIE],
-            range:[VX.NAME]
-        ),
+        HAS,
+
+        DIAGNOSED_WITH([
+            domain:[VX.PATIENT],
+            range:[VX.CONDITION]
+        ]),
+        DIAGNOSED_AT([
+            domain:[VX.ENCOUNTER],
+            range:[VX.CONDITION]
+        ]),
+        SELF_REPORTED([
+            domain:[VX.PATIENT],
+            range:[VX.SURVEY]
+        ]),
+        PRESCRIBED([
+            domain:[VX.PATIENT],
+            range:[VX.MEDICATION]
+        ]),
+        PRESCRIBED_AT([
+            domain:[VX.ENCOUNTER],
+            range:[VX.MEDICATION]
+        ])
+        
     }
 
 
 
     @PropertyDefinition
     static enum PX {
-        IS_ADORABLE,
-        TEXT
+        ID,
+
+        START,
+        END,
+        
+        CODE,
+        DESCRIPTION
+    }
+    
+    @PropertyDefinition
+    static enum PX_PATIENT {
+        BIRTH_DATE,
+        AGE,
+        DEATH_DATE,
+        FIRST_NAME,
+        LAST_NAME,
+        LATITUDE,
+        LONGITUDE,
+        ENCOUNTER_COUNT
     }
 
-    
+    @PropertyDefinition
+    static enum PX_ENCOUNTER {
+        CLASS,
+        REASON_CODE,
+        REASON_DESCRIPTION
+    }
+
+    @PropertyDefinition
+    static enum PX_SURVEY {
+        DATE,
+        RESPONSE_NUMERIC,
+        RESPONSE_TEXT,
+        RESPONSE_UNIT
+    }
+
+    @PropertyDefinition
+    static enum PX_MEDICATION {
+        COST,
+        DISPENSES,
+        TOTAL_COST,
+        REASON_CODE,
+        REASON_DESCRIPTION
+    }
+
 }

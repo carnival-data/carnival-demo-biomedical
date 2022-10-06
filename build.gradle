@@ -1,5 +1,7 @@
 buildscript {
     repositories {
+        mavenLocal()
+
         // We may have to manually comment out earlier repos to pull from later ones (disable maven to use github)
         maven {
             name = "MavenCentralSnapshots"
@@ -7,25 +9,21 @@ buildscript {
             def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
             url = carnivalVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
+
         mavenCentral()
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/carnival-data/carnival")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
-        mavenLocal()
     }
     dependencies {
+        classpath group:'io.github.carnival-data', name:'carnival-util', version:project.findProperty("carnivalVersion")
+        classpath group:'io.github.carnival-data', name:'carnival-core', version:project.findProperty("carnivalVersion")
+        classpath group:'io.github.carnival-data', name:'carnival-graph', version:project.findProperty("carnivalVersion")
         classpath group:'io.github.carnival-data', name:'carnival-gradle', version:project.findProperty("carnivalVersion")
-    }    
+
+    }
 }
 
 plugins {
     id "groovy"
-    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id "com.github.johnrengelman.shadow" version "7.1.2"
     id "io.micronaut.application" version '1.0.5'
     id 'com.github.ManifestClasspath' version '0.1.0-RELEASE'
 }
@@ -35,6 +33,8 @@ version "0.1"
 group "io.github.carnival-data"
 
 repositories {
+    mavenLocal()
+
     // We may have to manually comment out earlier repos to pull from later ones (disable maven to use github)
     maven {
         name = "MavenCentralSnapshots"
@@ -42,15 +42,8 @@ repositories {
         def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
         url = carnivalVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
     }
+
     mavenCentral()
-    maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/carnival-data/carnival")
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
-            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-        }
-    }
 }
 
 micronaut {
@@ -63,11 +56,15 @@ micronaut {
 }
 
 dependencies {
+//    annotationProcessor "io.micronaut:micronaut-inject-java"
+
     implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut.groovy:micronaut-runtime-groovy")
     implementation("javax.annotation:javax.annotation-api")
     implementation("io.micronaut:micronaut-http-client")
     runtimeOnly("ch.qos.logback:logback-classic")
+
+//    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 }
 
 mainClassName = "example.carnival.micronaut.Application"
@@ -90,3 +87,23 @@ groovydoc {
 shadowJar {
   zip64 true
 }
+
+task clearGraphCache(type: Delete) {
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Patients.csv")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Patients.yaml")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Encounters.csv")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Encounters.yaml")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Conditions.csv")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Conditions.yaml")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Medications.csv")
+    delete files("./carnival-micronaut-home/data/cache/example-carnival-micronaut-vine-ExampleDbVine-Medications.yaml")
+
+    delete fileTree(dir:'./carnival-micronaut-home/data/graph/app', include: '**')
+    delete files('./carnival-micronaut-home/data/graph/app/index')
+    delete files('./carnival-micronaut-home/data/graph/app/metrics')
+    delete files('./carnival-micronaut-home/data/graph/app/profiles')
+    delete files('./carnival-micronaut-home/data/graph/app/schema')
+    delete files('./carnival-micronaut-home/data/graph/app/logs')
+}
+
+run.jvmArgs('-Xms1024m', '-Xmx8000m')

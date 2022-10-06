@@ -38,6 +38,7 @@ class ExampleDbVine implements Vine {
     ///////////////////////////////////////////////////////////////////////////
 
     Sql connect() {
+        log.trace "jdbc:postgresql://${config.exampleDb.server}:${config.exampleDb.port}/${config.exampleDb.databaseName}"
         Sql.newInstance(
             driver: "org.postgresql.Driver",
             // jdbc:postgresql://db:5432/EHR
@@ -45,22 +46,20 @@ class ExampleDbVine implements Vine {
             user: config.exampleDb.user,
             password: config.exampleDb.password
         )
+        
     }
 
 
-    class MyMappedMethod extends MappedDataTableVineMethod { 
-
+    abstract class MappedMethod extends MappedDataTableVineMethod { 
+        
+        abstract String getQuery()
+        abstract Map getDataTableArgs()
+        
         MappedDataTable fetch(Map args) {
             log.trace "database connect()"
             def sql = connect()
 
-            def mdt = createDataTable(idFieldName:'id')
-
-            String query = """\
-  SELECT *
-  FROM encounters
-  """
-
+            def mdt = createDataTable( dataTableArgs )
             log.debug "query: ${query}"
 
             try {
@@ -77,5 +76,111 @@ class ExampleDbVine implements Vine {
 
     }
 
+    abstract class GenericMappedMethod extends GenericDataTableVineMethod { 
+        
+        abstract String getQuery()
+        
+        GenericDataTable fetch(Map args) {
+            log.trace "database connect()"
+            def sql = connect()
+
+            def gdt = createDataTable()
+            log.debug "query: ${query}"
+
+            try {
+                log.trace "sql.eachRow()"
+                sql.eachRow(query) { row ->
+                    log.trace "row: $row"
+                    gdt.dataAdd(row)
+                }
+            } finally {
+                if (sql) sql.close()
+            }
+            gdt
+        }
+
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // VINE METHODS
+    ///////////////////////////////////////////////////////////////////////////
+
+    class Patients extends MappedMethod {
+
+        Map dataTableArgs = [idFieldName:'Id']
+
+        String query = """
+SELECT 
+patients.id,
+patients.birthdate AS birth_date,
+patients.deathdate AS death_date,
+patients.first AS first_name,
+patients.last AS last_name,
+patients.lat AS latitude,
+patients.lon AS longitude 
+FROM patients
+--LIMIT 100
+"""
+
+    }
+
+    /** */
+    class Encounters extends MappedMethod {
+
+        Map dataTableArgs = [idFieldName:'encounter_id']
+
+        String query = """\
+SELECT 
+encounters.id AS encounter_id, 
+encounters.start, 
+encounters.stop,
+patients.id AS patient_id
+
+FROM encounters
+JOIN patients ON encounters.patient = patients.id
+--LIMIT 100
+"""
+
+    }
+
+    class Conditions extends GenericMappedMethod {
+
+        String query = """\
+SELECT 
+conditions.start,
+conditions.stop AS end,
+conditions.patient AS patient_id,
+conditions.encounter AS encounter_id,
+conditions.code,
+conditions.description
+FROM
+conditions
+--LIMIT 100
+"""
+
+    }
+
+    class Medications extends GenericMappedMethod {
+
+        String query = """\
+SELECT 
+medications.start,
+medications.stop AS end,
+medications.patient AS patient_id,
+medications.encounter AS encounter_id,
+medications.base_cost,
+medications.dispenses,
+medications.total_cost,
+medications.code,
+medications.description,
+medications.reason_code,
+medications.reason_description
+FROM
+medications
+--LIMIT 100
+"""
+
+    }
 
 }
