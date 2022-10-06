@@ -9,17 +9,17 @@ This demonstration been set up as a Docker multi-container project, with a conta
 
 ## Running the Project
 
-## Set up instructions with Docker
+## Quickstart
 
-To run the demo
+To just run the demo, do the following:
 
 ```
 Install git
 Install Docker Desktop
-git clone -b demo https://github.com/carnival-data/carnival-demo-biomedical.git
+git clone https://github.com/carnival-data/carnival-demo-biomedical.git
 cd carnival-demo-biomedical
-sudo docker-compose build
-sudo docker-compose up
+docker-compose build
+docker-compose up
 
 Open a browser to check API endpoints:
 http://localhost:5858
@@ -29,9 +29,11 @@ http://localhost:5858/control_patients
 ctrl+c to stop
 ```
 
+## Detailed Setup
 ### Prerequisites: Docker and git
 
 On [Windows](https://docs.docker.com/desktop/windows/install/) and [Mac](https://docs.docker.com/desktop/mac/install/), install Docker Desktop. 
+
 
 Note that as non-profit institutions, we can use the free "Personal" license.
 
@@ -54,8 +56,14 @@ docker-compose build
 docker-compose up
 ```
 
-There should now be a server running at http://localhost:5858. 
-http://localhost:5858/patients will serve the JSON response containing the research cohort.
+After a few minutes, there should be a server running at `http://localhost:5858`.
+
+API endpoints will serve JSON responses containing the case and control cohorts ([API Documentation](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/docs/ResearchAnswersApi.raml)):
+
+```
+http://localhost:5858/case_patients
+http://localhost:5858/control_patients
+```
 
 ## Set up instructions for running the app with less Docker
 
@@ -95,7 +103,7 @@ docker-compose up db
 ./gradlew run
 ```
 
-After a few minutes, there should now be a server running at http://localhost:5858.
+After a few minutes, there should be a server running at http://localhost:5858.
 
 ## Testing with Docker
 Run tests with the following:
