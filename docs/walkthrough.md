@@ -13,7 +13,7 @@ This example will cover:
 * Presenting an API that allows users to do some basic graph exploration and analysis
 * Examining the property graph directly
 
-> *Note: This demonstration is set up as Docker multi-container project, with one container holds the Carnival application and other containers that contain example databases. This walkthrough focuses excusively on the Carnival application. See [Running the Project](https://github.com/carnival-data/carnival-micronaut/blob/master/README.md#running-the-project) for instrucitons on running the entire project.*
+> *Note: This demonstration is set up as Docker multi-container project, with one container holds the Carnival application and other containers that contain example databases. This walkthrough focuses excusively on the Carnival application. See [Running the Project](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/README.md#running-the-project) for instrucitons on running the entire project.*
 
 
 # Research Problem
@@ -66,16 +66,16 @@ This demonstration been set up as a Docker multi-container project, with a conta
 
 
 ## Defining the graph model
-We have defined a simple carnival data model for our graph that that describes patients, healthcare encounters, medications and conditions [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/demo/src/main/groovy/example/carnival/micronaut/GraphModel.groovy). 
+We have defined a simple carnival data model for our graph that that describes patients, healthcare encounters, medications and conditions [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/GraphModel.groovy). 
 
 ## Loading the data into the graph
-Data is loaded into the graph using vine methods. The vines can be found [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/demo/src/main/groovy/example/carnival/micronaut/vine/ExampleDbVine.groovy).
+Data is loaded into the graph using vine methods. The vines can be found [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/vine/ExampleDbVine.groovy).
 
 ## Graph Reasoning
-We have defined reasoner methods to search for the patient cohorts defined in this example and update the graph with this information. The reasonsers can be found [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/demo/src/main/groovy/example/carnival/micronaut/method/Reasoners.groovy)
+We have defined reasoner methods to search for the patient cohorts defined in this example and update the graph with this information. The reasonsers can be found [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/method/Reasoners.groovy)
 
 ## Presenting an API with Micronaut
-Using the micronaut framework, we present an api with two endpoints to return the case and control patient cohorts in the graph. The endpoints are defined [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/demo/src/main/groovy/example/carnival/micronaut/web/AppWS.groovy).
+Using the micronaut framework, we present an api with two endpoints to return the case and control patient cohorts in the graph. The endpoints are defined [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/web/AppWS.groovy).
 
 The endpoints are:
 ```
