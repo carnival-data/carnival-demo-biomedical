@@ -201,7 +201,6 @@ class ExampleMethods implements GraphMethods {
                 log.trace "rec: ${rec}"
                 def medV = GraphModel.VX.MEDICATION.instance()
                     .withProperty(GraphModel.PX.START, rec.START)
-                    //GraphModel.PX.END, rec.STOP,
                     .withProperty(GraphModel.PX_MEDICATION.COST, rec.BASE_COST)
                     .withProperty(GraphModel.PX_MEDICATION.DISPENSES, rec.DISPENSES)
                     .withProperty(GraphModel.PX_MEDICATION.TOTAL_COST, rec.TOTAL_COST)
@@ -209,7 +208,6 @@ class ExampleMethods implements GraphMethods {
                     .withProperty(GraphModel.PX.DESCRIPTION, rec.DESCRIPTION)
                     .withNonNullProperties(GraphModel.PX_MEDICATION.REASON_CODE, rec.REASON_CODE)
                     .withNonNullProperties(GraphModel.PX_MEDICATION.REASON_DESCRIPTION, rec.REASON_DESCRIPTION)
-//                .ensure(graph, g)
                 .create(graph)
 
                 def patient_id = rec.PATIENT_ID
@@ -251,18 +249,18 @@ class ExampleMethods implements GraphMethods {
 
                 log.trace "rec: ${rec}"
                 def surveyVBuilder = GraphModel.VX.SURVEY.instance().withProperties(
-                        GraphModel.PX_SURVEY.DATE, rec.DATE,
-                        GraphModel.PX.CODE, rec.CODE,
-                        GraphModel.PX.DESCRIPTION, rec.DESCRIPTION
+                    GraphModel.PX_SURVEY.DATE, rec.DATE,
+                    GraphModel.PX.CODE, rec.CODE,
+                    GraphModel.PX.DESCRIPTION, rec.DESCRIPTION
                 )
                 if (rec.TYPE == "text") {
-                    surveyVBuilder = GraphModel.VX.SURVEY.instance().withProperty(
-                            GraphModel.PX_SURVEY.RESPONSE_TEXT, rec.VALUE
+                    surveyVBuilder = surveyVBuilder.withProperty(
+                        GraphModel.PX_SURVEY.RESPONSE_TEXT, rec.VALUE
                     )
                 } else if (rec.TYPE == "numeric") {
-                    surveyVBuilder = GraphModel.VX.SURVEY.instance()
-                            .withProperty(GraphModel.PX_SURVEY.RESPONSE_NUMERIC, rec.VALUE)
-                            .withNonNullProperties(GraphModel.PX_SURVEY.RESPONSE_UNIT, rec.UNITS)
+                    surveyVBuilder = surveyVBuilder
+                        .withProperty(GraphModel.PX_SURVEY.RESPONSE_NUMERIC, rec.VALUE)
+                        .withNonNullProperties(GraphModel.PX_SURVEY.RESPONSE_UNIT, rec.UNITS)
                 }
                 def surveyV = surveyVBuilder.create(graph)
 
