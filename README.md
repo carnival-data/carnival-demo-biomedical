@@ -116,7 +116,7 @@ This will run the unit tests. The test results will be printed in the docker log
 
 Once docker has been started using `docker-compose up`, the database can be browsed using database GUI tool like DBeaver with the credentials:
 * Host: localhost
-* Port: specified in `.env`
+* Port: 5433, or as specified in `.env`
 * Database: EHR
 * Username: postgres
 * Password: postgres
