@@ -2,11 +2,14 @@ package example.carnival.micronaut.vine
 
 
 
+import java.nio.file.Path
+import java.nio.file.Paths
+
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j
+import groovy.sql.Sql
 import javax.inject.Singleton
 import javax.inject.Inject
-import groovy.sql.Sql
 
 import carnival.util.GenericDataTable
 import carnival.util.MappedDataTable
@@ -42,7 +45,7 @@ class ExampleDbVine implements Vine {
         log.trace "exampleVineConfiguration()"
         def vconf = VineConfiguration.defaultConfiguration()
         vconf.cache.mode = CacheMode.valueOf(config.vine.exampleDbVine.mode)
-        vconf.cache.directory = config.vine.exampleDbVine.directory
+        vconf.cache.directory = Paths.get(config.vine.exampleDbVine.directory)
         vconf.cache.directoryCreateIfNotPresent = config.vine.exampleDbVine.directoryCreateIfNotPresent
         log.trace "vconf: " + vconf
         return vconf
