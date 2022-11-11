@@ -1,14 +1,14 @@
 package example.carnival.micronaut.config
 
 
-
 import groovy.util.logging.Slf4j
 import groovy.transform.ToString
-
 
 import io.micronaut.context.annotation.ConfigurationProperties
 import io.micronaut.context.annotation.ConfigurationBuilder
 
+import carnival.core.CarnivalNeo4jConfiguration
+import carnival.vine.VineConfiguration
 
 
 @Slf4j
@@ -17,6 +17,24 @@ import io.micronaut.context.annotation.ConfigurationBuilder
 class AppConfig {
     
     String name
+
+    @ConfigurationProperties("carnival")
+    static class Carnival {
+        CarnivalNeo4jConfiguration neo4j
+    }
+    Carnival carnival = new Carnival()
+
+    @ConfigurationProperties("vine")
+    static class Vine {
+        @ConfigurationProperties("example-db-vine")
+        static class ExampleDbVine {
+            String mode
+            String directory
+            Boolean directoryCreateIfNotPresent
+        }
+        ExampleDbVine exampleDbVine = new ExampleDbVine()
+    }
+    Vine vine = new Vine()
 
     @ConfigurationProperties("example-db")
     static class ExampleDb {
@@ -27,18 +45,5 @@ class AppConfig {
         String databaseName
     }
     ExampleDb exampleDb = new ExampleDb()
-
-    @ConfigurationProperties("sub-config")
-    static class SubConfig {
-        int someNumber
-        String someString
-
-        @ConfigurationProperties("sub-sub-config")
-        static class SubSubConfig {
-            String anotherString
-        }
-        SubSubConfig subSubConfig = new SubSubConfig()
-    }
-    SubConfig subConfig = new SubConfig()
 
 }

@@ -10,30 +10,23 @@ carnival-micronaut:
     password: postgres
     databaseName: EHR
 
+  # these configurations will determine the type of underlying carnival that
+  # gets used during runtime and tests
   graph:
     runtime: tinker # neo4j tinker
-    test: tinker 
+    test: tinker
 
-carnival:
-
-  cache-mode: IGNORE #OPTIONAL
-
-  directories:
-    data:
-    # root: /Users/yourname/dev/carnival.data
-    # graph: /Users/yourname/dev/carnival.data.graph
-    # cache: /Users/yourname/dev/carnival.data.cache
-    execution:
-      # target: /Users/yourname/dev/target
-
-  gremlin:
+  # these configurations will be used to configure the underlying carnival
+  # depending on which type is chosen above
+  carnival:
+    # if graph.runtime or graph.test is set to neo4j, this configuration
+    # will be used
     neo4j:
-      conf:
-        dbms:
-          directories:
-            plugins: /path/to/your/neo4j/plugin/dir
-          security:
-            auth_enabled: "false"
-            procedures:
-              unrestricted: apoc.*
-              whitelist: apoc.*
+      gremlin:
+        directory: "carnival-home/neo4j/graph"
+  
+  vine:
+    example-db-vine:
+      mode: OPTIONAL
+      directory: "carnival-home/vine/example-db-vine"
+      directoryCreateIfNotPresent: true

@@ -1,19 +1,19 @@
 package example.carnival.micronaut
 
 
-
-import carnival.graph.VertexDefinition
-import carnival.graph.PropertyDefinition
-import carnival.graph.EdgeDefinition
-
-import carnival.core.graph.Core
+import carnival.graph.VertexModel
+import carnival.graph.PropertyModel
+import carnival.graph.EdgeModel
+import carnival.core.Core
 
 
+/**
+ * The graph model used by this demo application.
+ *
+ */
 class GraphModel {
 
-
-
-    @VertexDefinition
+    @VertexModel
     static enum VX {
         PATIENT([
             propertyDefs:[
@@ -90,7 +90,7 @@ class GraphModel {
         
     }
 
-    @EdgeDefinition
+    @EdgeModel
     static enum EX {
         HAS,
 
@@ -117,20 +117,16 @@ class GraphModel {
         
     }
 
-
-
-    @PropertyDefinition
+    @PropertyModel
     static enum PX {
         ID,
-
         START,
-        END,
-        
+        END,        
         CODE,
         DESCRIPTION
     }
-    
-    @PropertyDefinition
+
+    @PropertyModel
     static enum PX_PATIENT {
         BIRTH_DATE,
         AGE,
@@ -142,14 +138,14 @@ class GraphModel {
         ENCOUNTER_COUNT
     }
 
-    @PropertyDefinition
+    @PropertyModel
     static enum PX_ENCOUNTER {
         CLASS,
         REASON_CODE,
         REASON_DESCRIPTION
     }
 
-    @PropertyDefinition
+    @PropertyModel
     static enum PX_SURVEY {
         DATE,
         RESPONSE_NUMERIC,
@@ -157,7 +153,7 @@ class GraphModel {
         RESPONSE_UNIT
     }
 
-    @PropertyDefinition
+    @PropertyModel
     static enum PX_MEDICATION {
         COST,
         DISPENSES,

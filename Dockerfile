@@ -83,10 +83,10 @@ WORKDIR ${CARNIVAL_MICRONAUT}
 COPY --from=builder ${CARNIVAL_MICRONAUT_HOME} ${CARNIVAL_MICRONAUT_HOME}/.
 
 COPY --from=builder ${CARNIVAL_MICRONAUT}/build/libs/carnival-micronaut-0.1-all.jar \
-                    ${CARNIVAL_MICRONAUT}/build/libs/carnival-micronaut.jar
+      ${CARNIVAL_MICRONAUT}/build/libs/carnival-micronaut.jar
 
 COPY --from=builder ${CARNIVAL_MICRONAUT}/data/survey/observations_survey.csv \
-                    ${CARNIVAL_MICRONAUT}/data/survey/observations_survey.csv
+      ${CARNIVAL_MICRONAUT}/data/survey/observations_survey.csv
 
 CMD java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} \
       -Dcarnival.home=${CARNIVAL_MICRONAUT_HOME} \

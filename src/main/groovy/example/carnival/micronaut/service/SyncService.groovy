@@ -14,13 +14,13 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__
 
 import carnival.util.GenericDataTable
 import carnival.util.MappedDataTable
-import carnival.core.vine.Vine
+import carnival.vine.Vine
 
 import example.carnival.micronaut.GraphModel
 import example.carnival.micronaut.config.AppConfig
 import example.carnival.micronaut.vine.ExampleDbVine
 import example.carnival.micronaut.method.ExampleMethods
-import example.carnival.micronaut.graph.CarnivalGraph
+import example.carnival.micronaut.graph.BiomedCarnival
 import example.carnival.micronaut.method.Reasoners
 
 
@@ -39,7 +39,7 @@ class SyncService {
 
     @Inject AppConfig config
     @Inject ExampleDbVine exampleDbVine
-    @Inject CarnivalGraph carnivalGraph
+    @Inject BiomedCarnival carnivalGraph
     @Inject ExampleMethods exampleMethods
     @Inject Reasoners reasoners
 
@@ -53,7 +53,7 @@ class SyncService {
     /** */
     public void syncExample (Map args = [:]) {
 
-        carnivalGraph.coreGraph.withTraversal { graph, g ->
+        carnivalGraph.carnival.withTraversal { graph, g ->
         
             log.info("Loading Patients")
             exampleMethods.method('LoadPatients').call(graph, g)
@@ -72,14 +72,14 @@ class SyncService {
             reasoners.method('FindControlPatients').call(graph, g)
             log.info("Identified case and control groups successfully")
 
-            System.gc()
+            //System.gc()
 
             if (graph.features().graph().supportsTransactions()) {
                 graph.tx().commit()
                 log.info("Graph Committed")
             }
 
-            System.gc()
+            //System.gc()
 
             log.info("")
             log.info("The following API endpoints should now be reachable:")

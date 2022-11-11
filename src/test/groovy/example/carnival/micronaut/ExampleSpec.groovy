@@ -14,7 +14,7 @@ import io.micronaut.test.annotation.MicronautTest
 import org.apache.tinkerpop.gremlin.structure.Graph
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
 
-import example.carnival.micronaut.graph.CarnivalGraph
+import example.carnival.micronaut.graph.BiomedCarnival
 //import example.carnival.micronaut.config.AppConfig
 import example.carnival.micronaut.method.ExampleMethods
 
@@ -26,7 +26,7 @@ class ExampleSpec extends Specification {
     
     //@Inject AppConfig config
 
-    @Shared @Inject CarnivalGraph carnivalGraph
+    @Shared @Inject BiomedCarnival carnivalGraph
     @Shared Graph graph
     @Shared GraphTraversalSource g
 
@@ -34,13 +34,13 @@ class ExampleSpec extends Specification {
     @Shared @Inject ExampleMethods exampleMethods
 
     def setupSpec() {
-        carnivalGraph.resetCoreGraph()
-        graph = carnivalGraph.coreGraph.graph
+        carnivalGraph.resetCarnival()
+        graph = carnivalGraph.carnival.graph
     }
 
 
     def setup() {
-        g = carnivalGraph.coreGraph.traversal()
+        g = carnivalGraph.carnival.traversal()
     }
 
 
@@ -158,7 +158,7 @@ class ExampleSpec extends Specification {
         ).create(graph)
         def numVertices4 = g.V().count().next()
 
-
+        then:
         g.V(patientVertex)
             .out(GraphModel.EX.HAS)
             .isa(GraphModel.VX.ENCOUNTER)

@@ -29,11 +29,10 @@ import org.apache.tinkerpop.gremlin.structure.Direction
 
 import carnival.core.graph.GraphMethods
 import carnival.core.graph.GraphMethod
-import carnival.core.graph.Core
 
 import example.carnival.micronaut.GraphModel
 import example.carnival.micronaut.config.AppConfig
-import example.carnival.micronaut.graph.CarnivalGraph
+import example.carnival.micronaut.graph.BiomedCarnival
 
 
 
@@ -50,7 +49,7 @@ class Reasoners implements GraphMethods {
     final String CANCEL = 'Cancel'
 
     @Inject AppConfig config
-    @Inject CarnivalGraph carnivalGraph
+    @Inject BiomedCarnival carnivalGraph
 
 
 

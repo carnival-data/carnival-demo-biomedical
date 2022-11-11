@@ -49,9 +49,8 @@ import org.apache.tinkerpop.gremlin.structure.Edge
 import org.apache.tinkerpop.gremlin.structure.Graph
 import org.apache.tinkerpop.gremlin.structure.T
 
-import carnival.core.graph.Core
 import example.carnival.micronaut.config.AppConfig
-import example.carnival.micronaut.graph.CarnivalGraph
+import example.carnival.micronaut.graph.BiomedCarnival
 import example.carnival.micronaut.GraphModel
 
 
@@ -65,7 +64,7 @@ class AppWs {
     ///////////////////////////////////////////////////////////////////////////
 
     @Inject AppConfig config
-    @Inject CarnivalGraph carnivalGraph
+    @Inject BiomedCarnival carnivalGraph
     
 
 
@@ -87,7 +86,7 @@ class AppWs {
         int numMedications
         int numSurveyResponses
 
-        carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
+        carnivalGraph.carnival.withTraversal { Graph graph, GraphTraversalSource g ->
             numVertices = g.V().count().next()
             numEdges = g.E().count().next()
 
@@ -129,7 +128,7 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
     @Produces(MediaType.APPLICATION_JSON)
     PatientResponse casePatients() {
         def response = new PatientResponse()
-        carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
+        carnivalGraph.carnival.withTraversal { Graph graph, GraphTraversalSource g ->
             def patientVs = g.V()
                 .isa(GraphModel.VX.COHORT_PATIENTS).as('anw')
                 .out(GraphModel.EX.HAS)
@@ -153,7 +152,7 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
     @Produces(MediaType.APPLICATION_JSON)
     PatientResponse controlPatients() {
         def response = new PatientResponse()
-        carnivalGraph.coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
+        carnivalGraph.carnival.withTraversal { Graph graph, GraphTraversalSource g ->
             def patientVs = g.V()
                     .isa(GraphModel.VX.CONTROL_PATIENTS).as('anw')
                     .out(GraphModel.EX.HAS)

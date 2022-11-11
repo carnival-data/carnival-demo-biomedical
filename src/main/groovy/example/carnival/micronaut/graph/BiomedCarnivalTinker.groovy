@@ -13,9 +13,8 @@ import org.apache.tinkerpop.gremlin.structure.Graph
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
 
-import carnival.core.graph.CoreGraph
-import carnival.core.graph.CoreGraphTinker
-import carnival.core.graph.VertexLabelDefinition
+import carnival.core.Carnival
+import carnival.core.CarnivalTinker
 
 
 
@@ -23,7 +22,7 @@ import carnival.core.graph.VertexLabelDefinition
 @Requires(notEnv="test")
 @Requires(notEnv="testreport")
 @Requires(property="carnival-micronaut.graph.runtime", value="tinker")
-class CarnivalGraphTinkerDefault extends CarnivalGraphTinker {
+class BiomedCarnivalTinkerDefault extends BiomedCarnivalTinker {
 }
 
 
@@ -31,50 +30,44 @@ class CarnivalGraphTinkerDefault extends CarnivalGraphTinker {
 @Requires(env="test")
 @Requires(notEnv="testreport")
 @Requires(property="carnival-micronaut.graph.test", value="tinker")
-class CarnivalGraphTinkerTest extends CarnivalGraphTinker {
+class BiomedCarnivalTinkerTest extends BiomedCarnivalTinker {
 }
 
 
 /**
- * Define a class of objects, CarnivalGraphTinker, that implement CarnivalGraph.
+ * Define a class of objects, BiomedCarnivalTinker, that implement BiomedCarnival.
  * Micronaut will automatically create a singleton object of this class.
  * The annotation @Singleton is used, but is also the default.
  *
  */
 @Slf4j
-class CarnivalGraphTinker extends CarnivalGraph {
+class BiomedCarnivalTinker extends BiomedCarnival {
 
 	/** a Carnival core graph */
-    CoreGraph coreGraph
+    CarnivalTinker carnival
 
 
     /** no argument constructor that opens an in-memory core graph */
-    CarnivalGraphTinker() {
-    	coreGraph = CoreGraphTinker.create()
+    BiomedCarnivalTinker() {
+    	carnival = CarnivalTinker.create()
     }
 
 
     /**
-     * Life-cycle hook to initialize the core graph with the models defined in
-     * this project.
+     * Life-cycle hook to initialize the unerlying carnival with the models 
+     * defined in this project.
      *
      */
     @PostConstruct 
     void initialize() {
-        log.trace "\n\n\n\n\nCarnivalGraphTinker\n\n\n\n\n"
-        coreGraph.withTraversal { Graph graph, GraphTraversalSource g ->
-            String packageName = this.getClass().getPackage().getName()
-            coreGraph.initializeGremlinGraph(graph, g, packageName)
-
-            // create some debug people?
-        }
+        log.trace "\n\n\n\n\nBiomedCarnivalTinker\n\n\n\n\n"
+        initGremlinGraph()
     }
     
 
-
     /** convenience getter for the underlying gremlin graph */
     Graph getGremlinGraph() {
-    	coreGraph.graph
+    	carnival.graph
     }
     
 
@@ -82,9 +75,9 @@ class CarnivalGraphTinker extends CarnivalGraph {
      * Method to reset the core graph, meant to be used only by tests.
      *
      */
-    void resetCoreGraph() {
-        coreGraph.close()
-        this.coreGraph = CoreGraphTinker.create()
+    void resetCarnival() {
+        carnival.close()
+        this.carnival = CarnivalTinker.create()
         initialize()
     }
 }

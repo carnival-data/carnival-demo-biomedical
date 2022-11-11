@@ -7,14 +7,14 @@ import groovy.util.logging.Slf4j
 import javax.inject.Singleton
 import javax.inject.Inject
 import groovy.sql.Sql
-import static java.sql.ResultSet.*
-import io.micronaut.context.annotation.Property
 
 import carnival.util.GenericDataTable
 import carnival.util.MappedDataTable
-import carnival.core.vine.Vine
-import carnival.core.vine.MappedDataTableVineMethod
-import carnival.core.vine.GenericDataTableVineMethod
+import carnival.vine.Vine
+import carnival.vine.VineConfiguration
+import carnival.vine.CacheMode
+import carnival.vine.MappedDataTableVineMethod
+import carnival.vine.GenericDataTableVineMethod
 
 import example.carnival.micronaut.config.AppConfig
 
@@ -29,33 +29,71 @@ class ExampleDbVine implements Vine {
     // FIELDS
     ///////////////////////////////////////////////////////////////////////////
 
-    @Inject AppConfig config
+    /** injected by Micronaut via the ExampleDbVine constructor */
+    AppConfig config
 
+
+    ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTOR
+    ///////////////////////////////////////////////////////////////////////////
+
+    /** create a VineConfiguration object from the application config */
+    VineConfiguration exampleVineConfiguration() {
+        log.trace "exampleVineConfiguration()"
+        def vconf = VineConfiguration.defaultConfiguration()
+        vconf.cache.mode = CacheMode.valueOf(config.vine.exampleDbVine.mode)
+        vconf.cache.directory = config.vine.exampleDbVine.directory
+        vconf.cache.directoryCreateIfNotPresent = config.vine.exampleDbVine.directoryCreateIfNotPresent
+        log.trace "vconf: " + vconf
+        return vconf
+    }
+
+    /**
+     * Constrtuct an ExampleDbVine.  
+     * Inject an AppConfig.  
+     * Set the vine configuration.
+     *
+     */
+    public ExampleDbVine(AppConfig appConfig) {
+        this.config = appConfig
+        this.vineConfiguration = exampleVineConfiguration()
+    }
 
 
     ///////////////////////////////////////////////////////////////////////////
     // UTILITY
     ///////////////////////////////////////////////////////////////////////////
 
+    /** create a Sql connection */
     Sql connect() {
         log.trace "jdbc:postgresql://${config.exampleDb.server}:${config.exampleDb.port}/${config.exampleDb.databaseName}"
         Sql.newInstance(
             driver: "org.postgresql.Driver",
-            // jdbc:postgresql://db:5432/EHR
             url: "jdbc:postgresql://${config.exampleDb.server}:${config.exampleDb.port}/${config.exampleDb.databaseName}",
             user: config.exampleDb.user,
             password: config.exampleDb.password
         )
-        
     }
 
 
+    /**
+     * An abstract class for a vine method that returns a MappedDataTable.
+     * Implementing classes need to define the query and the args that will
+     * be used to create the output data table, which must include an
+     * idFieldName.
+     *
+     * This is a convenience class to remove boilerplate.  It is not necessary
+     * to define a abstract parent class to implement a vine method.
+     *
+     */
     abstract class MappedMethod extends MappedDataTableVineMethod { 
         
         abstract String getQuery()
         abstract Map getDataTableArgs()
         
         MappedDataTable fetch(Map args) {
+            log.trace "MappedMethod.fetch vineConfiguration: ${vineConfiguration}"
+
             log.trace "database connect()"
             def sql = connect()
 
@@ -76,11 +114,22 @@ class ExampleDbVine implements Vine {
 
     }
 
-    abstract class GenericMappedMethod extends GenericDataTableVineMethod { 
+
+    /**
+     * An abstract class for a vine method that returns a GenericDataTable.
+     * Implementing classes need to define the query only.
+     *
+     * This is a convenience class to remove boilerplate.  It is not necessary
+     * to define a abstract parent class to implement a vine method.
+     *
+     */
+    abstract class GenericMethod extends GenericDataTableVineMethod { 
         
         abstract String getQuery()
-        
+
         GenericDataTable fetch(Map args) {
+            log.trace "GenericMethod.fetch vineConfiguration: ${vineConfiguration}"
+
             log.trace "database connect()"
             def sql = connect()
 
@@ -106,6 +155,7 @@ class ExampleDbVine implements Vine {
     // VINE METHODS
     ///////////////////////////////////////////////////////////////////////////
 
+    /** get all patients */
     class Patients extends MappedMethod {
 
         Map dataTableArgs = [idFieldName:'Id']
@@ -125,7 +175,8 @@ FROM patients
 
     }
 
-    /** */
+
+    /** get all encounters */
     class Encounters extends MappedMethod {
 
         Map dataTableArgs = [idFieldName:'encounter_id']
@@ -144,7 +195,9 @@ JOIN patients ON encounters.patient = patients.id
 
     }
 
-    class Conditions extends GenericMappedMethod {
+
+    /** get all conditions */
+    class Conditions extends GenericMethod {
 
         String query = """\
 SELECT 
@@ -161,7 +214,9 @@ conditions
 
     }
 
-    class Medications extends GenericMappedMethod {
+
+    /** get all medications */
+    class Medications extends GenericMethod {
 
         String query = """\
 SELECT 

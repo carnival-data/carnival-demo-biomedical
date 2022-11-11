@@ -29,7 +29,7 @@ import carnival.core.graph.GraphMethod
 import example.carnival.micronaut.GraphModel
 import example.carnival.micronaut.config.AppConfig
 import example.carnival.micronaut.vine.ExampleDbVine
-import example.carnival.micronaut.graph.CarnivalGraph
+import example.carnival.micronaut.graph.BiomedCarnival
 import carnival.util.DataTable
 import java.text.SimpleDateFormat
 import java.text.DateFormat
@@ -52,7 +52,7 @@ class ExampleMethods implements GraphMethods {
 
     @Inject AppConfig config
     @Inject ExampleDbVine exampleDbVine
-    @Inject CarnivalGraph carnivalGraph
+    @Inject BiomedCarnival carnivalGraph
 
     static Map<String, Vertex> patient_cache = new HashMap<String, Vertex>()
     static Map<String, Vertex> encounter_cache = new HashMap<String, Vertex>()
