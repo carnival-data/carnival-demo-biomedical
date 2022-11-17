@@ -23,26 +23,32 @@ import example.carnival.micronaut.method.ExampleMethods
 @MicronautTest
 class ExampleSpec extends Specification {
 
-    
+    ///////////////////////////////////////////////////////////////////////////
+    // FIELDS
+    ///////////////////////////////////////////////////////////////////////////
+
     //@Inject AppConfig config
 
     @Shared @Inject BiomedCarnival carnivalGraph
     @Shared Graph graph
     @Shared GraphTraversalSource g
 
-//    @Shared @Inject ExampleDbVine exampleDbVine
+    // @Shared @Inject ExampleDbVine exampleDbVine
     @Shared @Inject ExampleMethods exampleMethods
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // SETUP
+    ///////////////////////////////////////////////////////////////////////////
 
     def setupSpec() {
         carnivalGraph.resetCarnival()
         graph = carnivalGraph.carnival.graph
     }
 
-
     def setup() {
         g = carnivalGraph.carnival.traversal()
     }
-
 
     def cleanup() {
         if (g) g.close()
@@ -51,7 +57,6 @@ class ExampleSpec extends Specification {
             //graph.tx().commit()
         }
     }
-
 
     def cleanupSpec() {
         if (graph) graph.close()
@@ -106,6 +111,8 @@ class ExampleSpec extends Specification {
             .has(GraphModel.PX.TEXT, 'Dottie')
         .tryNext().isPresent()
     }*/
+    
+    
     void "test create and link patient vertices"() {
         when:
         def numVertices1   = g.V().count().next()
@@ -147,26 +154,7 @@ class ExampleSpec extends Specification {
         .tryNext().isPresent()
         // edge1E == null
         
-        when:
-        def numVertices3   = g.V().count().next()
-        def c1V = GraphModel.VX.CAREPLAN.instance().withProperties(
-                GraphModel.PX.ID, "C415",
-                GraphModel.PX.START, "2021",
-                GraphModel.PX.STOP, "2022"
-                //GraphModel.PX.PATIENT, "P123",
-                //GraphModel.PX.ENCOUNTER, "E500-4205"
-        ).create(graph)
-        def numVertices4 = g.V().count().next()
-
-        then:
-        g.V(patientVertex)
-            .out(GraphModel.EX.HAS)
-            .isa(GraphModel.VX.ENCOUNTER)
-            // .has(GraphModel.PX_ENCOUNTER.END, '2022')
-            .has(GraphModel.PX.END, '2022')
-        .tryNext().isPresent()
         
-        edge != null
     
     }
 

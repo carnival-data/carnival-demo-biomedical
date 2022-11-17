@@ -40,21 +40,33 @@ class ExampleDbVine implements Vine {
     // CONSTRUCTOR
     ///////////////////////////////////////////////////////////////////////////
 
-    /** create a VineConfiguration object from the application config */
+    /** 
+     * Utlity method to create a VineConfiguration object from the application 
+     * config.  A default VineConfiguration object is used as the base object
+     * to return.  Configuration elements are pulled from the application cofig
+     * to set the analogous elements in the VineConfiguration object that will
+     * be returned.
+     *
+     */
     VineConfiguration exampleVineConfiguration() {
         log.trace "exampleVineConfiguration()"
         def vconf = VineConfiguration.defaultConfiguration()
-        vconf.cache.mode = CacheMode.valueOf(config.vine.exampleDbVine.mode)
-        vconf.cache.directory = Paths.get(config.vine.exampleDbVine.directory)
-        vconf.cache.directoryCreateIfNotPresent = config.vine.exampleDbVine.directoryCreateIfNotPresent
+        if (config.vine.exampleDbVine.mode) vconf.cache.mode = CacheMode.valueOf(config.vine.exampleDbVine.mode)
+        if (config.vine.exampleDbVine.directory) vconf.cache.directory = Paths.get(config.vine.exampleDbVine.directory)
+        if (config.vine.exampleDbVine.directoryCreateIfNotPresent != null) vconf.cache.directoryCreateIfNotPresent = config.vine.exampleDbVine.directoryCreateIfNotPresent
         log.trace "vconf: " + vconf
         return vconf
     }
 
+
     /**
      * Constrtuct an ExampleDbVine.  
      * Inject an AppConfig.  
-     * Set the vine configuration.
+     * Set the vineConfiguration propertry to the VineConfiguration returned
+     * by exampleVineConfiguration().  vineConfiguration comes from 
+     * carnival.vine.Vine, the superclass of ExampleDbVine.  The Carnival
+     * machinery will pass vineConfiguration to the vine methods defined in
+     * this class (Patients, Encounters, etc.) when they are invoked.
      *
      */
     public ExampleDbVine(AppConfig appConfig) {

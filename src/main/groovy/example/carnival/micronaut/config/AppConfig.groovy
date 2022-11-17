@@ -8,7 +8,6 @@ import io.micronaut.context.annotation.ConfigurationProperties
 import io.micronaut.context.annotation.ConfigurationBuilder
 
 import carnival.core.CarnivalNeo4jConfiguration
-import carnival.vine.VineConfiguration
 
 
 @Slf4j

@@ -1,23 +1,13 @@
 buildscript {
     repositories {
         mavenLocal()
-
-        // We may have to manually comment out earlier repos to pull from later ones (disable maven to use github)
         maven {
             name = "MavenCentralSnapshots"
             def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
             def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
             url = carnivalVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
-
         mavenCentral()
-    }
-    dependencies {
-        classpath group:'io.github.carnival-data', name:'carnival-util', version:project.findProperty("carnivalVersion")
-        classpath group:'io.github.carnival-data', name:'carnival-graph', version:project.findProperty("carnivalVersion")
-        classpath group:'io.github.carnival-data', name:'carnival-core', version:project.findProperty("carnivalVersion")
-        classpath group:'io.github.carnival-data', name:'carnival-vine', version:project.findProperty("carnivalVersion")
-        classpath group:'io.github.carnival-data', name:'carnival-gradle', version:project.findProperty("carnivalVersion")
     }
 }
 
@@ -27,22 +17,18 @@ plugins {
     id "io.micronaut.application" version '1.0.5'
     id 'com.github.ManifestClasspath' version '0.1.0-RELEASE'
 }
-apply plugin: 'carnival.application'
 
 version "0.1"
 group "io.github.carnival-data"
 
 repositories {
     mavenLocal()
-
-    // We may have to manually comment out earlier repos to pull from later ones (disable maven to use github)
     maven {
         name = "MavenCentralSnapshots"
         def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
         def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
         url = carnivalVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
     }
-
     mavenCentral()
 }
 
@@ -56,16 +42,34 @@ micronaut {
 }
 
 dependencies {
-//    annotationProcessor "io.micronaut:micronaut-inject-java"
+    // Groovy
+    implementation "org.codehaus.groovy:groovy-all:${groovyVersion}"
 
+    // Tinkerpop
+    implementation "org.apache.tinkerpop:gremlin-core:${gremlinVersion}"
+    implementation "org.apache.tinkerpop:gremlin-groovy:${gremlinVersion}"
+    implementation "org.apache.tinkerpop:tinkergraph-gremlin:${gremlinVersion}"
+
+    // Neo4J
+    implementation "org.apache.tinkerpop:neo4j-gremlin:${gremlinVersion}"
+    implementation "org.neo4j:neo4j-tinkerpop-api-impl:${neo4jTinkerpopVersion}"
+    implementation "org.neo4j.driver:neo4j-java-driver:${neo4JavaDriverVersion}"
+
+    // Carnival
+    implementation("io.github.carnival-data:carnival-util:${carnivalVersion}")
+    implementation("io.github.carnival-data:carnival-graph:${carnivalVersion}")
+    implementation("io.github.carnival-data:carnival-core:${carnivalVersion}")
+    implementation("io.github.carnival-data:carnival-vine:${carnivalVersion}")
+
+    // Micronaut
     implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut.groovy:micronaut-runtime-groovy")
     implementation("javax.annotation:javax.annotation-api")
     implementation("io.micronaut:micronaut-http-client")
     implementation('org.postgresql:postgresql:42.3.7')
-    runtimeOnly("ch.qos.logback:logback-classic")
 
-//    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+    // Logging
+    runtimeOnly("ch.qos.logback:logback-classic")
 }
 
 mainClassName = "example.carnival.micronaut.Application"
@@ -79,6 +83,10 @@ test {
         outputs.upToDateWhen {false}
         showStandardStreams = true
     }
+    if (System.getProperty('logback.configurationFile')) {
+        systemProperty("logback.configurationFile", System.getProperty('logback.configurationFile'))
+    }
+    systemProperty('micronaut.config.files', './carnival-micronaut-home/config/application.yml')    
 }
 
 groovydoc {

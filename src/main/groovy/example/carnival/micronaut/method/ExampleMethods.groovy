@@ -1,5 +1,6 @@
 package example.carnival.micronaut.method
 
+
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j
 import org.apache.tinkerpop.gremlin.structure.Vertex
@@ -17,14 +18,12 @@ import java.time.Period
 import java.time.LocalDate
 import java.time.ZoneId
 
-
 import org.apache.tinkerpop.gremlin.structure.Graph
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
 import carnival.core.graph.GraphMethods
 import carnival.core.graph.GraphMethod
 //import carnival.graph.ext.TinkerpopAnonTraversalExtension
 //import carnival.graph.ext.TinkerpopTraversalExtension
-
 
 import example.carnival.micronaut.GraphModel
 import example.carnival.micronaut.config.AppConfig
@@ -37,9 +36,9 @@ import java.time.Period
 import java.time.ZoneId
 import java.time.*
 
-
 import org.apache.tinkerpop.gremlin.process.traversal.P
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__
+
 
 @ToString(includeNames=true)
 @Slf4j 
