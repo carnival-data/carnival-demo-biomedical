@@ -18,8 +18,8 @@ Install git
 Install Docker Desktop
 git clone https://github.com/carnival-data/carnival-demo-biomedical.git
 cd carnival-demo-biomedical
-docker-compose build
-docker-compose up
+docker compose build
+docker compose up
 
 Open a browser to check API endpoints:
 http://localhost:5858
@@ -52,8 +52,8 @@ cd carnival-demo-biomedical
 ### 2. Build and run the app
 
 ```
-docker-compose build
-docker-compose up
+docker compose build
+docker compose up
 ```
 
 After a few minutes, there should be a server running at `http://localhost:5858`.
@@ -91,10 +91,10 @@ export CARNIVAL_MICRONAUT_HOME=/full/path/to/carnival-micronaut/carnival-microna
 ### 2. Start the database using Docker
 
 ```
-docker-compose build db
-docker-compose up db
+docker compose build db
+docker compose up db
 # To run in the background as a daemon use:
-# docker-compose up -d db
+# docker compose up -d db
 ```
 
 ### 3. Build and run the app
@@ -108,13 +108,13 @@ After a few minutes, there should be a server running at http://localhost:5858.
 ## Testing with Docker
 Run tests with the following:
 ```
-docker-compose -f docker-compose-test.yml up
+docker compose -f docker-compose-test.yml up
 ```
 This will run the unit tests. The test results will be printed in the docker log. An exit code of 0 will be returned if the tests pass, otherwise a non-zero code will be returned.
 
 ## Viewing source data in Postgres
 
-Once docker has been started using `docker-compose up`, the database can be browsed using database GUI tool like DBeaver with the credentials:
+Once docker has been started using `docker compose up`, the database can be browsed using database GUI tool like DBeaver with the credentials:
 * Host: localhost
 * Port: 5433, or as specified in `.env`
 * Database: EHR
