@@ -16,6 +16,7 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
     id "io.micronaut.application" version '1.0.5'
     id 'com.github.ManifestClasspath' version '0.1.0-RELEASE'
+    id "io.github.carnival-data.carnival" version "${carnivalVersion}"
 }
 
 version "0.1"
@@ -42,6 +43,7 @@ micronaut {
 }
 
 dependencies {
+    /*
     // Groovy
     implementation "org.codehaus.groovy:groovy-all:${groovyVersion}"
 
@@ -60,11 +62,12 @@ dependencies {
     implementation("io.github.carnival-data:carnival-graph:${carnivalVersion}")
     implementation("io.github.carnival-data:carnival-core:${carnivalVersion}")
     implementation("io.github.carnival-data:carnival-vine:${carnivalVersion}")
+    */
 
     // Micronaut
+    implementation("javax.annotation:javax.annotation-api")
     implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut.groovy:micronaut-runtime-groovy")
-    implementation("javax.annotation:javax.annotation-api")
     implementation("io.micronaut:micronaut-http-client")
     implementation('org.postgresql:postgresql:42.3.7')
 
@@ -83,10 +86,12 @@ test {
         outputs.upToDateWhen {false}
         showStandardStreams = true
     }
-    if (System.getProperty('logback.configurationFile')) {
-        systemProperty("logback.configurationFile", System.getProperty('logback.configurationFile'))
-    }
     systemProperty('micronaut.config.files', './carnival-micronaut-home/config/application.yml')    
+    ['postgres', 'logback.configurationFile'].each { propName ->
+        if (System.getProperty(propName)) {
+            systemProperty(propName, System.getProperty(propName))
+        }
+    }
 }
 
 groovydoc {

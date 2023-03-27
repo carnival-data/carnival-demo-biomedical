@@ -5,6 +5,7 @@ package example.carnival.micronaut.vine
 import java.text.ParseException
 import javax.inject.Inject
 import spock.lang.Specification
+import spock.lang.Requires
 import spock.lang.Shared
 import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.context.ApplicationContext
@@ -30,6 +31,7 @@ class DbVineSpec extends Specification {
     // TESTS
     ///////////////////////////////////////////////////////////////////////////
 
+    @Requires({ System.getProperty("postgres") })
     void "test query"() {
         when:
         def res = exampleDbVine.method('Encounters').call().result

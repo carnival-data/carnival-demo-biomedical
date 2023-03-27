@@ -5,6 +5,7 @@ package example.carnival.micronaut
 import java.text.ParseException
 import javax.inject.Inject
 import spock.lang.Specification
+import spock.lang.Requires
 import spock.lang.Shared
 import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.context.ApplicationContext
@@ -67,6 +68,7 @@ class ExampleSpec extends Specification {
     // TESTS
     ///////////////////////////////////////////////////////////////////////////
     
+    @Requires({ System.getProperty("postgres") })
     void "test create encounters from postgres"() {
         when:
         def res = exampleMethods
@@ -115,7 +117,7 @@ class ExampleSpec extends Specification {
     
     void "test create and link patient vertices"() {
         when:
-        def numVertices1   = g.V().count().next()
+        def numVertices1 = g.V().count().next()
         def patientVertex = GraphModel.VX.PATIENT.instance().withProperties(
                 GraphModel.PX.ID, "P123",
                 GraphModel.PX_PATIENT.FIRST_NAME, "Bob"
