@@ -32,7 +32,7 @@ abstract class BiomedCarnival {
     void initGremlinGraph() {
         carnival.withTraversal { Graph graph, GraphTraversalSource g ->
             String packageName = this.getClass().getPackage().getName()
-            carnival.initializeGremlinGraph(graph, g, packageName)
+            carnival.addModelsFromPackage(graph, g, packageName)
         }
     }
 

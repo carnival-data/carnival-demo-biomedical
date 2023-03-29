@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        mavenLocal()
+        //mavenLocal()
         maven {
             name = "MavenCentralSnapshots"
             def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
@@ -23,7 +23,7 @@ version "0.1"
 group "io.github.carnival-data"
 
 repositories {
-    mavenLocal()
+    //mavenLocal()
     maven {
         name = "MavenCentralSnapshots"
         def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"

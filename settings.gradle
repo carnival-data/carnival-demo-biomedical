@@ -1,1 +1,10 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven {
+            name "MavenCentralSnapshots"
+            url "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+}
 rootProject.name="carnival-micronaut"
