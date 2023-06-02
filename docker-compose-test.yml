@@ -1,9 +1,8 @@
-version: "3.7"
+version: "3.9"
 
 
 # mounted volume is used so that when code changes, 
 # tests can be rerun without needing to rebuild
-
 services:
   tester:
     build:
@@ -11,20 +10,28 @@ services:
       target: base
       args:
         JAVA_OPTS: ${JAVA_OPTS:-="-Xms1G -Xmx2G -Dfile.encoding=UTF-8"}
-    command: "gradle run --no-daemon"
+    command: "gradle test --no-daemon"
+    ports:
+      - "5858:5858"
     tty: true
     stdin_open: true
-    
     volumes:
       - "./src:/opt/carnival-micronaut/src:ro"
-
+      - "./carnival-micronaut-home:/opt/carnival-micronaut/carnival-micronaut-home:ro"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
 
   db:
     build:
       context: .
       dockerfile: postgres.Dockerfile
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "EHR"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -32,3 +39,4 @@ services:
       - PGPORT=${PGPORT}
     ports:
       - ${PGPORT}:${PGPORT}
+
