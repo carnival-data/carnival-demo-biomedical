@@ -1,3 +1,5 @@
+[![Docker CI](https://github.com/carnival-data/carnival-demo-biomedical/actions/workflows/DockerCI.yml/badge.svg)](https://github.com/carnival-data/carnival-demo-biomedical/actions/workflows/DockerCI.yml)
+
 # Carnival-Micronaut
 
 [Carnival](https://github.com/carnival-data/carnival) is a graph framework that allows for a large variety of ETL and analysis tasks related to relational data and property graphs. For this demonstration project, we will show how to use Carnival to harmonize relational data from various sources into a Carnival property graph, and present some of the ways the Carnival graph can be manipulated and analyzed. We use the the Carnival and [Micronaut](https://micronaut.io/) frameworks to create a JVM application that harmonizes relational clinical data from several sources into a Neo4J graph database, and presents a restful API to access and manipulate the data.
