@@ -43,6 +43,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.P
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerFactory
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
+import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerVertex
 
 import org.apache.tinkerpop.gremlin.structure.Vertex
 import org.apache.tinkerpop.gremlin.structure.Edge
@@ -119,9 +120,26 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
         String id = ""
         String first_name = ""
         String last_name = ""
+        List<String> encounter_ids = []
     }
     class PatientResponse {
         List<Patient> patients = []
+    }
+
+    private Patient parsePatientFromVertex(TinkerVertex pVtx) {
+        Patient p = new Patient()
+        p.id = GraphModel.PX.ID.valueOf(pVtx)
+        p.first_name = GraphModel.PX_PATIENT.FIRST_NAME.valueOf(pVtx)
+        p.last_name = GraphModel.PX_PATIENT.LAST_NAME.valueOf(pVtx)
+
+        carnivalGraph.carnival.withTraversal { Graph graph, GraphTraversalSource g ->
+            p.encounter_ids = g.V(pVtx).out(GraphModel.EX.HAS).isa(GraphModel.VX.ENCOUNTER)
+                .values(GraphModel.PX.ID.getLabel())
+                .dedup()
+                .toList()
+        }
+
+        return p
     }
 
     @Get("/case_patients")
@@ -135,12 +153,7 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
                 .isa(GraphModel.VX.PATIENT).as('p')
                 .select('p')
                 .each { m ->
-                    
-                    Patient p = new Patient()
-                    p.id = GraphModel.PX.ID.valueOf(m)
-                    p.first_name = GraphModel.PX_PATIENT.FIRST_NAME.valueOf(m)
-                    p.last_name = GraphModel.PX_PATIENT.LAST_NAME.valueOf(m)
-                    
+                    Patient p = parsePatientFromVertex(m)
                     response.patients << p   
                     //response += "\n ${p.id}" 
                 }
@@ -161,11 +174,7 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
                     .select('p')
                     .each { m ->
 
-                        Patient p = new Patient()
-                        p.id = GraphModel.PX.ID.valueOf(m)
-                        p.first_name = GraphModel.PX_PATIENT.FIRST_NAME.valueOf(m)
-                        p.last_name = GraphModel.PX_PATIENT.LAST_NAME.valueOf(m)
-
+                        Patient p = parsePatientFromVertex(m)
                         response.patients << p
                         //response += "\n ${p.id}"
                     }
