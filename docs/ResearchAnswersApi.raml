@@ -12,6 +12,14 @@ types:
       url: string
       first_name: string
       last_name: string
+  encounter:
+    type: object
+    properties:
+      id: string
+      url: string
+      patient_url: string
+      start: string
+      end: string
 
 /patient/{id}:
   get:
@@ -34,6 +42,29 @@ types:
           application/json:
             example: |
               {"message": "Patient not found"}
+
+/encounter/{id}:
+  get:
+    description: |
+      return the encounter that matches the id
+    responses:
+      200:
+        body:
+          application/json:
+            type: encounter
+            example: |
+              {
+                "id": "5f608e6b-82c4-a02a-7833-d2ac1e9b84b5",
+                "url": "http://localhost:5858/encounter/5f608e6b-82c4-a02a-7833-d2ac1e9b84b5",
+                "patient_url": "821c1a88-ebfa-9ee9-a629-4e9eb546df6b",
+                "start": "2019-09-07 21:40:27",
+                "end": "2019-09-07 21:55:27"
+              }
+      404:
+        body:
+          application/json:
+            example: |
+              {"message": "Encounter not found"}
 
 /case_patients:
   get:

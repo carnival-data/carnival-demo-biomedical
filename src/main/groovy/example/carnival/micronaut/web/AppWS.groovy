@@ -128,6 +128,46 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
         List<Patient> patients = []
     }
 
+    class Encounter {
+        String id = ""
+        String url = ""
+        String patient_url = ""
+
+        String start = ""
+        String end = ""
+
+        String encounter_class = ""
+        String code = ""
+        String description = ""
+
+        String reason_code = ""
+        String reason_description = ""
+    }
+
+    private Encounter parseEncounterFromVertex(TinkerVertex eVtx) {
+        Encounter e = new Encounter()
+        e.id = GraphModel.PX.ID.valueOf(eVtx)
+        e.url = baseUrl + "/encounter/" + GraphModel.PX.ID.valueOf(eVtx)
+
+        e.start = GraphModel.PX.START.valueOf(eVtx)
+        e.end = GraphModel.PX.END.valueOf(eVtx)
+
+        e.encounter_class = GraphModel.PX_ENCOUNTER.CLASS.valueOf(eVtx)
+        e.code = GraphModel.PX.CODE.valueOf(eVtx)
+        e.description = GraphModel.PX.DESCRIPTION.valueOf(eVtx)
+
+        e.reason_code = GraphModel.PX_ENCOUNTER.REASON_CODE.valueOf(eVtx)
+        e.reason_description = GraphModel.PX_ENCOUNTER.REASON_DESCRIPTION.valueOf(eVtx)
+
+        carnivalGraph.carnival.withTraversal { Graph graph, GraphTraversalSource g ->
+            e.patient_url = g.V(eVtx).in(GraphModel.EX.HAS).isa(GraphModel.VX.PATIENT)
+                .values(GraphModel.PX.ID.getLabel()).toList().first()
+        }
+
+        return e
+    
+    }
+
     private Patient parsePatientFromVertex(TinkerVertex pVtx) {
         Patient p = new Patient()
         p.id = GraphModel.PX.ID.valueOf(pVtx)
@@ -157,6 +197,19 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
            
             if(patVs) response = parsePatientFromVertex(patVs.first())
             else throw new HttpStatusException(HttpStatus.NOT_FOUND, "Patient not found")
+        }
+        response
+    }
+
+    @Get("/encounter/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Encounter encounter(String id) {
+        def response = new Encounter()
+        carnivalGraph.carnival.withTraversal { Graph graph, GraphTraversalSource g ->
+            def patVs = g.V().isa(GraphModel.VX.ENCOUNTER).has(GraphModel.PX.ID, id).toList()
+           
+            if(patVs) response = parseEncounterFromVertex(patVs.first())
+            else throw new HttpStatusException(HttpStatus.NOT_FOUND, "Encounter not found")
         }
         response
     }
