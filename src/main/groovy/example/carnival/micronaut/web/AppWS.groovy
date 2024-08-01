@@ -122,7 +122,10 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
         String url = ""
         String first_name = ""
         String last_name = ""
-        List<String> encounter_ids = []
+        List<String> encounter_urls = []
+
+        Map diagnosed_with = [:]
+        Map perscribed = [:]
     }
     class PatientResponse {
         List<Patient> patients = []
@@ -142,6 +145,9 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
 
         String reason_code = ""
         String reason_description = ""
+
+        Map diagnosed_at = [:]
+        Map perscribed_at = [:]
     }
 
     private Encounter parseEncounterFromVertex(TinkerVertex eVtx) {
@@ -160,8 +166,19 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
         e.reason_description = GraphModel.PX_ENCOUNTER.REASON_DESCRIPTION.valueOf(eVtx)
 
         carnivalGraph.carnival.withTraversal { Graph graph, GraphTraversalSource g ->
-            e.patient_url = g.V(eVtx).in(GraphModel.EX.HAS).isa(GraphModel.VX.PATIENT)
+            e.patient_url = baseUrl + "/patient/" +
+                g.V(eVtx).in(GraphModel.EX.HAS).isa(GraphModel.VX.PATIENT)
                 .values(GraphModel.PX.ID.getLabel()).toList().first()
+
+            e.diagnosed_at["condition_codes"] = g.V(eVtx).out(GraphModel.EX.DIAGNOSED_AT)
+                .values(GraphModel.PX.CODE.getLabel())
+                .dedup()
+                .toList()
+
+            e.perscribed_at["medication_codes"] = g.V(eVtx).out(GraphModel.EX.PRESCRIBED_AT)
+                .values(GraphModel.PX.CODE.getLabel())
+                .dedup()
+                .toList()
         }
 
         return e
@@ -178,8 +195,19 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
         p.last_name = GraphModel.PX_PATIENT.LAST_NAME.valueOf(pVtx)
 
         carnivalGraph.carnival.withTraversal { Graph graph, GraphTraversalSource g ->
-            p.encounter_ids = g.V(pVtx).out(GraphModel.EX.HAS).isa(GraphModel.VX.ENCOUNTER)
+            p.encounter_urls = g.V(pVtx).out(GraphModel.EX.HAS).isa(GraphModel.VX.ENCOUNTER)
                 .values(GraphModel.PX.ID.getLabel())
+                .dedup()
+                .toList()
+                .collect{ baseUrl + "/encounter/$it" }
+
+            p.diagnosed_with["condition_codes"] = g.V(pVtx).out(GraphModel.EX.DIAGNOSED_WITH)
+                .values(GraphModel.PX.CODE.getLabel())
+                .dedup()
+                .toList()
+
+            p.perscribed["medication_codes"] = g.V(pVtx).out(GraphModel.EX.PRESCRIBED)
+                .values(GraphModel.PX.CODE.getLabel())
                 .dedup()
                 .toList()
         }

@@ -12,6 +12,12 @@ types:
       url: string
       first_name: string
       last_name: string
+      encounter_urls: string[]
+      diagnosed_with:
+        condition_codes: string[]
+      perscribed:
+        medication_codes: string[]
+
   encounter:
     type: object
     properties:
@@ -20,6 +26,10 @@ types:
       patient_url: string
       start: string
       end: string
+      diagnosed_at:
+        condition_codes: string[]
+      perscribed_at:
+        medication_codes: string[]
 
 /patient/{id}:
   get:
@@ -35,7 +45,29 @@ types:
                 "id":"821c1a88-ebfa-9ee9-a629-4e9eb546df6b",
                 "url": "http://localhost:5858/patient/821c1a88-ebfa-9ee9-a629-4e9eb546df6b"
                 "first_name":"Fernando603",
-                "last_name":"Reyes140"
+                "last_name":"Reyes140",
+                "encounter_urls": [
+                  "http://localhost:5858/encounter/5f608e6b-82c4-a02a-7833-d2ac1e9b84b5",
+                  "http://localhost:5858/encounter/8412af74-ab45-db05-2990-b27142f69f22",
+                  "http://localhost:5858/encounter/d1433764-19cf-88c5-9d53-e7c73281b51d",
+                  "http://localhost:5858/encounter/e59f7314-416a-83b2-0a10-13f1c112a378"
+                ],
+                "diagnosed_with": {
+                  "condition_codes": [
+                    "160903007",
+                    "361055000",
+                    "422650009"
+                  ]
+                },
+                "perscribed": {
+                  "medication_codes": [
+                    "308136",
+                    "310798",
+                    "314076",
+                    "849574",
+                    "313782"
+                  ]
+                }
               }
       404:
         body:
