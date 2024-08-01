@@ -18,3 +18,8 @@
 **/gradle
 **/gradlew
 **/gradlew.bat
+
+# Export Folder
+carnival-micronaut-home/export/*
+!carnival-micronaut-home/export/.gitkeep
+!carnival-micronaut-home/export/README.md

@@ -11,6 +11,9 @@ services:
       - "5858:5858"
     tty: true
     stdin_open: true
+    volumes:
+      - "./carnival-micronaut-home/export:/opt/carnival-micronaut/carnival-micronaut-home/export"
+      #- ./carnival-micronaut-home/export:/opt/carnival-micronaut/build/export
     depends_on: 
       db:
         condition: service_healthy

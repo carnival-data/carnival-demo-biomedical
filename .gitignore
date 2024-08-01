@@ -18,3 +18,9 @@ carnival-micronaut-home/data/cache/*.yml
 carnival-micronaut-home/data/graph/app/*
 !carnival-micronaut-home/data/graph/app/.gitkeep
 carnival-micronaut-home/log/*.log
+
+
+# Export Folder
+carnival-micronaut-home/export/*
+!carnival-micronaut-home/export/.gitkeep
+!carnival-micronaut-home/export/README.md

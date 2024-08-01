@@ -37,6 +37,7 @@ import io.micronaut.http.annotation.RequestAttribute
 import io.micronaut.http.annotation.QueryValue
 import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.exceptions.HttpStatusException
+import io.micronaut.http.server.types.files.SystemFile
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
 import org.apache.tinkerpop.gremlin.process.traversal.Traversal
@@ -213,6 +214,19 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
         }
 
         return p
+    }
+
+
+    @Get("/export/graphml")
+    SystemFile exportGraphml () {
+        File file = new File("carnival-micronaut-home/export/patient_graph.graphml")
+        return new SystemFile(file).attach("carnival-micronaut-home/export/patient_graph.graphml");
+    }
+
+    @Get("/export/graphson")
+    SystemFile exportGraphson () {
+        File file = new File("carnival-micronaut-home/export/patient_graph-graphson.json")
+        return new SystemFile(file).attach("carnival-micronaut-home/export/patient_graph-graphson.json");
     }
 
 

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.commons.text.StringEscapeUtils
 import org.apache.tinkerpop.gremlin.structure.Graph
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__
+import org.apache.tinkerpop.gremlin.structure.io.IoCore
 
 import carnival.util.GenericDataTable
 import carnival.util.MappedDataTable
@@ -60,6 +61,7 @@ class SyncService {
             log.info("Loading Encounters")
             exampleMethods.method('LoadEncounters').call(graph, g)
             log.info("Loading Conditions")
+            
             exampleMethods.method('LoadConditions').call(graph, g)
             log.info("Loading Medications")
             exampleMethods.method('LoadMedications').call(graph, g)
@@ -71,6 +73,11 @@ class SyncService {
             log.info("Searching graph for control patients")
             reasoners.method('FindControlPatients').call(graph, g)
             log.info("Identified case and control groups successfully")
+
+            log.info("Exporting Graph")
+            graph.io(IoCore.graphml()).writeGraph("carnival-micronaut-home/export/patient_graph.graphml");
+            graph.io(IoCore.graphson()).writeGraph("carnival-micronaut-home/export/patient_graph-graphson.json");
+            log.info("Graph Exported to `carnival-micronaut-home/export/`")
 
             //System.gc()
 
@@ -86,6 +93,8 @@ class SyncService {
             log.info("http://localhost:5858/")
             log.info("http://localhost:5858/case_patients")
             log.info("http://localhost:5858/cohort_patients")
+            log.info("http://localhost:5858/export/graphml")
+            log.info("http://localhost:5858/export/graphson")
             log.info("Try opening a browser to http://localhost:5858/")
             log.info("")
 

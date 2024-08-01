@@ -152,3 +152,33 @@ types:
                 ]
               }
   
+  /export/graphml:
+  get:
+    description: |
+      Returns a graphml file that contains the patient cohort graph
+    responses:
+      200:
+        body: 
+          binary/octet-stream:
+            example: !include patient_graph.graphml
+      500:
+        body:
+          application/json:
+            example: |
+              { "message" : "Graph file not found" }
+          
+            
+/export/graphson:
+  get:
+    description: |
+      Returns a graphml file that contains the patient cohort graph
+    responses:
+      200:
+        body: 
+          binary/octet-stream:
+            example: !include patient_graph-graphson.json
+      500:
+        body:
+          application/json:
+            example: |
+              { "message" : "Graph file not found" }
