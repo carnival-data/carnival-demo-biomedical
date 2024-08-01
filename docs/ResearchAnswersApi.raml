@@ -9,9 +9,31 @@ types:
     type: object
     properties:
       id: number
+      url: string
       first_name: string
       last_name: string
 
+/patient/{id}:
+  get:
+    description: |
+      return the patient that matches the id
+    responses:
+      200:
+        body:
+          application/json:
+            type: patient
+            example: |
+              {
+                "id":"821c1a88-ebfa-9ee9-a629-4e9eb546df6b",
+                "url": "http://localhost:5858/patient/821c1a88-ebfa-9ee9-a629-4e9eb546df6b"
+                "first_name":"Fernando603",
+                "last_name":"Reyes140"
+              }
+      404:
+        body:
+          application/json:
+            example: |
+              {"message": "Patient not found"}
 
 /case_patients:
   get:
@@ -27,11 +49,13 @@ types:
                 "patients":[
                   {
                     "id":"821c1a88-ebfa-9ee9-a629-4e9eb546df6b",
+                    "url": "http://localhost:5858/patient/821c1a88-ebfa-9ee9-a629-4e9eb546df6b"
                     "first_name":"Fernando603",
                     "last_name":"Reyes140"
                   },
                   {
                     "id":"63c057d5-857c-f0c8-9ce4-0c439f7f7868",
+                    "url": "http://localhost:5858/patient/63c057d5-857c-f0c8-9ce4-0c439f7f7868"
                     "first_name":"Ardella559",
                     "last_name":"Keeling57"
                   }
@@ -52,11 +76,13 @@ types:
                 "patients":[
                   {
                     "id":"e6adb1a1-bb82-f4e8-78b3-bdca6f1d7142",
+                    "url": "http://localhost:5858/patient/e6adb1a1-bb82-f4e8-78b3-bdca6f1d7142"
                     "first_name":"Lieselotte680",
                     "last_name":"Gulgowski816"
                   },
                   {
                     "id":"412555ca-6413-096d-e4a3-a83614b725e5",
+                    "url": "http://localhost:5858/patient/412555ca-6413-096d-e4a3-a83614b725e5"
                     "first_name":"Suzanna632",
                     "last_name":"Hansen121"
                   }

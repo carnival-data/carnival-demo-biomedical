@@ -36,6 +36,7 @@ import io.micronaut.http.HttpHeaders
 import io.micronaut.http.annotation.RequestAttribute
 import io.micronaut.http.annotation.QueryValue
 import io.micronaut.http.annotation.PathVariable
+import io.micronaut.http.exceptions.HttpStatusException
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
 import org.apache.tinkerpop.gremlin.process.traversal.Traversal
@@ -66,7 +67,7 @@ class AppWs {
 
     @Inject AppConfig config
     @Inject BiomedCarnival carnivalGraph
-    
+    static String baseUrl = "http://localhost:5858"
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -118,6 +119,7 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
 
     class Patient {
         String id = ""
+        String url = ""
         String first_name = ""
         String last_name = ""
         List<String> encounter_ids = []
@@ -129,6 +131,9 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
     private Patient parsePatientFromVertex(TinkerVertex pVtx) {
         Patient p = new Patient()
         p.id = GraphModel.PX.ID.valueOf(pVtx)
+        //p.url = "<a href = '" + baseUrl + "/patient/" + GraphModel.PX.ID.valueOf(pVtx) + "'>foo</a>"
+        p.url = baseUrl + "/patient/" + GraphModel.PX.ID.valueOf(pVtx)
+
         p.first_name = GraphModel.PX_PATIENT.FIRST_NAME.valueOf(pVtx)
         p.last_name = GraphModel.PX_PATIENT.LAST_NAME.valueOf(pVtx)
 
@@ -140,6 +145,20 @@ Total Number of Survey Question Responses: ${numSurveyResponses}
         }
 
         return p
+    }
+
+
+    @Get("/patient/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Patient patient(String id) {
+        def response = new Patient()
+        carnivalGraph.carnival.withTraversal { Graph graph, GraphTraversalSource g ->
+            def patVs = g.V().isa(GraphModel.VX.PATIENT).has(GraphModel.PX.ID, id).toList()
+           
+            if(patVs) response = parsePatientFromVertex(patVs.first())
+            else throw new HttpStatusException(HttpStatus.NOT_FOUND, "Patient not found")
+        }
+        response
     }
 
     @Get("/case_patients")
