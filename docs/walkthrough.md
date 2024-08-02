@@ -7,11 +7,11 @@ To motivate this, we will be acting in the role of a biomedical researcher who h
 This example will cover:
 * How to set up a new Carnival application
 * Defining a Carnival graph model
-* Combining data from different sources in a Carnival property graph
+* Combining data from different sources relational databases in a Carnival property graph
 * Executing graph operations to draw conclusions about the data
 * Examining the providence of data in the graph
 * Presenting an API that allows users to do some basic graph exploration and analysis
-* Examining the property graph directly
+* A way to export the graph for analysis using other tools
 
 > *Note: This demonstration is set up as Docker multi-container project, with one container holds the Carnival application and other containers that contain example databases. This walkthrough focuses excusively on the Carnival application. See [Running the Project](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/README.md#running-the-project) for instrucitons on running the entire project.*
 
@@ -75,11 +75,20 @@ Data is loaded into the graph using vine methods. The vines can be found [here](
 We have defined reasoner methods to search for the patient cohorts defined in this example and update the graph with this information. The reasonsers can be found [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/method/Reasoners.groovy)
 
 ## Presenting an API with Micronaut
-Using the micronaut framework, we present an api with two endpoints to return the case and control patient cohorts in the graph. The endpoints are defined [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/web/AppWS.groovy).
+Using the micronaut framework, we present a basic api with endpoints to return the case and control patient cohorts and details about the patient and healthcare encounter nodes in the graph.
+
+The api is documented in RAML format [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/docs/ResearchAnswersApi.raml).
+
+The endpoints are defined in code [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/web/AppWS.groovy).
 
 The endpoints are:
 ```
 http://localhost:5858
 http://localhost:5858/cohort_patients
 http://localhost:5858/control_patients
+http://localhost:5858/patient/{id}
+http://localhost:5858/encounter/{id}
 ```
+
+## Exporting the Graph for Analysis
+The graph can be exported [graphML](http://graphml.graphdrawing.org) or [graphson](https://docs.oracle.com/en/database/oracle/property-graph/21.2/spgdg/graphson-data-format.html) format. 
