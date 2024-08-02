@@ -1,8 +1,11 @@
 # Carnival Developer Walkthrough
 
-Carnival is a graph framework that allows for a large variety of ETL and analysis tasks related to relational data and property graphs. For this demonstration project, we will show how to use Carnival to harmonize relational data from various sources into a Carnival property graph, and present some of the ways the Carnival graph can be manipulated and analyzed.
+Carnival is a graph framework written in [Groovy](https://groovy-lang.org) that allows for a large variety of ETL (extract, transform and load) and analysis tasks related to relational data and property graphs. For this demonstration project, we will show how to use Carnival to harmonize data from several relational sources into a Carnival property graph, and present some of the ways the Carnival graph can be manipulated and analyzed.
 
-To motivate this, we will be acting in the role of a biomedical researcher who has a research question and data about patients, healthcare encounters and related information (lab tests, medications, health survey answers, etc.) collected in databases and spreadsheets. We want to use Carnival to harmonize the data, determine if there are any patient populations that meet the criteria to be included in the research project, and then do some graph analysis on the data and produce some reports.
+> *Note: Basic knowledge of property graph databases is assumed (a good introduction can be found [here](https://kelvinlawrence.net/book/Gremlin-Graph-Guide.html#whygraph)). It might also be helpful to have some awareness of the [Apache TinkerPop API](https://tinkerpop.apache.org/docs/current/reference/), a graph computing framework that allows client code in languages like Java or Groovy to talk to a TinkerPop enabled graphs.*
+
+To frame this example, we will be acting in the role a biomedical researcher who has a research question about smoking and hypertension. They wish to create case and control patient cohorts for a study, and generate a dataset that can be used in a graph based analysis pipeline. They have access to hospital data about patients, healthcare encounters and related information (lab tests, medications, health survey answers, etc.) collected in several databases and spreadsheets. We want to use Carnival to harmonize the data, determine if there are any patient populations that meet the criteria to be included in the research project, and then do some graph analysis on the data and produce some reports.
+
 
 This example will cover:
 * How to set up a new Carnival application
@@ -35,11 +38,10 @@ For this example the researcher is looking for a case and control cohort of pati
 
 
 ## Examining the Source Data
-There are two synthetic relational datasources:
+For this demonstration we have created two synthetic relational datasources:
 
 * **Electronic Heath Records(EHR) data** is relational data loaded into a Postgres database
 * **Self-reported patient survey data** is stored in csv spreadsheets
-
 
 ### EHR Data in Postgres
 
@@ -66,10 +68,12 @@ This demonstration been set up as a Docker multi-container project, with a conta
 
 
 ## Defining the graph model
-We have defined a simple carnival data model for our graph that that describes patients, healthcare encounters, medications and conditions [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/GraphModel.groovy). 
+We have defined a simple [carnival data model](https://carnival-data.github.io/carnival/graph-model.html) for our graph that that describes patients, healthcare encounters, medications and conditions [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/GraphModel.groovy). 
 
 ## Loading the data into the graph
-Data is loaded into the graph using vine methods. The vines can be found [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/vine/ExampleDbVine.groovy).
+We will extract data from the database and csv files using Carnival data adaptors classes called [Vines](https://carnival-data.github.io/carnival/vines.html). Carnival vines provide a lightweight caching mechanism that can reduce computational burden by reducing repeated queries to a database for the same information. The implementation of vines for this example can be found [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/vine/ExampleDbVine.groovy).
+
+Now that we have a way to access the raw data, we need a way to harmonize it and add it to the graph. In Carnival, the graph can be manipulated using the [Carnival Graph API](https://carnival-data.github.io/carnival/graph-api.html), which is a layer over the standard Tinkerpop API which provides more semantic support then is inherent in property graphs.  We do this by create [GraphMethods](https://carnival-data.github.io/carnival/graph-method.html) that run the vines and then 
 
 ## Graph Reasoning
 We have defined reasoner methods to search for the patient cohorts defined in this example and update the graph with this information. The reasonsers can be found [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/method/Reasoners.groovy)
