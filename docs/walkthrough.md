@@ -12,7 +12,7 @@ This example will cover:
 * Defining a Carnival graph model
 * Combining data from different sources relational databases in a Carnival property graph
 * Executing graph operations to draw conclusions about the data
-* Examining the providence of data in the graph
+* Examining the provenance of data in the graph
 * Presenting an API that allows users to do some basic graph exploration and analysis
 * A way to export the graph for analysis using other tools
 
@@ -76,7 +76,7 @@ To start this process, we examine the data and define a simple [Carnival Data Mo
 ## Loading the data into the graph
 We will extract data from the database and csv files using Carnival data adaptors classes called [Vines](https://carnival-data.github.io/carnival/vines.html). Carnival vines provide a lightweight caching mechanism that can reduce computational burden by reducing repeated queries to a database for the same information. The implementation of vines for this example can be found [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/vine/ExampleDbVine.groovy).
 
-Now that we have a way to access the raw data, we need a way to harmonize it and add it to the graph. In Carnival, the graph can be manipulated using the [Carnival Graph API](https://carnival-data.github.io/carnival/graph-api.html), which is a layer over the standard [TinkerPop API](https://tinkerpop.apache.org/docs/current/reference/) that provides more semantic support then is inherent in property graphs and works with the previously defined carnival graph model. We encapsulate the logic to load the data Carnival [GraphMethods](https://carnival-data.github.io/carnival/graph-method.html). Carnival GraphMethods provide a standard way to access the Carnival Graph API, as well as automatically adding [providence infromation](https://carnival-data.github.io/carnival/graph-method.html#graph-method-provenance) to the graph to record that a process was run. In our example, the graph methods are defined [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/method/ExampleMethods.groovy).
+Now that we have a way to access the raw data, we need a way to harmonize it and add it to the graph. In Carnival, the graph can be manipulated using the [Carnival Graph API](https://carnival-data.github.io/carnival/graph-api.html), which is a layer over the standard [TinkerPop API](https://tinkerpop.apache.org/docs/current/reference/) that provides more semantic support then is inherent in property graphs and works with the previously defined carnival graph model. We encapsulate the logic to load the data Carnival [GraphMethods](https://carnival-data.github.io/carnival/graph-method.html). Carnival GraphMethods provide a standard way to access the Carnival Graph API, as well as automatically adding [provenance infromation](https://carnival-data.github.io/carnival/graph-method.html#graph-method-provenance) to the graph to record that a process was run. In our example, the graph methods are defined [here](https://github.com/carnival-data/carnival-demo-biomedical/blob/master/src/main/groovy/example/carnival/micronaut/method/ExampleMethods.groovy).
 
 > *Taking it further: For this demonstration we ETL all the data when the application starts, however for a different use case you may want to query and load some data on demand or in batch.*
 
